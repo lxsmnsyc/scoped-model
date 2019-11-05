@@ -1,13 +1,43 @@
-import React, { Component } from 'react'
+import React from 'react'
 
-import ExampleComponent from '@lxsmnsyc/react-scoped-model'
+import Counter from './Counter'
 
-export default class App extends Component {
-  render () {
-    return (
-      <div>
-        <ExampleComponent text='Modern React component module' />
-      </div>
-    )
-  }
+
+function Count() {
+  const { count } = Counter.useState();
+
+  return (
+    <h1>Count: {count}</h1>
+  );
+}
+
+function Increment() {
+  const { increment } = Counter.useAction();
+  console.log('Re-rendered Increment');
+  return (
+    <button type="button" onClick={increment}>Increment</button>
+  );
+}
+
+function Decrement() {
+  const { decrement } = Counter.useAction();
+  console.log('Re-rendered Decrement');
+  return (
+    <button type="button" onClick={decrement}>Decrement</button>
+  );
+}
+
+export default function App() {
+  return (
+    <Counter.Provider>
+      <Counter.Provider>
+        <Count />
+        <Increment />
+        <Decrement />
+      </Counter.Provider>
+      <Count />
+      <Increment />
+      <Decrement />
+    </Counter.Provider>
+  );
 }
