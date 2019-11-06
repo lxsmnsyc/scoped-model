@@ -62,11 +62,23 @@ export interface IProviderProps {
   children?: React.ReactNode;
 }
 
+/**
+ * Force render a component manually
+ */
 function useForceUpdate() {
   const [, set] = React.useState({});
 
   return React.useCallback(() => set({}), []);
 }
+
+// https://github.com/reduxjs/react-redux/blob/v7-beta/src/components/connectAdvanced.js#L35
+// React currently throws a warning when using useLayoutEffect on the server.
+// To get around it, we can conditionally useEffect on the server (no-op) and
+// useLayoutEffect in the browser. We need useLayoutEffect because we want
+// `connect` to perform sync updates to a ref to save the latest props after
+// a render is actually committed to the DOM.
+const useIsomorphicLayoutEffect =
+  typeof window !== 'undefined' ? React.useLayoutEffect : React.useEffect;
 
 export default function createModel<M extends IModelState>(modelHook: ModelHook<M>) {
   /**
@@ -180,7 +192,7 @@ export default function createModel<M extends IModelState>(modelHook: ModelHook<
     /**
      * Listen to the changes
      */
-    React.useLayoutEffect(() => {
+    useIsomorphicLayoutEffect(() => {
       if (listen) {
         /**
          * Register callback
