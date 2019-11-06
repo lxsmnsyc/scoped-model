@@ -1,7 +1,7 @@
 {
   "name": "@lxsmnsyc/react-scoped-model",
-  "version": "1.0.0",
-  "description": "Scoped Model pattern in React (but with Hooks!)",
+  "version": "0.1.0",
+  "description": "Scoped Model pattern in React (but with Hooks)",
   "author": "lxsmnsyc",
   "license": "MIT",
   "repository": "lxsmnsyc/react-scoped-model",
@@ -24,8 +24,8 @@
   "dependencies": {},
   "peerDependencies": {
     "prop-types": "^15.5.4",
-    "react": "^15.0.0 || ^16.0.0",
-    "react-dom": "^15.0.0 || ^16.0.0"
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0"
   },
   "devDependencies": {
     "@svgr/rollup": "^2.4.1",
@@ -47,6 +47,10 @@
     "rollup-plugin-postcss": "^1.6.2",
     "rollup-plugin-typescript2": "^0.17.0",
     "rollup-plugin-url": "^1.4.0",
+    "tslint": "^5.20.0",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-eslint-rules": "^5.4.0",
+    "tslint-react": "^4.1.0",
     "typescript": "^2.8.3"
   },
   "files": [
