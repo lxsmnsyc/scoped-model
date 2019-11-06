@@ -6,10 +6,10 @@
   "private": true,
   "dependencies": {
     "prop-types": "^15.6.2",
-    "react": "link:../node_modules/react",
-    "react-dom": "link:../node_modules/react-dom",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
     "react-scripts": "^1.1.4",
-    "react-provider": "link:.."
+    "@lxsmnsyc/react-scoped-model": "link:.."
   },
   "scripts": {
     "start": "react-scripts start",
