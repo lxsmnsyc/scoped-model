@@ -62,8 +62,6 @@ export interface IProviderProps {
   children?: React.ReactNode;
 }
 
-type Optional<T> = T | null | undefined;
-
 function useForceUpdate() {
   const [, set] = React.useState({});
 
@@ -138,16 +136,11 @@ export default function createModel<M extends IModelState>(modelHook: ModelHook<
    * listen conditionally, triggering re-renders when
    * the value updates. Defaults to true.
    */
-  function useProperty<T>(key: string, listen: boolean = true): Optional<T> {
+  function useProperty<T>(key: string, listen: boolean = true): T {
     /**
      * Access context
      */
     const context = React.useContext(Context);
-
-    /**
-     * Access state
-     */
-    const contextState = context.state;
 
     /**
      * Used for force updating/re-rendering
@@ -157,12 +150,12 @@ export default function createModel<M extends IModelState>(modelHook: ModelHook<
     /**
      * Used to contain the state
      */
-    const ref = React.useRef();
+    const ref = React.useRef(context.state[key]);
 
     /**
      * Safety set
      */
-    ref.current = (contextState && contextState[key]);
+    ref.current = context.state[key];
 
     /**
      * Wrap the state setter for watching the property
