@@ -14,7 +14,7 @@ npm install --save @lxsmnsyc/react-scoped-model
 
 ### Creating your Model
 
-Models is just a hook that is always called whenever its Provider renders, but Models must follow the proper shape
+Models are created by using a hook function that is always called whenever its Provider renders, and must return an object that represents the models' state:
 
 ```jsx
 // import the createModel function
@@ -131,7 +131,7 @@ console.log('Same-level X:', x); // Same-level X: 10
 
 The initial version of this package used to have the `useModelState` and `useModelAction` hooks, as well as the model hook needs to return the proper model shape.
 
-To update, simple replace `useModelState` and `useModelAction` with the `useProperty` hook, providing the property key you wanted to listen to, as well as remove the object deconstruction.
+To update, simply replace `useModelState` and `useModelAction` with the `useProperty` hook, providing the property key you wanted to listen to, as well as remove the object deconstruction.
 
 The motivation for the API change is due to the Context API's observedBits instability, as well as fine-grained property access for a much reasonable and accurate component re-render.
 
