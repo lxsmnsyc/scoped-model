@@ -14,13 +14,9 @@ const Counter = createModel(function () {
   }, []);
 
   return {
-    state: {
-      count,
-    },
-    action: {
-      increment,
-      decrement,
-    },
+    count,
+    increment,
+    decrement,
   };
 });
 

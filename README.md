@@ -38,6 +38,7 @@ const Counter = createModel(function () {
     setCount(c => c + 1);
   }, []); // No dependencies means no new instances every update.
 
+  // Another action
   const decrement = useCallback(() => {
     // update the state by getting the current state, subtracting 1
     setCount(c => c - 1);
@@ -45,13 +46,9 @@ const Counter = createModel(function () {
 
   // Return the shape of our model
   return {
-    state: {
-      count,
-    },
-    action: {
-      increment,
-      decrement,
-    },
+    count,
+    increment,
+    decrement,
   };
 });
 
@@ -60,7 +57,7 @@ export default Counter;
 
 ### Adding to your component tree
 
-To add the Model to your component tree, simply use the .Provider property
+To add the Model to your component tree, simply use the `Provider` component property:
 
 ```jsx
 export default function App() {
@@ -74,17 +71,15 @@ export default function App() {
 }
 ```
 
-### Hooks
+### useProperty Hook
 
-Models have two hooks in them (alongside the Provider component):
-- useState: Subscribes to the state changes of the Model.
-- useAction: Subscribe to the action changes of the Model.
+To access the property of the provided scoped Model, you need to use the `useProperty` function from your Model instance. This function accesses the property as well as listens to the property changes, re-rendering the component.
 
-Using them returns the corresponding property from the returned model.
+You can also provide a boolean value to the second argument which tells the hook if it needs to listen for the changes (defaults to true).
 
 ```jsx
 function Count() {
-  const { count } = Counter.useState();
+  const count = Counter.useProperty('count');
 
   return (
     <h1>Count: {count}</h1>
@@ -94,7 +89,7 @@ function Count() {
 
 ```jsx
 function Increment() {
-  const { increment } = Counter.useAction();
+  const increment = Counter.useProperty('increment');
 
   return (
     <button type="button" onClick={increment}>Increment</button>
@@ -104,7 +99,7 @@ function Increment() {
 
 ```jsx
 function Decrement() {
-  const { decrement } = Counter.useAction();
+  const decrement = Counter.useProperty('decrement');
 
   return (
     <button type="button" onClick={decrement}>Decrement</button>
@@ -132,6 +127,15 @@ if (true) {
 console.log('Same-level X:', x); // Same-level X: 10
 ```
 
+## Migrating from 0.1.0
+
+The initial version of this package used to have the `useModelState` and `useModelAction` hooks, as well as the model hook needs to return the proper model shape.
+
+To update, simple replace `useModelState` and `useModelAction` with the `useProperty` hook, providing the property key you wanted to listen to, as well as remove the object deconstruction.
+
+The motivation for the API change is due to the Context API's observedBits instability, as well as fine-grained property access for a much reasonable and accurate component re-render.
+
+Read more here: ([Issue #1](https://github.com/LXSMNSYC/react-scoped-model/issues/1))
 
 ## Comparison to other Context-based State Libraries
 

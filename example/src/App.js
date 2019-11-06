@@ -2,9 +2,8 @@ import React from 'react'
 
 import Counter from './Counter'
 
-
 function Count() {
-  const { count } = Counter.useState();
+  const count = Counter.useProperty('count');
 
   return (
     <h1>Count: {count}</h1>
@@ -12,7 +11,7 @@ function Count() {
 }
 
 function Increment() {
-  const { increment } = Counter.useAction();
+  const increment = Counter.useProperty('increment');
   console.log('Re-rendered Increment');
   return (
     <button type="button" onClick={increment}>Increment</button>
@@ -20,7 +19,7 @@ function Increment() {
 }
 
 function Decrement() {
-  const { decrement } = Counter.useAction();
+  const decrement = Counter.useProperty('decrement');
   console.log('Re-rendered Decrement');
   return (
     <button type="button" onClick={decrement}>Decrement</button>
@@ -30,11 +29,6 @@ function Decrement() {
 export default function App() {
   return (
     <Counter.Provider>
-      <Counter.Provider>
-        <Count />
-        <Increment />
-        <Decrement />
-      </Counter.Provider>
       <Count />
       <Increment />
       <Decrement />
