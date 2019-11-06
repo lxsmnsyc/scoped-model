@@ -29,6 +29,11 @@ function Decrement() {
 export default function App() {
   return (
     <Counter.Provider>
+      <Counter.Provider>
+        <Count />
+        <Increment />
+        <Decrement />
+      </Counter.Provider>
       <Count />
       <Increment />
       <Decrement />
