@@ -109,6 +109,20 @@ function Decrement() {
 
 In our Counter app, only the Count component re-renders whenever any of the Model actions are called.
 
+To listen for multiple properties, you can use `.useProperties(keys: string[], listen: boolean)` function, which returns the values of the properties in an array.
+
+```jsx
+function IncDec() {
+  const [increment, decrement] = Counter.useProperties(['increment', 'decrement']);
+  return (
+    <React.Fragment>
+      <button type="button" onClick={increment}>Increment</button>
+      <button type="button" onClick={decrement}>Decrement</button>
+    </React.Fragment>
+  );
+}
+```
+
 ### Shadowing Context
 
 The concept of Scoped Model is that, unlike the Global state which all components have access to the state, Scoped Models only allows access within its component tree, this is comparable as to how "global variables vs local variables" work.
