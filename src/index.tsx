@@ -165,11 +165,6 @@ export default function createModel<M extends IModelState>(modelHook: ModelHook<
     const ref = React.useRef(context.state[key]);
 
     /**
-     * Safety set
-     */
-    ref.current = context.state[key];
-
-    /**
      * Wrap the state setter for watching the property
      */
     const callback = React.useCallback((next: M) => {
@@ -247,11 +242,6 @@ export default function createModel<M extends IModelState>(modelHook: ModelHook<
     const ref = React.useRef(states);
 
     /**
-     * Safety set
-     */
-    ref.current = states;
-
-    /**
      * Wrap the state setter for watching the property
      */
     const callback = React.useCallback((next: M) => {
@@ -278,7 +268,12 @@ export default function createModel<M extends IModelState>(modelHook: ModelHook<
         /**
          * Compare values
          */
-        if (!Object.is(currentValue, newValue)) {
+        if (Object.is(currentValue, newValue)) {
+          /**
+           * Set the value to the old slot
+           */
+          values[i] = currentValue;
+        } else {
           /**
            * Set the new value to this slot
            */
@@ -287,11 +282,6 @@ export default function createModel<M extends IModelState>(modelHook: ModelHook<
            * Should update
            */
           doUpdate = true;
-        } else {
-          /**
-           * Set the value to the old slot
-           */
-          values[i] = currentValue;
         }
       }
 
