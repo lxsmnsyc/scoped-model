@@ -299,6 +299,7 @@ export default function createModel<M extends IModelState>(modelHook: ModelHook<
        * If doUpdate is true, force update this component
        */
       if (doUpdate) {
+        ref.current = values as T;
         forceUpdate();
       }
     }, keys);
