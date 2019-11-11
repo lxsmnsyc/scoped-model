@@ -283,6 +283,10 @@ export default function createModel<M extends IModelState>(modelHook: ModelHook<
            * Set the new value to this slot
            */
           values[i] = newValue;
+          /**
+           * Should update
+           */
+          doUpdate = true;
         } else {
           /**
            * Set the value to the old slot
