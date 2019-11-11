@@ -223,7 +223,7 @@ export default function createModel<M extends IModelState>(modelHook: ModelHook<
    * listen conditionally, triggering re-renders when
    * the value updates. Defaults to true.
    */
-  function useProperties(keys: string[], listen: boolean = true): any[] {
+  function useProperties<T extends any[]>(keys: string[], listen: boolean = true): T {
     /**
      * Access context
      */
@@ -239,7 +239,7 @@ export default function createModel<M extends IModelState>(modelHook: ModelHook<
      */
     const states = React.useMemo(() => (
       keys.map(key => context.state[key])
-    ), keys);
+    ), keys) as T;
 
     /**
      * Used to contain the state
