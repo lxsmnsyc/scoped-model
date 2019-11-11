@@ -213,8 +213,119 @@ export default function createModel<M extends IModelState>(modelHook: ModelHook<
     return ref.current;
   }
 
+  /**
+   * Listens to the model's properties for changes, and updates
+   * the component with the new values.
+   * 
+   * Property's value uses the `Object.is` function for comparison
+   * @param keys array of keys to listen to
+   * @param listen
+   * listen conditionally, triggering re-renders when
+   * the value updates. Defaults to true.
+   */
+  function useProperties(keys: string[], listen: boolean = true): any[] {
+    /**
+     * Access context
+     */
+    const context = React.useContext(Context);
+
+    /**
+     * Used for force updating/re-rendering
+     */
+    const forceUpdate = useForceUpdate();
+    
+    /**
+     * Get all states
+     */
+    const states = React.useMemo(() => (
+      keys.map(key => context.state[key])
+    ), keys);
+
+    /**
+     * Used to contain the state
+     */
+    const ref = React.useRef(states);
+
+    /**
+     * Safety set
+     */
+    ref.current = states;
+
+    /**
+     * Wrap the state setter for watching the property
+     */
+    const callback = React.useCallback((next: M) => {
+      /**
+       * New reference container
+       */
+      const values = [];
+      
+      /**
+       * Do force update flag
+       */
+      let doUpdate = false;
+
+      /**
+       * Iterate keys
+       */
+      for (let i = 0; i < keys.length; i++) {
+        /**
+         * Get corresponding values
+         */
+        const currentValue = ref.current[i];
+        const newValue = next[keys[i]];
+
+        /**
+         * Compare values
+         */
+        if (!Object.is(currentValue, newValue)) {
+          /**
+           * Set the new value to this slot
+           */
+          values[i] = newValue;
+        } else {
+          /**
+           * Set the value to the old slot
+           */
+          values[i] = currentValue;
+        }
+      }
+
+      /**
+       * If doUpdate is true, force update this component
+       */
+      if (doUpdate) {
+        forceUpdate();
+      }
+    }, keys);
+
+    /**
+     * Listen to the changes
+     */
+    useIsomorphicLayoutEffect(() => {
+      if (listen) {
+        /**
+         * Register callback
+         */
+        context.on(callback);
+        
+        /**
+         * Unregister on dependency update
+         */
+        return () => context.off(callback);
+      }
+      return () => {};
+    }, [context, listen, callback]);
+
+    /**
+     * Return the current state value
+     */
+    return ref.current;
+  }
+
   return {
     Provider,
     useProperty,
+    useProperties,
   };
 }
