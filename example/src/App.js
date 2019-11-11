@@ -26,6 +26,17 @@ function Decrement() {
   );
 }
 
+function IncDec() {
+  const [increment, decrement] = Counter.useProperties(['increment', 'decrement']);
+  console.log('Re-rendered IncDec');
+  return (
+    <React.Fragment>
+      <button type="button" onClick={increment}>Increment</button>
+      <button type="button" onClick={decrement}>Decrement</button>
+    </React.Fragment>
+  );
+}
+
 export default function App() {
   return (
     <Counter.Provider>
@@ -35,8 +46,7 @@ export default function App() {
         <Decrement />
       </Counter.Provider>
       <Count />
-      <Increment />
-      <Decrement />
+      <IncDec />
     </Counter.Provider>
   );
 }
