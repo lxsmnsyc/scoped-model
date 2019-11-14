@@ -1,6 +1,6 @@
 {
   "name": "@lxsmnsyc/react-scoped-model",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "description": "Scoped Model pattern in React (but with Hooks)",
   "author": "lxsmnsyc",
   "license": "MIT",
@@ -23,9 +23,8 @@
   },
   "dependencies": {},
   "peerDependencies": {
-    "prop-types": "^15.5.4",
-    "react": "^16.0.0",
-    "react-dom": "^16.0.0"
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0"
   },
   "devDependencies": {
     "@svgr/rollup": "^2.4.1",
