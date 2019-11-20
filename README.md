@@ -123,6 +123,20 @@ function IncDec() {
 }
 ```
 
+### Selectors
+
+If the model's shape is complex (e.g. deeply nested) and/or you only want to listen to specific changes e.g. transforming a value, you can use the `useSelector` and `useSelectors` hook to listen to your transformed state value.
+
+```jsx
+function Count() {
+  const count = Counter.useSelector(state => state.count);
+
+  return (
+    <h1>Count: {count}</h1>
+  );
+}
+```
+
 ### Shadowing Context
 
 The concept of Scoped Model is that, unlike the Global state which all components have access to the state, Scoped Models only allows access within its component tree, this is comparable as to how "global variables vs local variables" work.

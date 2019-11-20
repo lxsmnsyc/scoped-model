@@ -138,17 +138,18 @@ export default function createModel<M extends IModelState>(modelHook: ModelHook<
   }
 
   /**
-   * Listens to the model's property for changes, and updates
-   * the component with the new values.
+   * Transforms the model's state and listens for the returned value change.
    * 
-   * Property's value uses the `Object.is` function for comparison
+   * If the value changes, the component re-renders.
    *
-   * @param key property to listen for
+   * uses the `Object.is` function for comparison
+   * @param selector a function that receives the model state
+   * and transforms it into a new value.
    * @param listen
    * listen conditionally, triggering re-renders when
    * the value updates. Defaults to true.
    */
-  function useProperty<T>(key: string, listen: boolean = true): T {
+  function useSelector<T>(selector: (model: M) => T, listen: boolean = true): T {
     /**
      * Access context
      */
@@ -162,27 +163,146 @@ export default function createModel<M extends IModelState>(modelHook: ModelHook<
     /**
      * Used to contain the state
      */
-    const ref = React.useRef(context.state[key]);
+    const ref = React.useRef(selector(context.state));
 
     /**
      * Wrap the state setter for watching the property
      */
     const callback = React.useCallback((next: M) => {
+      const selected = selector(next);
       /**
        * Compare states
        */
-      if (!Object.is(ref.current, next[key])) {
+      if (!Object.is(ref.current, selected)) {
         /**
          * Update state reference
          */
-        ref.current = next[key];
+        ref.current = selected;
 
         /**
          * Force update this component
          */
         forceUpdate();
       }
-    }, [key]);
+    }, [selector]);
+
+    /**
+     * Listen to the changes
+     */
+    useIsomorphicLayoutEffect(() => {
+      if (listen) {
+        /**
+         * Register callback
+         */
+        context.on(callback);
+        
+        /**
+         * Unregister on dependency update
+         */
+        return () => context.off(callback);
+      }
+      return () => {};
+    }, [context, listen, callback]);
+
+    /**
+     * Return the current state value
+     */
+    return ref.current;
+  }
+
+  /**
+   * Listens to the model's property for changes, and updates
+   * the component with the new values.
+   * 
+   * Property's value uses the `Object.is` function for comparison
+   *
+   * @param key property to listen for
+   * @param listen
+   * listen conditionally, triggering re-renders when
+   * the value updates. Defaults to true.
+   */
+  function useProperty<T>(key: string, listen: boolean = true): T {
+    const selector = React.useCallback(state => state[key], [key]);
+    return useSelector<T>(selector, listen);
+  }
+
+
+  /**
+   * Transforms the model's state into a list of values and
+   * listens for the changes from one of the values..
+   * 
+   * If a value changes, the component re-renders.
+   *
+   * uses the `Object.is` function for comparison
+   *
+   * @param selector a function that receives the model state
+   * @param listen
+   * listen conditionally, triggering re-renders when
+   * the value updates. Defaults to true.
+   */
+  function useSelectors<T extends any[]>(selector: (model: M) => T, listen: boolean = true) {
+    /**
+     * Access context
+     */
+    const context = React.useContext(Context);
+
+    /**
+     * Used for force updating/re-rendering
+     */
+    const forceUpdate = useForceUpdate();
+    
+    /**
+     * Get all states
+     */
+    const states = React.useMemo(() => (
+      selector(context.state)
+    ), [selector]) as T;
+
+    /**
+     * Used to contain the state
+     */
+    const ref = React.useRef(states);
+
+    /**
+     * Wrap the state setter for watching the property
+     */
+    const callback = React.useCallback((next: M) => {
+      /**
+       * New reference container
+       */
+      const values = selector(next);
+      
+      /**
+       * Do force update flag
+       */
+      let doUpdate = false;
+
+      /**
+       * Iterate keys
+       */
+      for (let i = 0; i < ref.current.length; i++) {
+        /**
+         * Get corresponding values
+         */
+        const currentValue = ref.current[i];
+        const newValue = values[i];
+
+        /**
+         * Compare values
+         */
+        if (!Object.is(currentValue, newValue)) {
+          doUpdate = true;
+        }
+      }
+
+      /**
+       * If doUpdate is true, force update this component
+       */
+      if (doUpdate) {
+        ref.current = values as T;
+        forceUpdate();
+      }
+    }, [selector]);
 
     /**
      * Listen to the changes
@@ -219,108 +339,15 @@ export default function createModel<M extends IModelState>(modelHook: ModelHook<
    * the value updates. Defaults to true.
    */
   function useProperties<T extends any[]>(keys: string[], listen: boolean = true): T {
-    /**
-     * Access context
-     */
-    const context = React.useContext(Context);
-
-    /**
-     * Used for force updating/re-rendering
-     */
-    const forceUpdate = useForceUpdate();
-    
-    /**
-     * Get all states
-     */
-    const states = React.useMemo(() => (
-      keys.map(key => context.state[key])
-    ), keys) as T;
-
-    /**
-     * Used to contain the state
-     */
-    const ref = React.useRef(states);
-
-    /**
-     * Wrap the state setter for watching the property
-     */
-    const callback = React.useCallback((next: M) => {
-      /**
-       * New reference container
-       */
-      const values = [];
-      
-      /**
-       * Do force update flag
-       */
-      let doUpdate = false;
-
-      /**
-       * Iterate keys
-       */
-      for (let i = 0; i < keys.length; i++) {
-        /**
-         * Get corresponding values
-         */
-        const currentValue = ref.current[i];
-        const newValue = next[keys[i]];
-
-        /**
-         * Compare values
-         */
-        if (Object.is(currentValue, newValue)) {
-          /**
-           * Set the value to the old slot
-           */
-          values[i] = currentValue;
-        } else {
-          /**
-           * Set the new value to this slot
-           */
-          values[i] = newValue;
-          /**
-           * Should update
-           */
-          doUpdate = true;
-        }
-      }
-
-      /**
-       * If doUpdate is true, force update this component
-       */
-      if (doUpdate) {
-        ref.current = values as T;
-        forceUpdate();
-      }
-    }, keys);
-
-    /**
-     * Listen to the changes
-     */
-    useIsomorphicLayoutEffect(() => {
-      if (listen) {
-        /**
-         * Register callback
-         */
-        context.on(callback);
-        
-        /**
-         * Unregister on dependency update
-         */
-        return () => context.off(callback);
-      }
-      return () => {};
-    }, [context, listen, callback]);
-
-    /**
-     * Return the current state value
-     */
-    return ref.current;
+    const selector = React.useCallback(state => keys.map(key => state[key]) as T, keys);
+    return useSelectors<T>(selector, listen);
   }
 
   return {
     Provider,
     useProperty,
     useProperties,
+    useSelector,
+    useSelectors,
   };
 }
