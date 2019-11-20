@@ -3,7 +3,7 @@ import React from 'react'
 import Counter from './Counter'
 
 function Count() {
-  const count = Counter.useProperty('count');
+  const count = Counter.useSelector(state => state.count);
   console.log('Re-rendered Count');
   return (
     <h1>Count: {count}</h1>
