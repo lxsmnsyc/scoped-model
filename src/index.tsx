@@ -77,8 +77,9 @@ function useForceUpdate() {
 // useLayoutEffect in the browser. We need useLayoutEffect because we want
 // `connect` to perform sync updates to a ref to save the latest props after
 // a render is actually committed to the DOM.
-const useIsomorphicLayoutEffect =
-  typeof window !== 'undefined' ? React.useLayoutEffect : React.useEffect;
+export function useIsomorphicEffect(callback: React.EffectCallback, deps: React.DependencyList) {
+  (typeof window === 'undefined' ? React.useEffect : React.useLayoutEffect)(callback, deps);
+}
 
 export default function createModel<M extends IModelState>(modelHook: ModelHook<M>) {
   /**
@@ -189,7 +190,7 @@ export default function createModel<M extends IModelState>(modelHook: ModelHook<
     /**
      * Listen to the changes
      */
-    useIsomorphicLayoutEffect(() => {
+    useIsomorphicEffect(() => {
       if (listen) {
         /**
          * Register callback
@@ -307,7 +308,7 @@ export default function createModel<M extends IModelState>(modelHook: ModelHook<
     /**
      * Listen to the changes
      */
-    useIsomorphicLayoutEffect(() => {
+    useIsomorphicEffect(() => {
       if (listen) {
         /**
          * Register callback
