@@ -56,7 +56,7 @@ function createEmitter<M extends IModelState>(): IEmitter<M> {
   return instance;
 }
 
-type ModelHook<M extends IModelState> = () => M;
+type ModelHook<M extends IModelState, P extends {}> = (props: P) => M;
 
 export interface IProviderProps {
   children?: React.ReactNode;
@@ -81,7 +81,7 @@ export function useIsomorphicEffect(callback: React.EffectCallback, deps: React.
   (typeof window === 'undefined' ? React.useEffect : React.useLayoutEffect)(callback, deps);
 }
 
-export default function createModel<M extends IModelState>(modelHook: ModelHook<M>) {
+export default function createModel<M extends IModelState, P extends {}>(modelHook: ModelHook<M, P>) {
   /**
    * Create the context
    */
@@ -100,7 +100,7 @@ export default function createModel<M extends IModelState>(modelHook: ModelHook<
     );
   }
 
-  function EmitterConsumer({ children }: IProviderProps) {
+  function EmitterConsumer({ children, ...props }: IProviderProps) {
     /**
      * Access context
      */
@@ -109,7 +109,7 @@ export default function createModel<M extends IModelState>(modelHook: ModelHook<
     /**
      * Run hook
      */
-    const model = modelHook();
+    const model = modelHook(props as P);
     
     /**
      * Consume the model
@@ -128,10 +128,10 @@ export default function createModel<M extends IModelState>(modelHook: ModelHook<
   /**
    * Provides the model and runs the model logic on re-renders
    */
-  function Provider({ children }: IProviderProps) {
+  function Provider({ children, ...props }: IProviderProps) {
     return (
       <EmitterProvider>
-        <EmitterConsumer>
+        <EmitterConsumer {...props}>
           { children }
         </EmitterConsumer>
       </EmitterProvider>
