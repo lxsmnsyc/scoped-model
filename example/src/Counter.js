@@ -2,8 +2,8 @@ import createModel from '@lxsmnsyc/react-scoped-model';
 import { useState, useCallback } from 'react';
 
 
-const Counter = createModel(function () {
-  const [count, setCount] = useState(0);
+const Counter = createModel(function ({ initialCount }) {
+  const [count, setCount] = useState(initialCount);
 
   const increment = useCallback(() => {
     setCount(c => c + 1);

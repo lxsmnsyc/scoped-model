@@ -39,8 +39,8 @@ function IncDec() {
 
 export default function App() {
   return (
-    <Counter.Provider>
-      <Counter.Provider>
+    <Counter.Provider initialCount={1}>
+      <Counter.Provider initialCount={0}>
         <Count />
         <Increment />
         <Decrement />
