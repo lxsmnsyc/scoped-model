@@ -1,6 +1,6 @@
 {
   "name": "@lxsmnsyc/react-scoped-model",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "Scoped Model pattern in React (but with Hooks)",
   "author": "lxsmnsyc",
   "license": "MIT",
