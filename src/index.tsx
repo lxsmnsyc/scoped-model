@@ -101,7 +101,7 @@ export default function createModel<M extends IModelState, P extends {}>(modelHo
     );
   }
 
-  function EmitterConsumer({ children, ...props }: IProviderProps) {
+  function EmitterConsumer({ children, ...props }: IProviderProps & Partial<P>) {
     /**
      * Access context
      */
@@ -129,7 +129,7 @@ export default function createModel<M extends IModelState, P extends {}>(modelHo
   /**
    * Provides the model and runs the model logic on re-renders
    */
-  function Provider({ children, ...props }: IProviderProps) {
+  function Provider({ children, ...props }: IProviderProps & Partial<P>) {
     return (
       <EmitterProvider>
         <EmitterConsumer {...props}>
