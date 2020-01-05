@@ -31,6 +31,10 @@ export interface IModelState {
   [key: string]: any;
 }
 
+export interface IModelProps {
+  [key: string]: any;
+}
+
 type EmitterListener<M extends IModelState> = (model: M) => void;
 interface IEmitter<M extends IModelState> {
   consume?: (value: M) => void;
@@ -49,7 +53,7 @@ function createEmitter<M extends IModelState>(): IEmitter<M> {
   };
 
   instance.consume = (value: M) => {
-    new Set(listeners).forEach(fn => fn(value));
+    new Set(listeners).forEach((fn) => fn(value));
     instance.state = value;
   };
 
@@ -79,10 +83,10 @@ function useForceUpdate() {
 // a render is actually committed to the DOM.
 export const useIsomorphicEffect = typeof window === 'undefined'
   ? React.useEffect
-  : React.useLayoutEffect
-;
+  : React.useLayoutEffect;
 
-export default function createModel<M extends IModelState, P extends {}>(modelHook: ModelHook<M, P>) {
+export default function createModel
+  <M extends IModelState, P extends IModelProps = {}>(modelHook: ModelHook<M, P>) {
   /**
    * Create the context
    */
@@ -101,22 +105,22 @@ export default function createModel<M extends IModelState, P extends {}>(modelHo
     );
   }
 
-  function EmitterConsumer({ children, ...props }: IProviderProps & Partial<P>) {
+  function EmitterConsumer({ children, ...props }: IProviderProps) {
     /**
      * Access context
      */
-    const context = React.useContext(Context);
+    const { consume } = React.useContext(Context);
 
     /**
      * Run hook
      */
     const model = modelHook(props as P);
-    
+
     /**
      * Consume the model
      */
-    if (context.consume) {
-      context.consume(model);
+    if (consume) {
+      consume(model);
     }
 
     return (
@@ -129,19 +133,17 @@ export default function createModel<M extends IModelState, P extends {}>(modelHo
   /**
    * Provides the model and runs the model logic on re-renders
    */
-  function Provider({ children, ...props }: IProviderProps & Partial<P>) {
+  function Provider(props: IProviderProps & P) {
     return (
       <EmitterProvider>
-        <EmitterConsumer {...props}>
-          { children }
-        </EmitterConsumer>
+        <EmitterConsumer {...props} />
       </EmitterProvider>
     );
   }
 
   /**
    * Transforms the model's state and listens for the returned value change.
-   * 
+   *
    * If the value changes, the component re-renders.
    *
    * uses the `Object.is` function for comparison
@@ -151,7 +153,7 @@ export default function createModel<M extends IModelState, P extends {}>(modelHo
    * listen conditionally, triggering re-renders when
    * the value updates. Defaults to true.
    */
-  function useSelector<T>(selector: (model: M) => T, listen: boolean = true): T {
+  function useSelector<T>(selector: (model: M) => T, listen = true): T {
     /**
      * Access context
      */
@@ -186,7 +188,7 @@ export default function createModel<M extends IModelState, P extends {}>(modelHo
          */
         forceUpdate();
       }
-    }, [selector]);
+    }, [forceUpdate, selector]);
 
     /**
      * Listen to the changes
@@ -197,13 +199,13 @@ export default function createModel<M extends IModelState, P extends {}>(modelHo
          * Register callback
          */
         context.on(callback);
-        
+
         /**
          * Unregister on dependency update
          */
         return () => context.off(callback);
       }
-      return () => {};
+      return () => null;
     }, [context, listen, callback]);
 
     /**
@@ -215,7 +217,7 @@ export default function createModel<M extends IModelState, P extends {}>(modelHo
   /**
    * Listens to the model's property for changes, and updates
    * the component with the new values.
-   * 
+   *
    * Property's value uses the `Object.is` function for comparison
    *
    * @param key property to listen for
@@ -223,8 +225,8 @@ export default function createModel<M extends IModelState, P extends {}>(modelHo
    * listen conditionally, triggering re-renders when
    * the value updates. Defaults to true.
    */
-  function useProperty<T>(key: string, listen: boolean = true): T {
-    const selector = React.useCallback(state => state[key], [key]);
+  function useProperty<T>(key: string, listen = true): T {
+    const selector = React.useCallback((state) => state[key], [key]);
     return useSelector<T>(selector, listen);
   }
 
@@ -232,7 +234,7 @@ export default function createModel<M extends IModelState, P extends {}>(modelHo
   /**
    * Transforms the model's state into a list of values and
    * listens for the changes from one of the values..
-   * 
+   *
    * If a value changes, the component re-renders.
    *
    * uses the `Object.is` function for comparison
@@ -242,7 +244,7 @@ export default function createModel<M extends IModelState, P extends {}>(modelHo
    * listen conditionally, triggering re-renders when
    * the value updates. Defaults to true.
    */
-  function useSelectors<T extends any[]>(selector: (model: M) => T, listen: boolean = true) {
+  function useSelectors<T extends any[]>(selector: (model: M) => T, listen = true) {
     /**
      * Access context
      */
@@ -252,13 +254,13 @@ export default function createModel<M extends IModelState, P extends {}>(modelHo
      * Used for force updating/re-rendering
      */
     const forceUpdate = useForceUpdate();
-    
+
     /**
      * Get all states
      */
     const states = React.useMemo(() => (
       selector(context.state)
-    ), [selector]) as T;
+    ), [context.state, selector]);
 
     /**
      * Used to contain the state
@@ -273,7 +275,7 @@ export default function createModel<M extends IModelState, P extends {}>(modelHo
        * New reference container
        */
       const values = selector(next);
-      
+
       /**
        * Do force update flag
        */
@@ -282,7 +284,7 @@ export default function createModel<M extends IModelState, P extends {}>(modelHo
       /**
        * Iterate keys
        */
-      for (let i = 0; i < ref.current.length; i++) {
+      for (let i = 0; i < ref.current.length; i += 1) {
         /**
          * Get corresponding values
          */
@@ -301,10 +303,10 @@ export default function createModel<M extends IModelState, P extends {}>(modelHo
        * If doUpdate is true, force update this component
        */
       if (doUpdate) {
-        ref.current = values as T;
+        ref.current = values;
         forceUpdate();
       }
-    }, [selector]);
+    }, [forceUpdate, selector]);
 
     /**
      * Listen to the changes
@@ -315,13 +317,13 @@ export default function createModel<M extends IModelState, P extends {}>(modelHo
          * Register callback
          */
         context.on(callback);
-        
+
         /**
          * Unregister on dependency update
          */
         return () => context.off(callback);
       }
-      return () => {};
+      return () => null;
     }, [context, listen, callback]);
 
     /**
@@ -333,15 +335,16 @@ export default function createModel<M extends IModelState, P extends {}>(modelHo
   /**
    * Listens to the model's properties for changes, and updates
    * the component with the new values.
-   * 
+   *
    * Property's value uses the `Object.is` function for comparison
    * @param keys array of keys to listen to
    * @param listen
    * listen conditionally, triggering re-renders when
    * the value updates. Defaults to true.
    */
-  function useProperties<T extends any[]>(keys: string[], listen: boolean = true): T {
-    const selector = React.useCallback(state => keys.map(key => state[key]) as T, keys);
+  function useProperties<T extends any[]>(keys: string[], listen = true): T {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const selector = React.useCallback((state) => keys.map((key) => state[key]) as T, keys);
     return useSelectors<T>(selector, listen);
   }
 
