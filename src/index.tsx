@@ -26,6 +26,13 @@
  * @copyright Alexis Munsayac 2019
  */
 import * as React from 'react';
+import * as PropTypes from 'prop-types';
+
+import MissingScopedModelError from './utils/MissingScopedModelError';
+
+import useConstant from './hooks/useConstant';
+import useForceUpdate from './hooks/useForceUpdate';
+import useIsomorphicEffect from './hooks/useIsomorphicEffect';
 
 export interface IModelState {
   [key: string]: any;
@@ -60,56 +67,54 @@ function createEmitter<M extends IModelState>(): IEmitter<M> {
   return instance;
 }
 
-type ModelHook<M extends IModelState, P extends {}> = (props: P) => M;
+export type ModelHook<M extends IModelState, P extends {}> = (props: P) => M;
 
-export interface IProviderProps {
-  children?: React.ReactNode;
+export interface ModelOptions<P> {
+  displayName?: string;
+  propTypes?: React.WeakValidationMap<P>;
+  defaultProps?: Partial<P>;
 }
-
-/**
- * Force render a component manually
- */
-function useForceUpdate() {
-  const [, set] = React.useState({});
-
-  return React.useCallback(() => set({}), []);
-}
-
-// https://github.com/reduxjs/react-redux/blob/v7-beta/src/components/connectAdvanced.js#L35
-// React currently throws a warning when using useLayoutEffect on the server.
-// To get around it, we can conditionally useEffect on the server (no-op) and
-// useLayoutEffect in the browser. We need useLayoutEffect because we want
-// `connect` to perform sync updates to a ref to save the latest props after
-// a render is actually committed to the DOM.
-export const useIsomorphicEffect = typeof window === 'undefined'
-  ? React.useEffect
-  : React.useLayoutEffect;
 
 export default function createModel
-  <M extends IModelState, P extends IModelProps = {}>(modelHook: ModelHook<M, P>) {
+<M extends IModelState, P extends IModelProps = {}>(
+  modelHook: ModelHook<M, P>,
+  options: ModelOptions<P> = {},
+) {
   /**
    * Create the context
    */
-  const Context = React.createContext<IEmitter<M>>(createEmitter());
+  const Context = React.createContext<IEmitter<M> | null>(null);
+
+  /**
+   * Display name for the model
+   */
+  const displayName = options.displayName || 'AnonymousScopedModel';
 
   /**
    * A component that provides the emitter instance
    */
-  function EmitterProvider({ children }: IProviderProps) {
-    const emitter = React.useMemo(() => createEmitter<M>(), []);
+  const EmitterProvider: React.FC<{}> = ({ children }) => {
+    const emitter = useConstant(() => createEmitter<M>());
 
     return (
       <Context.Provider value={emitter}>
         { children }
       </Context.Provider>
     );
-  }
+  };
 
-  function EmitterConsumer({ children, ...props }: IProviderProps) {
+  EmitterProvider.propTypes = {
+    children: PropTypes.oneOfType([
+      PropTypes.arrayOf(PropTypes.node),
+      PropTypes.node,
+    ]).isRequired,
+  };
+
+  const EmitterConsumer: React.FC<P> = ({ children, ...props }) => {
     /**
      * Access context
      */
-    const { consume } = React.useContext(Context);
+    const context = React.useContext(Context);
 
     /**
      * Run hook
@@ -119,8 +124,12 @@ export default function createModel
     /**
      * Consume the model
      */
-    if (consume) {
-      consume(model);
+    if (context) {
+      if (context.consume) {
+        context.consume(model);
+      }
+    } else {
+      throw new MissingScopedModelError(displayName);
     }
 
     return (
@@ -128,18 +137,42 @@ export default function createModel
         { children }
       </>
     );
-  }
+  };
+
+  EmitterConsumer.propTypes = {
+    ...(options.propTypes || {} as P),
+    children: PropTypes.oneOfType([
+      PropTypes.arrayOf(PropTypes.node),
+      PropTypes.node,
+    ]).isRequired,
+  };
 
   /**
    * Provides the model and runs the model logic on re-renders
    */
-  function Provider(props: IProviderProps & P) {
-    return (
-      <EmitterProvider>
-        <EmitterConsumer {...props} />
-      </EmitterProvider>
-    );
-  }
+  const Provider: React.FC<P> = (props) => (
+    <EmitterProvider>
+      <EmitterConsumer {...props} />
+    </EmitterProvider>
+  );
+
+  Provider.propTypes = {
+    ...(options.propTypes || {} as P),
+    children: PropTypes.oneOfType([
+      PropTypes.arrayOf(PropTypes.node),
+      PropTypes.node,
+    ]).isRequired,
+  };
+
+  /**
+   * Provider default props
+   */
+  Provider.defaultProps = options.defaultProps;
+
+  /**
+   * Display name for the Provider
+   */
+  Provider.displayName = displayName;
 
   /**
    * Transforms the model's state and listens for the returned value change.
@@ -158,6 +191,10 @@ export default function createModel
      * Access context
      */
     const context = React.useContext(Context);
+
+    if (!context) {
+      throw new MissingScopedModelError(displayName);
+    }
 
     /**
      * Used for force updating/re-rendering
@@ -249,6 +286,10 @@ export default function createModel
      * Access context
      */
     const context = React.useContext(Context);
+
+    if (!context) {
+      throw new MissingScopedModelError(displayName);
+    }
 
     /**
      * Used for force updating/re-rendering
