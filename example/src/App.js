@@ -40,7 +40,7 @@ function IncDec() {
 export default function App() {
   return (
     <Counter.Provider initialCount={1}>
-      <Counter.Provider initialCount={0}>
+      <Counter.Provider initialCount="Hello">
         <Count />
         <Increment />
         <Decrement />
