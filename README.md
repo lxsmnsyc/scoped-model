@@ -137,6 +137,35 @@ function Count() {
 }
 ```
 
+### Props
+
+A model can also receive props:
+
+```jsx
+const MyModel = createModel(({ initialValue }) => /* code */);
+```
+
+```jsx
+<MyModel.Provider initialValue="Hello World">
+ ...
+</MyModel.Provider>
+```
+
+### Options
+
+A model can also receive an option:
+
+```jsx
+const MyModel = createModel(myHook, {
+  displayName: 'MyModel',
+});
+```
+
+Useful for inspecting your model with React DevTools, as well as receive expressive errors whenever
+you try to use the scoped model hooks assuming that the model is mounted to the component tree.
+
+The option can also have `propTypes` and `defaultProps` from the `prop-types` module.
+
 ### Shadowing Context
 
 The concept of Scoped Model is that, unlike the Global state which all components have access to the state, Scoped Models only allows access within its component tree, this is comparable as to how "global variables vs local variables" work.
