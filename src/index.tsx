@@ -144,7 +144,11 @@ export default function createModel
     children: PropTypes.oneOfType([
       PropTypes.arrayOf(PropTypes.node),
       PropTypes.node,
-    ]).isRequired,
+    ]),
+  };
+
+  EmitterConsumer.defaultProps = {
+    children: undefined,
   };
 
   /**
@@ -161,13 +165,16 @@ export default function createModel
     children: PropTypes.oneOfType([
       PropTypes.arrayOf(PropTypes.node),
       PropTypes.node,
-    ]).isRequired,
+    ]),
   };
 
   /**
    * Provider default props
    */
-  Provider.defaultProps = options.defaultProps;
+  Provider.defaultProps = {
+    ...options.defaultProps,
+    children: undefined,
+  };
 
   /**
    * Display name for the Provider
