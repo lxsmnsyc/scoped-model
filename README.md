@@ -137,6 +137,65 @@ function Count() {
 }
 ```
 
+### Asynchronous Selectors
+
+We also have asynchronous selectors which allows you to return a Promise-based value instead of a value. Unlike synchronous selectors, async selectors do not get their values compared.
+
+Asynchronous selectors requires a second parameter called 'key', which is used for caching.
+
+```jsx
+function AsyncCount() {
+  const state = Counter.useAsyncSelector(async (state) => {
+    await sleep(500);
+
+    return state.count;
+  });
+
+
+  switch (state.status) {
+    case 'failure': return <h1>An error occured.</h1>;
+    case 'success': return <h1>Count: {state.data}</h1>;
+    case 'pending': return <h1>Loading...</h1>;
+    default: 
+  }
+}
+```
+
+### Suspended Selector
+
+Like asynchronous selectors but for Suspense mode.
+
+```jsx
+function SuspendedCount() {
+  const count = Counter.useSuspendedSelector(async (state) => {
+    await sleep(500);
+
+    return state.count;
+  }, 'count/suspended');
+
+  return (
+    <h1>Count: {count}</h1>
+  );
+}
+```
+
+### Suspended State
+
+If you ever wanted to indefinitely suspend the component,
+
+```jsx
+function SuspendedState() {
+  const count = Counter.useSuspendedState((state) => ({
+    count: state.count,
+    suspend: state.count < 5,
+  }), 'state/suspended');
+
+  return (
+    <h1>Count: {count}</h1>
+  );
+}
+```
+
 ### Props
 
 A model can also receive props:
