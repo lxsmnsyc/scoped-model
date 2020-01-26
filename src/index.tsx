@@ -473,7 +473,7 @@ export default function createModel
      */
     const forceUpdate = useForceUpdate();
 
-    const mounted = usePromise([selector]);
+    const mounted = usePromise([]);
 
     useIsomorphicEffect(() => {
       mounted(selector(context.state)).then(
