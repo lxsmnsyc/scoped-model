@@ -33,6 +33,7 @@ import MissingScopedModelError from './utils/MissingScopedModelError';
 import useConstant from './hooks/useConstant';
 import useForceUpdate from './hooks/useForceUpdate';
 import useIsomorphicEffect from './hooks/useIsomorphicEffect';
+import usePromise from './hooks/usePromise';
 
 export interface IModelState {
   [key: string]: any;
@@ -43,11 +44,36 @@ export interface IModelProps {
 }
 
 type EmitterListener<M extends IModelState> = (model: M) => void;
+
+export interface AsyncFailure {
+  data: any;
+  status: 'failure';
+}
+
+export interface AsyncSuccess<T> {
+  data: T;
+  status: 'success';
+}
+
+export interface AsyncPending {
+  status: 'pending';
+}
+
+export type AsyncState<T> = AsyncSuccess<T> | AsyncFailure | AsyncPending;
+
+export interface CachedPromise<T> {
+  instance: Promise<void>;
+  state: AsyncState<T>;
+}
+
+type EmitterAction<M> = (listener: EmitterListener<M>) => void;
+
 interface IEmitter<M extends IModelState> {
-  consume?: (value: M) => void;
-  on: (listener: EmitterListener<M>) => void;
-  off: (listener: EmitterListener<M>) => void;
+  consume?: EmitterListener<M>;
+  on: EmitterAction<M>;
+  off: EmitterAction<M>;
   state: M;
+  cache: Map<string, CachedPromise<any>>;
 }
 
 function createEmitter<M extends IModelState>(): IEmitter<M> {
@@ -57,6 +83,7 @@ function createEmitter<M extends IModelState>(): IEmitter<M> {
     state: {} as M,
     on: (listener: EmitterListener<M>) => listeners.add(listener),
     off: (listener: EmitterListener<M>) => listeners.delete(listener),
+    cache: new Map(),
   };
 
   instance.consume = (value: M) => {
@@ -73,6 +100,38 @@ export interface ModelOptions<P> {
   displayName?: string;
   propTypes?: React.WeakValidationMap<P>;
   defaultProps?: Partial<P>;
+}
+
+export interface SuspendSelector<T> {
+  value: T;
+  suspend: boolean;
+}
+
+function createCachedData
+<T>(promise: Promise<T>, key: string, cache: Map<string, CachedPromise<any>>): CachedPromise<T> {
+  const cachedData: CachedPromise<T> = {
+    instance: promise.then(
+      (value) => {
+        cachedData.state = {
+          status: 'success',
+          data: value,
+        };
+      },
+      (error) => {
+        cachedData.state = {
+          status: 'failure',
+          data: error,
+        };
+      },
+    ),
+    state: {
+      status: 'pending',
+    },
+  };
+
+  cache.set(key, cachedData);
+
+  return cachedData;
 }
 
 export default function createModel
@@ -181,6 +240,39 @@ export default function createModel
    */
   Provider.displayName = displayName;
 
+  function useProviderContext() {
+    /**
+     * Access context
+     */
+    const context = React.useContext(Context);
+
+    if (!context) {
+      throw new MissingScopedModelError(displayName);
+    }
+    return context;
+  }
+
+  function useListen
+    <T extends((...params: any) => any)>(context: IEmitter<M>, callback: T, listen: boolean) {
+    /**
+     * Listen to the changes
+     */
+    useIsomorphicEffect(() => {
+      if (listen) {
+        /**
+         * Register callback
+         */
+        context.on(callback);
+
+        /**
+         * Unregister on dependency update
+         */
+        return () => context.off(callback);
+      }
+      return () => null;
+    }, [context, listen, callback]);
+  }
+
   /**
    * Transforms the model's state and listens for the returned value change.
    *
@@ -197,11 +289,7 @@ export default function createModel
     /**
      * Access context
      */
-    const context = React.useContext(Context);
-
-    if (!context) {
-      throw new MissingScopedModelError(displayName);
-    }
+    const context = useProviderContext();
 
     /**
      * Used for force updating/re-rendering
@@ -234,23 +322,7 @@ export default function createModel
       }
     }, [forceUpdate, selector]);
 
-    /**
-     * Listen to the changes
-     */
-    useIsomorphicEffect(() => {
-      if (listen) {
-        /**
-         * Register callback
-         */
-        context.on(callback);
-
-        /**
-         * Unregister on dependency update
-         */
-        return () => context.off(callback);
-      }
-      return () => null;
-    }, [context, listen, callback]);
+    useListen(context, callback, listen);
 
     /**
      * Return the current state value
@@ -292,11 +364,7 @@ export default function createModel
     /**
      * Access context
      */
-    const context = React.useContext(Context);
-
-    if (!context) {
-      throw new MissingScopedModelError(displayName);
-    }
+    const context = useProviderContext();
 
     /**
      * Used for force updating/re-rendering
@@ -344,6 +412,7 @@ export default function createModel
          */
         if (!Object.is(currentValue, newValue)) {
           doUpdate = true;
+          break;
         }
       }
 
@@ -356,24 +425,8 @@ export default function createModel
       }
     }, [forceUpdate, selector]);
 
-    /**
-     * Listen to the changes
-     */
-    useIsomorphicEffect(() => {
-      if (listen) {
-        /**
-         * Register callback
-         */
-        context.on(callback);
 
-        /**
-         * Unregister on dependency update
-         */
-        return () => context.off(callback);
-      }
-      return () => null;
-    }, [context, listen, callback]);
-
+    useListen(context, callback, listen);
     /**
      * Return the current state value
      */
@@ -396,11 +449,233 @@ export default function createModel
     return useSelectors<T>(selector, listen);
   }
 
+  /**
+   * Listens to the model's properties for changes, and updates
+   * the component with a new async value.
+   *
+   * @param selector selector function
+   * @param listen should listen to the updates, defaults to true.
+   */
+  function useAsyncSelector
+  <T>(selector: (model: M) => Promise<T>, listen = true): AsyncState<T> {
+    /**
+     * Access context
+     */
+    const context = useProviderContext();
+
+    /**
+     * callback for forced re-rendering
+     */
+    const data = React.useRef<AsyncState<T>>({ status: 'pending' });
+
+    /**
+     * Used for force updating/re-rendering
+     */
+    const forceUpdate = useForceUpdate();
+
+    const mounted = usePromise([selector]);
+
+    useIsomorphicEffect(() => {
+      mounted(selector(context.state)).then(
+        (value) => {
+          data.current = {
+            status: 'success',
+            data: value,
+          };
+          forceUpdate();
+        },
+        (error) => {
+          data.current = {
+            status: 'failure',
+            data: error,
+          };
+          forceUpdate();
+        },
+      );
+    }, []);
+
+    const callback = React.useCallback(async (next: M) => {
+      data.current = { status: 'pending' };
+      forceUpdate();
+      try {
+        const value = await mounted(selector(next));
+        data.current = {
+          status: 'success',
+          data: value,
+        };
+      } catch (error) {
+        data.current = {
+          status: 'failure',
+          data: error,
+        };
+      } finally {
+        forceUpdate();
+      }
+    }, [forceUpdate, mounted, selector]);
+
+    useListen(context, callback, listen);
+
+    return data.current;
+  }
+
+  /**
+   * Listens to the model's properties for changes, and updates
+   * the component with a new async value.
+   *
+   * Can only be used inside a Suspense-wrapped component.
+   * @param selector selector function
+   * @param key for caching purposes
+   * @param listen should listen to the updates, defaults to true.
+   */
+  function useSuspendedSelector
+  <T>(selector: (model: M) => Promise<T>, key: string, listen = true): T | undefined {
+    /**
+     * Access context
+     */
+    const context = useProviderContext();
+
+    /**
+     * callback for forced re-rendering
+     */
+    const forceUpdate = useForceUpdate();
+
+    const callback = React.useCallback((next: M) => {
+      createCachedData(selector(next), key, context.cache);
+
+      forceUpdate();
+    }, [context, forceUpdate, selector, key]);
+
+    useListen(context, callback, listen);
+
+    /**
+     * Check if cache exists
+     */
+    if (context.cache.has(key)) {
+      /**
+       * Get cache value
+       */
+      const cache = context.cache.get(key);
+
+      /**
+       * If cached data exists, return data
+       */
+      if (cache) {
+        const { state } = cache as CachedPromise<T>;
+
+        switch (state.status) {
+          case 'success': return state.data;
+          case 'failure': throw state.data;
+          case 'pending':
+          default: throw cache.instance;
+        }
+      }
+    } else {
+      const cachedData = createCachedData(selector(context.state), key, context.cache);
+
+      throw cachedData.instance;
+    }
+
+    return undefined;
+  }
+
+  /**
+   * Listens to the model's properties for changes, and updates
+   * the component with a new value.
+   *
+   * Can only be used inside a Suspense-wrapped component.
+   * @param selector selector function
+   * @param key for caching purposes
+   * @param listen should listen to the updates, defaults to true.
+   */
+  function useSuspendedState
+  <T>(selector: (model: M) => SuspendSelector<T>, key: string, listen = true): T | undefined {
+    /**
+     * Access context
+     */
+    const context = useProviderContext();
+
+    /**
+     * callback for forced re-rendering
+     */
+    const forceUpdate = useForceUpdate();
+
+    const callback = React.useCallback((next: M) => {
+      createCachedData(new Promise<T>((resolve) => {
+        const { value, suspend } = selector(next);
+        if (!suspend) {
+          resolve(value);
+        } else {
+          const listener = (m: M) => {
+            const { value: innerValue, suspend: innerSuspend } = selector(m);
+            if (!innerSuspend) {
+              resolve(innerValue);
+              context.off(listener);
+            }
+          };
+
+          context.on(listener);
+        }
+      }), key, context.cache);
+
+      forceUpdate();
+    }, [context, forceUpdate, selector, key]);
+
+    useListen(context, callback, listen);
+
+    /**
+     * Check if cache exists
+     */
+    if (context.cache.has(key)) {
+      /**
+       * Get cache value
+       */
+      const cache = context.cache.get(key);
+
+      /**
+       * If cached data exists, return data
+       */
+      if (cache) {
+        const { state } = cache as CachedPromise<T>;
+
+        switch (state.status) {
+          case 'success': return state.data;
+          case 'failure': throw state.data;
+          case 'pending':
+          default: throw cache.instance;
+        }
+      }
+    } else {
+      const cachedData = createCachedData(new Promise<T>((resolve) => {
+        const { value, suspend } = selector(context.state);
+        if (!suspend) {
+          resolve(value);
+        } else {
+          const listener = (m: M) => {
+            const { value: innerValue, suspend: innerSuspend } = selector(m);
+            if (!innerSuspend) {
+              resolve(innerValue);
+              context.off(listener);
+            }
+          };
+
+          context.on(listener);
+        }
+      }), key, context.cache);
+
+      throw cachedData.instance;
+    }
+
+    return undefined;
+  }
+
   return {
     Provider,
     useProperty,
     useProperties,
     useSelector,
     useSelectors,
+    useAsyncSelector,
+    useSuspendedSelector,
+    useSuspendedState,
   };
 }
