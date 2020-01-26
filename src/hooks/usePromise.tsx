@@ -30,21 +30,30 @@ import useIsomorphicEffect from './useIsomorphicEffect';
 
 export type PromiseWrapper = <T>(promise: Promise<T>) => Promise<T>;
 
+export interface Cleaner {
+  flag: boolean;
+}
+
 export default function usePromise(deps?: React.DependencyList): PromiseWrapper {
-  const ref = React.useRef(false);
+  const ref = React.useRef({ flag: false });
 
   useIsomorphicEffect(() => {
-    ref.current = true;
+    const state = {
+      flag: true,
+    };
+
+    ref.current = state;
 
     return () => {
-      ref.current = false;
+      state.flag = false;
     };
   }, deps);
 
   return React.useCallback((promise: Promise<any>) => new Promise((resolve, reject) => {
+    const state = ref.current;
     promise.then(
-      (value) => ref.current && resolve(value),
-      (error) => ref.current && reject(error),
+      (value) => state.flag && resolve(value),
+      (error) => state.flag && reject(error),
     );
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }), deps || [{}]);
