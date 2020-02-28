@@ -34,6 +34,7 @@ import useConstant from './hooks/useConstant';
 import useForceUpdate from './hooks/useForceUpdate';
 import useIsomorphicEffect from './hooks/useIsomorphicEffect';
 import usePromise from './hooks/usePromise';
+import useRefSupplier from './hooks/useRefSupplier';
 
 export interface IModelState {
   [key: string]: any;
@@ -88,10 +89,30 @@ function createEmitter<M extends IModelState>(): IEmitter<M> {
 
   instance.consume = (value: M) => {
     new Set(listeners).forEach((fn) => fn(value));
-    instance.state = value;
   };
 
   return instance;
+}
+
+function useEmitterConsume<M extends IModelState>(
+  emitter: IEmitter<M> | null | undefined,
+  state: M,
+  displayName: string,
+) {
+  if (emitter) {
+    // eslint-disable-next-line no-param-reassign
+    emitter.state = state;
+  }
+
+  React.useEffect(() => {
+    if (emitter) {
+      if (emitter.consume) {
+        emitter.consume(state);
+      }
+    } else {
+      throw new MissingScopedModelError(displayName);
+    }
+  }, [emitter, state, displayName]);
 }
 
 export type ModelHook<M extends IModelState, P extends {}> = (props: P) => M;
@@ -183,13 +204,7 @@ export default function createModel
     /**
      * Consume the model
      */
-    if (context) {
-      if (context.consume) {
-        context.consume(model);
-      }
-    } else {
-      throw new MissingScopedModelError(displayName);
-    }
+    useEmitterConsume(context, model, displayName);
 
     return (
       <>
@@ -299,7 +314,7 @@ export default function createModel
     /**
      * Used to contain the state
      */
-    const ref = React.useRef(selector(context.state));
+    const ref = useRefSupplier(() => selector(context.state));
 
     /**
      * Wrap the state setter for watching the property
@@ -320,7 +335,7 @@ export default function createModel
          */
         forceUpdate();
       }
-    }, [forceUpdate, selector]);
+    }, [ref, forceUpdate, selector]);
 
     useListen(context, callback, listen);
 
@@ -372,16 +387,9 @@ export default function createModel
     const forceUpdate = useForceUpdate();
 
     /**
-     * Get all states
-     */
-    const states = React.useMemo(() => (
-      selector(context.state)
-    ), [context.state, selector]);
-
-    /**
      * Used to contain the state
      */
-    const ref = React.useRef(states);
+    const ref = useRefSupplier(() => selector(context.state));
 
     /**
      * Wrap the state setter for watching the property
@@ -423,7 +431,7 @@ export default function createModel
         ref.current = values;
         forceUpdate();
       }
-    }, [forceUpdate, selector]);
+    }, [ref, forceUpdate, selector]);
 
 
     useListen(context, callback, listen);
