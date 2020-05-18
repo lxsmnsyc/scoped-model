@@ -175,12 +175,10 @@ export default function createModel<
 
     const [state, setState] = useState(() => selector(notifier.value));
 
-
     useEffect(() => {
       if (listen) {
         const callback = (next: Model): void => {
-          const value = selector(next);
-          setState((prev) => (Object.is(prev, value) ? prev : value));
+          setState(() => selector(next));
         };
 
         notifier.on(callback);
