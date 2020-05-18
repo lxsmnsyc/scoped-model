@@ -1,6 +1,31 @@
-import React from 'react'
+import 'react-app-polyfill/ie11';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+import createModel from '../.';
 
-import Counter from './Counter'
+interface CounterProps {
+  initialCount?: number;
+}
+
+const Counter = createModel(({ initialCount }: CounterProps) => {
+  const [count, setCount] = React.useState(initialCount ?? 0);
+
+  const increment = React.useCallback(() => {
+    setCount(c => c + 1);
+  }, []);
+
+  const decrement = React.useCallback(() => {
+    setCount(c => c - 1);
+  }, []);
+
+  return {
+    count,
+    increment,
+    decrement,
+  };
+}, {
+  displayName: 'Counter',
+});
 
 function Count() {
   const count = Counter.useSelector(state => state.count);
@@ -11,7 +36,7 @@ function Count() {
 }
 
 function Increment() {
-  const increment = Counter.useProperty('increment');
+  const increment: () => void = Counter.useProperty('increment');
   console.log('Re-rendered Increment');
   return (
     <button type="button" onClick={increment}>Increment</button>
@@ -19,7 +44,7 @@ function Increment() {
 }
 
 function Decrement() {
-  const decrement = Counter.useProperty('decrement');
+  const decrement: () => void = Counter.useProperty('decrement');
   console.log('Re-rendered Decrement');
   return (
     <button type="button" onClick={decrement}>Decrement</button>
@@ -68,7 +93,7 @@ function AsyncCount() {
     case 'failure': return <h1>An error occured.</h1>;
     case 'success': return <h1>Count: {state.data}</h1>;
     case 'pending': return <h1>Loading...</h1>;
-    default: 
+    default: return null;
   }
 }
 
@@ -119,3 +144,5 @@ export default function App() {
     </Counter.Provider>
   );
 }
+
+ReactDOM.render(<App />, document.getElementById('root'));
