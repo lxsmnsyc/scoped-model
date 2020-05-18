@@ -4,6 +4,12 @@
 
 [![NPM](https://img.shields.io/npm/v/@lxsmnsyc/react-scoped-model.svg)](https://www.npmjs.com/package/@lxsmnsyc/react-scoped-model) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
+## Features
+
+- Contextual State: Inject state into your component tree.
+- Composition: Write states as if you are writing components, use React Hooks to compose state logic.
+- Granular control: Only watch updates you need, not when the whole state updates.
+
 ## Install
 
 ```bash
