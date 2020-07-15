@@ -69,11 +69,16 @@ export default function createModel<
     return context;
   }
 
-  /**
-   * A component that provides the emitter instance
-   */
-  const EmitterProvider: React.FC<{}> = ({ children }) => {
+  const Provider: React.FC<Props> = ({ children, ...props }) => {
     const emitter = useConstant(() => new Notifier<Model>({} as Model));
+
+    const model = useModelHook(props as Props);
+
+    emitter.sync(model);
+
+    useEffect(() => {
+      emitter.consume(model);
+    }, [emitter, model]);
 
     return (
       <InternalContext.Provider value={emitter}>
@@ -81,58 +86,6 @@ export default function createModel<
       </InternalContext.Provider>
     );
   };
-
-  EmitterProvider.propTypes = {
-    children: PropTypes.oneOfType([
-      PropTypes.arrayOf(PropTypes.node),
-      PropTypes.node,
-    ]).isRequired,
-  };
-
-  const EmitterConsumer: React.FC<Props> = ({ children, ...props }) => {
-    /**
-     * Access context
-     */
-    const notifier = useProviderContext();
-
-    /**
-     * Run hook
-     */
-    const model = useModelHook(props as Props);
-
-    notifier.sync(model);
-
-    useEffect(() => {
-      notifier.consume(model);
-    }, [notifier, model]);
-
-    return (
-      <>
-        { children }
-      </>
-    );
-  };
-
-  EmitterConsumer.propTypes = {
-    ...(options.propTypes || {} as Props),
-    children: PropTypes.oneOfType([
-      PropTypes.arrayOf(PropTypes.node),
-      PropTypes.node,
-    ]),
-  };
-
-  EmitterConsumer.defaultProps = {
-    children: undefined,
-  };
-
-  /**
-   * Provides the model and runs the model logic on re-renders
-   */
-  const Provider: React.FC<Props> = (props) => (
-    <EmitterProvider>
-      <EmitterConsumer {...props} />
-    </EmitterProvider>
-  );
 
   Provider.propTypes = {
     ...(options.propTypes || {} as Props),
