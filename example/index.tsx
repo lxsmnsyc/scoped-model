@@ -36,7 +36,7 @@ function Count() {
 }
 
 function Increment() {
-  const increment: () => void = Counter.useProperty('increment');
+  const increment = Counter.useSelector((state) => state.increment);
   console.log('Re-rendered Increment');
   return (
     <button type="button" onClick={increment}>Increment</button>
@@ -44,7 +44,7 @@ function Increment() {
 }
 
 function Decrement() {
-  const decrement: () => void = Counter.useProperty('decrement');
+  const decrement = Counter.useSelector((state) => state.decrement);
   console.log('Re-rendered Decrement');
   return (
     <button type="button" onClick={decrement}>Decrement</button>
@@ -99,7 +99,10 @@ function AsyncCount() {
 
 
 function IncDec() {
-  const [increment, decrement] = Counter.useProperties(['increment', 'decrement']);
+  const [increment, decrement] = Counter.useSelectors((state) => [
+    state.increment,
+    state.decrement,
+  ]);
   console.log('Re-rendered IncDec');
   return (
     <React.Fragment>
