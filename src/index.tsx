@@ -26,7 +26,7 @@
  * @copyright Alexis Munsayac 2020
  */
 import React, {
-  useContext, createContext, useEffect, useState,
+  useContext, createContext, useEffect, useState, useCallback,
 } from 'react';
 import * as PropTypes from 'prop-types';
 
@@ -41,11 +41,35 @@ import {
 
 import Notifier from './notifier';
 import createCachedData, { suspendCacheData } from './create-cached-data';
+import invariant from './utils/invariant';
+import DeprecatedFeatureError from './utils/DeprecatedFeatureError';
 
-export default function createModel<
-  Model extends AccessibleObject,
-  Props extends AccessibleObject = {},
->(
+function defaultCompare<T, R>(a: T, b: R): boolean {
+  return !Object.is(a, b);
+}
+
+function compareList<T extends any[], R extends any[]>(
+  a: T, b: R,
+  compare = defaultCompare,
+): boolean {
+  if (a.length !== b.length) {
+    return true;
+  }
+  for (let i = 0; i < a.length; i += 1) {
+    if (compare(a[i], b[i])) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Creates a model that accepts a React-base hook which returns the state of the model.
+ * This state is injected to its children, and can be consumed through useSelector.
+ * @param useModelHook
+ * @param options
+ */
+export default function createModel<Model, Props extends AccessibleObject = {}>(
   useModelHook: ModelHook<Model, Props>,
   options: ModelOptions<Props> = {},
 ): ScopedModelInterface<Model, Props> {
@@ -113,33 +137,40 @@ export default function createModel<
    *
    * If the value changes, the component re-renders.
    *
-   * uses the `Object.is` function for comparison
-   * @param selector a function that receives the model state
+   * uses the `Object.is` function for comparison by default.
+   *
+   * @param map a function that receives the model state
    * and transforms it into a new value.
-   * @param listen
-   * listen conditionally, triggering re-renders when
-   * the value updates. Defaults to true.
+   * @param shouldUpdate a function that compares the
+   * previously transformed value to the newly transformed value
+   * and if it should replace the previous value and perform an update.
    */
-  function useSelector<T>(selector: (model: Model) => T, listen = true): T {
+  function useSelector<T>(
+    map: (model: Model) => T,
+    shouldUpdate = defaultCompare,
+  ): T {
     /**
      * Access context
      */
     const notifier = useProviderContext();
 
-    const [state, setState] = useState(() => selector(notifier.value));
+    const [state, setState] = useState(() => map(notifier.value));
 
     useEffect(() => {
-      if (listen) {
-        const callback = (next: Model): void => {
-          setState(() => selector(next));
-        };
+      const callback = (next: Model): void => {
+        setState((old) => {
+          const newValue = map(next);
+          if (shouldUpdate(old, newValue)) {
+            return newValue;
+          }
+          return old;
+        });
+      };
 
-        notifier.on(callback);
+      notifier.on(callback);
 
-        return (): void => notifier.off(callback);
-      }
-      return undefined;
-    }, [notifier, selector, listen]);
+      return (): void => notifier.off(callback);
+    }, [notifier, map, shouldUpdate]);
 
     /**
      * Return the current state value
@@ -151,16 +182,14 @@ export default function createModel<
    * Listens to the model's property for changes, and updates
    * the component with the new values.
    *
-   * Property's value uses the `Object.is` function for comparison
+   * Property's value uses the `Object.is` function for comparison.
    *
    * @param key property to listen for
-   * @param listen
-   * listen conditionally, triggering re-renders when
-   * the value updates. Defaults to true.
    */
-  function useProperty<T>(key: string, listen = true): T {
-    const selector = React.useCallback((state) => state[key], [key]);
-    return useSelector<T>(selector, listen);
+  function useProperty<T>(key: string): T {
+    invariant(true, new DeprecatedFeatureError('use useSelector((state) => state[key]) instead.'));
+    const selector = useCallback((state) => state[key], [key]);
+    return useSelector<T>(selector);
   }
 
 
@@ -170,60 +199,21 @@ export default function createModel<
    *
    * If a value changes, the component re-renders.
    *
-   * uses the `Object.is` function for comparison
+   * uses the `Object.is` function for comparison by default.
    *
    * @param selector a function that receives the model state
-   * @param listen
-   * listen conditionally, triggering re-renders when
-   * the value updates. Defaults to true.
+   * @param shouldUpdate a function that compares the
+   * previously transformed value to the newly transformed value
+   * and if it should replace the previous value and perform an update.
    */
-  function useSelectors<T extends any[]>(selector: (model: Model) => T, listen = true): T {
-    const notifier = useProviderContext();
-
-    const [state, setState] = useState(() => selector(notifier.value));
-
-    useEffect(() => {
-      if (listen) {
-        const callback = (next: Model): void => {
-          /**
-           * New reference container
-           */
-          const values = selector(next);
-
-          setState((current) => {
-            /**
-             * Iterate keys
-             */
-            for (let i = 0; i < current.length; i += 1) {
-              /**
-               * Get corresponding values
-               */
-              const currentValue = current[i];
-              const newValue = values[i];
-
-              /**
-               * Compare values
-               */
-              if (!Object.is(currentValue, newValue)) {
-                return values;
-              }
-            }
-
-            return current;
-          });
-        };
-
-        notifier.on(callback);
-
-        return (): void => notifier.off(callback);
-      }
-      return undefined;
-    }, [notifier, selector, listen]);
-
-    /**
-     * Return the current state value
-     */
-    return state;
+  function useSelectors<T extends any[]>(
+    selector: (model: Model) => T,
+    shouldUpdate = defaultCompare,
+  ): T {
+    const compare = useCallback((a, b) => (
+      compareList(a, b, shouldUpdate)
+    ), [shouldUpdate]);
+    return useSelector(selector, compare);
   }
 
   /**
@@ -232,14 +222,15 @@ export default function createModel<
    *
    * Property's value uses the `Object.is` function for comparison
    * @param keys array of keys to listen to
-   * @param listen
-   * listen conditionally, triggering re-renders when
-   * the value updates. Defaults to true.
    */
-  function useProperties<T extends any[]>(keys: string[], listen = true): T {
+  function useProperties<T extends any[]>(keys: string[]): T {
+    invariant(
+      true,
+      new DeprecatedFeatureError('Please use useSelectors((state) => keys.map((key) => state[key])) instead.'),
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const selector = React.useCallback((state) => keys.map((key) => state[key]) as T, keys);
-    return useSelectors<T>(selector, listen);
+    const selector = useCallback((state) => keys.map((key) => state[key]) as T, keys);
+    return useSelectors<T>(selector);
   }
 
   /**
@@ -247,11 +238,9 @@ export default function createModel<
    * the component with a new async value.
    *
    * @param selector selector function
-   * @param listen should listen to the updates, defaults to true.
    */
   function useAsyncSelector<T>(
     selector: (model: Model) => Promise<T>,
-    listen = true,
   ): AsyncState<T> {
     const notifier = useProviderContext();
 
@@ -285,40 +274,37 @@ export default function createModel<
     }, [notifier.value, selector, setState]);
 
     useEffect(() => {
-      if (listen) {
-        let mounted = true;
+      let mounted = true;
 
-        const callback = async (next: Model): Promise<void> => {
-          setState({ status: 'pending' });
+      const callback = async (next: Model): Promise<void> => {
+        setState({ status: 'pending' });
 
-          try {
-            const data = await selector(next);
+        try {
+          const data = await selector(next);
 
-            if (mounted) {
-              setState({
-                status: 'success',
-                data,
-              });
-            }
-          } catch (data) {
-            if (mounted) {
-              setState({
-                status: 'failure',
-                data,
-              });
-            }
+          if (mounted) {
+            setState({
+              status: 'success',
+              data,
+            });
           }
-        };
+        } catch (data) {
+          if (mounted) {
+            setState({
+              status: 'failure',
+              data,
+            });
+          }
+        }
+      };
 
-        notifier.on(callback);
+      notifier.on(callback);
 
-        return (): void => {
-          mounted = false;
-          notifier.off(callback);
-        };
-      }
-      return undefined;
-    }, [selector, listen, notifier]);
+      return (): void => {
+        mounted = false;
+        notifier.off(callback);
+      };
+    }, [selector, notifier]);
 
     return state;
   }
@@ -330,31 +316,26 @@ export default function createModel<
    * Can only be used inside a Suspense-wrapped component.
    * @param selector selector function
    * @param key for caching purposes
-   * @param listen should listen to the updates, defaults to true.
    */
   function useSuspendedSelector<T>(
     selector: (model: Model) => Promise<T>,
     key: string,
-    listen = true,
   ): T | undefined {
     const notifier = useProviderContext();
 
     const forceUpdate = useForceUpdate();
 
     useEffect(() => {
-      if (listen) {
-        const callback = (next: Model): void => {
-          createCachedData(selector(next), key, notifier.cache);
+      const callback = (next: Model): void => {
+        createCachedData(selector(next), key, notifier.cache);
 
-          forceUpdate();
-        };
+        forceUpdate();
+      };
 
-        notifier.on(callback);
+      notifier.on(callback);
 
-        return (): void => notifier.off(callback);
-      }
-      return undefined;
-    }, [notifier, selector, listen, key, forceUpdate]);
+      return (): void => notifier.off(callback);
+    }, [notifier, selector, key, forceUpdate]);
 
     return suspendCacheData(key, notifier.cache, () => {
       const cachedData = createCachedData(
@@ -379,41 +360,37 @@ export default function createModel<
   function useSuspendedState<T>(
     selector: (model: Model) => SuspendSelector<T>,
     key: string,
-    listen = true,
   ): T | undefined {
     const notifier = useProviderContext();
 
     const forceUpdate = useForceUpdate();
 
     useEffect(() => {
-      if (listen) {
-        const callback = (next: Model): void => {
-          createCachedData(new Promise<T>((resolve) => {
-            const { value, suspend } = selector(next);
-            if (!suspend) {
-              resolve(value);
-            } else {
-              const listener = (m: Model): void => {
-                const { value: innerValue, suspend: innerSuspend } = selector(m);
-                if (!innerSuspend) {
-                  resolve(innerValue);
-                  notifier.off(listener);
-                }
-              };
+      const callback = (next: Model): void => {
+        createCachedData(new Promise<T>((resolve) => {
+          const { value, suspend } = selector(next);
+          if (!suspend) {
+            resolve(value);
+          } else {
+            const listener = (m: Model): void => {
+              const { value: innerValue, suspend: innerSuspend } = selector(m);
+              if (!innerSuspend) {
+                resolve(innerValue);
+                notifier.off(listener);
+              }
+            };
 
-              notifier.on(listener);
-            }
-          }), key, notifier.cache);
+            notifier.on(listener);
+          }
+        }), key, notifier.cache);
 
-          forceUpdate();
-        };
+        forceUpdate();
+      };
 
-        notifier.on(callback);
+      notifier.on(callback);
 
-        return (): void => notifier.off(callback);
-      }
-      return undefined;
-    }, [notifier, selector, listen, key, forceUpdate]);
+      return (): void => notifier.off(callback);
+    }, [notifier, selector, key, forceUpdate]);
 
     return suspendCacheData(key, notifier.cache, () => {
       const cachedData = createCachedData(new Promise<T>((resolve) => {
