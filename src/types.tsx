@@ -67,6 +67,8 @@ export interface ModelOptions<Props> {
   defaultProps?: Partial<Props>;
 }
 
+export type ShouldUpdate = <T, R>(a: T, b: R) => boolean;
+
 export interface ScopedModelInterface<
   Model extends AccessibleObject,
   Props extends AccessibleObject = {},
@@ -74,32 +76,27 @@ export interface ScopedModelInterface<
   Provider: FC<Props>;
   useProperty: <T>(
     key: string,
-    listen?: boolean
   ) => T;
   useProperties: <T extends any[]>(
     key: string[],
-    listen?: boolean,
   ) => T;
   useSelector: <T>(
     selector: (model: Model) => T,
-    listen?: boolean,
+    shouldUpdate?: ShouldUpdate,
   ) => T;
   useSelectors: <T extends any[]>(
     selector: (model: Model) => T,
-    listen?: boolean,
+    shouldUpdate?: ShouldUpdate,
   ) => T;
   useAsyncSelector: <T>(
     selector: (model: Model) => Promise<T>,
-    listen?: boolean,
   ) => AsyncState<T>;
   useSuspendedSelector: <T>(
     selector: (model: Model) => Promise<T>,
     key: string,
-    listen?: boolean,
   ) => T | undefined;
   useSuspendedState: <T>(
     selector: (model: Model) => SuspendSelector<T>,
     key: string,
-    listen?: boolean,
   ) => T | undefined;
 }
