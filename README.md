@@ -77,58 +77,6 @@ export default function App() {
 }
 ```
 
-### useProperty Hook
-
-To access the property of the provided scoped Model, you need to use the `useProperty` function from your Model instance. This function accesses the property as well as listens to the property changes, re-rendering the component.
-
-You can also provide a boolean value to the second argument which tells the hook if it needs to listen for the changes (defaults to true).
-
-```jsx
-function Count() {
-  const count = Counter.useProperty('count');
-
-  return (
-    <h1>Count: {count}</h1>
-  );
-}
-```
-
-```jsx
-function Increment() {
-  const increment = Counter.useProperty('increment');
-
-  return (
-    <button type="button" onClick={increment}>Increment</button>
-  );
-}
-```
-
-```jsx
-function Decrement() {
-  const decrement = Counter.useProperty('decrement');
-
-  return (
-    <button type="button" onClick={decrement}>Decrement</button>
-  );
-}
-```
-
-In our Counter app, only the Count component re-renders whenever any of the Model actions are called.
-
-To listen for multiple properties, you can use `.useProperties(keys: string[], listen: boolean)` function, which returns the values of the properties in an array.
-
-```jsx
-function IncDec() {
-  const [increment, decrement] = Counter.useProperties(['increment', 'decrement']);
-  return (
-    <React.Fragment>
-      <button type="button" onClick={increment}>Increment</button>
-      <button type="button" onClick={decrement}>Decrement</button>
-    </React.Fragment>
-  );
-}
-```
-
 ### Selectors
 
 If the model's shape is complex (e.g. deeply nested) and/or you only want to listen to specific changes e.g. transforming a value, you can use the `useSelector` and `useSelectors` hook to listen to your transformed state value.
@@ -142,6 +90,23 @@ function Count() {
   );
 }
 ```
+
+```jsx
+function IncDec() {
+  const [increment, decrement] = Counter.useSelectors((state) => [
+    state.increment, 
+    state.decrement,
+  ]);
+  return (
+    <React.Fragment>
+      <button type="button" onClick={increment}>Increment</button>
+      <button type="button" onClick={decrement}>Decrement</button>
+    </React.Fragment>
+  );
+}
+```
+
+Both hooks also accepts a second optional parameter which allows a custom comparison function for the previously transformed value and the newly transformed value, allowing a fine-grained control on re-rendering the component.
 
 ### Asynchronous Selectors
 
@@ -248,16 +213,6 @@ if (true) {
 }
 console.log('Same-level X:', x); // Same-level X: 10
 ```
-
-## Migrating from 0.1.0
-
-The initial version of this package used to have the `useModelState` and `useModelAction` hooks, as well as the model hook needs to return the proper model shape.
-
-To update, simply replace `useModelState` and `useModelAction` with the `useProperty` hook, providing the property key you wanted to listen to, as well as remove the object deconstruction.
-
-The motivation for the API change is due to the Context API's observedBits instability, as well as fine-grained property access for a much reasonable and accurate component re-render.
-
-Read more here: ([Issue #1](https://github.com/LXSMNSYC/react-scoped-model/issues/1))
 
 ## Comparison to other Context-based State Libraries
 
