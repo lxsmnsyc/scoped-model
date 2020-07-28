@@ -25,7 +25,7 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-export default function invariant(flag: boolean, reason: Error): void {
+export default function assert(flag: boolean, reason: Error): void {
   if (flag && process.env.NODE_ENV !== 'production') {
     throw reason;
   }

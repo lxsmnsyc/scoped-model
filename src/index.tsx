@@ -41,8 +41,8 @@ import {
 
 import Notifier from './notifier';
 import createCachedData, { suspendCacheData } from './create-cached-data';
-import invariant from './utils/invariant';
 import DeprecatedFeatureError from './utils/DeprecatedFeatureError';
+import assert from './utils/assert';
 
 function defaultCompare<T, R>(a: T, b: R): boolean {
   return !Object.is(a, b);
@@ -187,7 +187,7 @@ export default function createModel<Model, Props extends AccessibleObject = {}>(
    * @param key property to listen for
    */
   function useProperty<T>(key: string): T {
-    invariant(true, new DeprecatedFeatureError('use useSelector((state) => state[key]) instead.'));
+    assert(true, new DeprecatedFeatureError('use useSelector((state) => state[key]) instead.'));
     const selector = useCallback((state) => state[key], [key]);
     return useSelector<T>(selector);
   }
@@ -224,7 +224,7 @@ export default function createModel<Model, Props extends AccessibleObject = {}>(
    * @param keys array of keys to listen to
    */
   function useProperties<T extends any[]>(keys: string[]): T {
-    invariant(
+    assert(
       true,
       new DeprecatedFeatureError('Please use useSelectors((state) => keys.map((key) => state[key])) instead.'),
     );
