@@ -41,8 +41,6 @@ import {
 
 import Notifier from './notifier';
 import createCachedData, { suspendCacheData } from './create-cached-data';
-import DeprecatedFeatureError from './utils/DeprecatedFeatureError';
-import assert from './utils/assert';
 
 function defaultCompare<T, R>(a: T, b: R): boolean {
   return !Object.is(a, b);
@@ -69,7 +67,7 @@ function compareList<T extends any[], R extends any[]>(
  * @param useModelHook
  * @param options
  */
-export default function createModel<Model, Props extends AccessibleObject = {}>(
+export default function createModel<Model, Props extends AccessibleObject>(
   useModelHook: ModelHook<Model, Props>,
   options: ModelOptions<Props> = {},
 ): ScopedModelInterface<Model, Props> {
@@ -179,21 +177,6 @@ export default function createModel<Model, Props extends AccessibleObject = {}>(
   }
 
   /**
-   * Listens to the model's property for changes, and updates
-   * the component with the new values.
-   *
-   * Property's value uses the `Object.is` function for comparison.
-   *
-   * @param key property to listen for
-   */
-  function useProperty<T>(key: string): T {
-    assert(true, new DeprecatedFeatureError('use useSelector((state) => state[key]) instead.'));
-    const selector = useCallback((state) => state[key], [key]);
-    return useSelector<T>(selector);
-  }
-
-
-  /**
    * Transforms the model's state into a list of values and
    * listens for the changes from one of the values..
    *
@@ -214,23 +197,6 @@ export default function createModel<Model, Props extends AccessibleObject = {}>(
       compareList(a, b, shouldUpdate)
     ), [shouldUpdate]);
     return useSelector(selector, compare);
-  }
-
-  /**
-   * Listens to the model's properties for changes, and updates
-   * the component with the new values.
-   *
-   * Property's value uses the `Object.is` function for comparison
-   * @param keys array of keys to listen to
-   */
-  function useProperties<T extends any[]>(keys: string[]): T {
-    assert(
-      true,
-      new DeprecatedFeatureError('Please use useSelectors((state) => keys.map((key) => state[key])) instead.'),
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const selector = useCallback((state) => keys.map((key) => state[key]) as T, keys);
-    return useSelectors<T>(selector);
   }
 
   /**
@@ -276,26 +242,27 @@ export default function createModel<Model, Props extends AccessibleObject = {}>(
     useEffect(() => {
       let mounted = true;
 
-      const callback = async (next: Model): Promise<void> => {
+      const callback = (next: Model) => {
         setState({ status: 'pending' });
 
-        try {
-          const data = await selector(next);
-
-          if (mounted) {
-            setState({
-              status: 'success',
-              data,
-            });
-          }
-        } catch (data) {
-          if (mounted) {
-            setState({
-              status: 'failure',
-              data,
-            });
-          }
-        }
+        selector(next).then(
+          (data) => {
+            if (mounted) {
+              setState({
+                status: 'success',
+                data,
+              });
+            }
+          },
+          (data) => {
+            if (mounted) {
+              setState({
+                status: 'failure',
+                data,
+              });
+            }
+          },
+        );
       };
 
       notifier.on(callback);
@@ -416,8 +383,6 @@ export default function createModel<Model, Props extends AccessibleObject = {}>(
 
   return {
     Provider,
-    useProperty,
-    useProperties,
     useSelector,
     useSelectors,
     useAsyncSelector,

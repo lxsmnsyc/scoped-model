@@ -45,15 +45,10 @@ export function suspendCacheData<T>(
      * If cached data exists, return data
      */
     if (state) {
-      switch (state.status) {
-        case 'success':
-          return state.data;
-        case 'failure':
-          throw state.data;
-        case 'pending':
-        default:
-          throw state.data;
+      if (state.status === 'success') {
+        return state.data;
       }
+      throw state.data;
     }
   } else {
     onFail();

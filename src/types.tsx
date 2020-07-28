@@ -48,13 +48,7 @@ export interface AsyncPending {
 
 export type AsyncState<T> = AsyncSuccess<T> | AsyncFailure | AsyncPending;
 
-export type ModelHook<
-  Model extends AccessibleObject,
-  Props extends AccessibleObject = {},
-> = (props: Props) => Model;
-
-export type IModelState = AccessibleObject;
-export type IModelProps = AccessibleObject;
+export type ModelHook<Model, Props extends AccessibleObject> = (props: Props) => Model;
 
 export interface SuspendSelector<T> {
   value: T;
@@ -70,16 +64,10 @@ export interface ModelOptions<Props> {
 export type ShouldUpdate = <T, R>(a: T, b: R) => boolean;
 
 export interface ScopedModelInterface<
-  Model extends AccessibleObject,
-  Props extends AccessibleObject = {},
+  Model,
+  Props extends AccessibleObject,
 > {
   Provider: FC<Props>;
-  useProperty: <T>(
-    key: string,
-  ) => T;
-  useProperties: <T extends any[]>(
-    key: string[],
-  ) => T;
   useSelector: <T>(
     selector: (model: Model) => T,
     shouldUpdate?: ShouldUpdate,

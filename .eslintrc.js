@@ -53,8 +53,8 @@ module.exports = {
       }
     ],
     "import/no-unresolved": "error",
-    "@typescript-eslint/interface-name-prefix": "off",
     "react/jsx-props-no-spreading": "off",
     "react/jsx-filename-extension": [1, { "extensions": [".jsx", ".tsx"] }],
+    "@typescript-eslint/no-unsafe-assignment": "off",
   },
 };

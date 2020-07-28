@@ -16,7 +16,7 @@
     "start": "tsdx watch",
     "build": "tsdx build",
     "test": "tsdx test --passWithNoTests",
-    "lint": "tsdx lint",
+    "lint": "eslint 'src/**/*.ts{,x}'",
     "prepare": "tsdx build",
     "example:start": "cd example && yarn start && cd .."
   },

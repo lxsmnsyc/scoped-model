@@ -27,7 +27,7 @@
  */
 import { AsyncState } from './types';
 
-type Listener<T> = (value: T) => void | Promise<void>;
+type Listener<T> = (value: T) => void;
 
 export default class Notifier<T> {
   private currentValue: T;
@@ -40,7 +40,7 @@ export default class Notifier<T> {
     this.currentValue = defaultValue;
 
     this.listeners = new Set();
-    this.suspenseCache = new Map();
+    this.suspenseCache = new Map<string, AsyncState<any>>();
   }
 
   on(callback: Listener<T>): void {
