@@ -68,6 +68,9 @@ export interface ScopedModelInterface<
   Props extends AccessibleObject,
 > {
   Provider: FC<Props>;
+  useValue: (
+    shouldUpdate?: ShouldUpdate,
+  ) => Model;
   useSelector: <T>(
     selector: (model: Model) => T,
     shouldUpdate?: ShouldUpdate,

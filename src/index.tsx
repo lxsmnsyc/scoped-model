@@ -131,6 +131,38 @@ export default function createModel<Model, Props extends AccessibleObject>(
   Provider.displayName = displayName;
 
   /**
+   * Consumes the state of the given model
+   * @param shouldUpdate
+   */
+  function useValue(
+    shouldUpdate = defaultCompare,
+  ): Model {
+    const notifier = useProviderContext();
+
+    const [state, setState] = useState(() => notifier.value);
+
+    useEffect(() => {
+      const callback = (next: Model): void => {
+        setState((old) => {
+          if (shouldUpdate(old, next)) {
+            return next;
+          }
+          return old;
+        });
+      };
+
+      notifier.on(callback);
+
+      return (): void => notifier.off(callback);
+    }, [notifier, shouldUpdate]);
+
+    /**
+     * Return the current state value
+     */
+    return state;
+  }
+
+  /**
    * Transforms the model's state and listens for the returned value change.
    *
    * If the value changes, the component re-renders.
@@ -383,6 +415,7 @@ export default function createModel<Model, Props extends AccessibleObject>(
 
   return {
     Provider,
+    useValue,
     useSelector,
     useSelectors,
     useAsyncSelector,

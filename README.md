@@ -77,6 +77,14 @@ export default function App() {
 }
 ```
 
+### Getting the current state
+
+The created model comes with a hook called `useValue` which returns the current state of the model
+
+```jsx
+const { count, increment, decrement } = Counter.useValue();
+```
+
 ### Selectors
 
 If the model's shape is complex (e.g. deeply nested) and/or you only want to listen to specific changes e.g. transforming a value, you can use the `useSelector` and `useSelectors` hook to listen to your transformed state value.
