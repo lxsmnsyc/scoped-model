@@ -25,23 +25,20 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-export interface AccessibleObject {
-  [key: string]: any;
-}
+import { useContext } from 'react';
+import { ScopedModel } from '../create-model';
+import Notifier from '../notifier';
+import MissingScopedModelError from '../utils/MissingScopedModelError';
+import { AccessibleObject } from '../types';
 
-export interface AsyncFailure {
-  data: any;
-  status: 'failure';
-}
+export default function useScopedModelContext<Model, Props extends AccessibleObject>(
+  model: ScopedModel<Model, Props>,
+): Notifier<Model> {
+  const context = useContext(model.context);
 
-export interface AsyncSuccess<T> {
-  data: T;
-  status: 'success';
-}
+  if (!context) {
+    throw new MissingScopedModelError(model.context.displayName ?? 'AnonymousScopedModel');
+  }
 
-export interface AsyncPending {
-  data?: Promise<any>;
-  status: 'pending';
+  return context;
 }
-
-export type AsyncState<T> = AsyncSuccess<T> | AsyncFailure | AsyncPending;

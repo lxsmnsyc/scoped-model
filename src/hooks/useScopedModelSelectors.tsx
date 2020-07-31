@@ -25,23 +25,37 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-export interface AccessibleObject {
-  [key: string]: any;
-}
+import { useCallback } from 'react';
+import { ScopedModel } from '../create-model';
+import { AccessibleObject } from '../types';
+import { defaultCompare, compareList } from '../utils/comparer';
+import useScopedModelSelector from './useScopedModelSelector';
 
-export interface AsyncFailure {
-  data: any;
-  status: 'failure';
+/**
+ * Transforms the model's state into a list of values and
+ * listens for the changes from one of the values..
+ *
+ * If a value changes, the component re-renders.
+ *
+ * uses the `Object.is` function for comparison by default.
+ *
+ * @param model the scoped model to read the state from
+ * @param selector a function that receives the model state
+ * @param shouldUpdate a function that compares the
+ * previously transformed value to the newly transformed value
+ * and if it should replace the previous value and perform an update.
+ */
+export default function useScopedModelSelectors<
+  Model,
+  Props extends AccessibleObject,
+  R extends any[],
+>(
+  model: ScopedModel<Model, Props>,
+  selector: (model: Model) => R,
+  shouldUpdate = defaultCompare,
+): R {
+  const compare = useCallback((a, b) => (
+    compareList(a, b, shouldUpdate)
+  ), [shouldUpdate]);
+  return useScopedModelSelector(model, selector, compare);
 }
-
-export interface AsyncSuccess<T> {
-  data: T;
-  status: 'success';
-}
-
-export interface AsyncPending {
-  data?: Promise<any>;
-  status: 'pending';
-}
-
-export type AsyncState<T> = AsyncSuccess<T> | AsyncFailure | AsyncPending;

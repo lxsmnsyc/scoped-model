@@ -1,11 +1,12 @@
 {
+  "include": ["src", "types", "example"],
   "compilerOptions": {
     "module": "esnext",
     "lib": ["dom", "esnext"],
     "importHelpers": true,
     "declaration": true,
     "sourceMap": true,
-    "rootDir": "./",
+    "rootDir": "./src",
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,

@@ -25,23 +25,16 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-export interface AccessibleObject {
-  [key: string]: any;
-}
+import createModel, { ScopedModel, ModelOptions } from './create-model';
+import { AccessibleObject } from './types';
 
-export interface AsyncFailure {
-  data: any;
-  status: 'failure';
-}
+export type InitialState<T> = T | (() => T);
 
-export interface AsyncSuccess<T> {
-  data: T;
-  status: 'success';
-}
+export type PropsSelectorModel<Props extends AccessibleObject> =
+  ScopedModel<Props, Props>;
 
-export interface AsyncPending {
-  data?: Promise<any>;
-  status: 'pending';
+export default function createPropsSelectorModel<Props extends AccessibleObject>(
+  options?: ModelOptions<Props>,
+): PropsSelectorModel<Props> {
+  return createModel((props) => props, options);
 }
-
-export type AsyncState<T> = AsyncSuccess<T> | AsyncFailure | AsyncPending;

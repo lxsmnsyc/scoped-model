@@ -79,10 +79,12 @@ export default function App() {
 
 ### Getting the current state
 
-The created model comes with a hook called `useValue` which returns the current state of the model
+The created model comes with a hook called `useScopedModelState` which returns the current state of the model
 
 ```jsx
-const { count, increment, decrement } = Counter.useValue();
+import { useScopedModelState } from '@lxsmnsyc/react-scoped-model';
+
+const { count, increment, decrement } = useScopedModelState(Counter);
 ```
 
 ### Selectors
@@ -90,26 +92,29 @@ const { count, increment, decrement } = Counter.useValue();
 If the model's shape is complex (e.g. deeply nested) and/or you only want to listen to specific changes e.g. transforming a value, you can use the `useSelector` and `useSelectors` hook to listen to your transformed state value.
 
 ```jsx
-function Count() {
-  const count = Counter.useSelector(state => state.count);
+import { useScopedModelSelector } from '@lxsmnsyc/react-scoped-model';
 
+function Count() {
+  const count = useScopedModelSelector(Counter, (state) => state.count);
   return (
-    <h1>Count: {count}</h1>
+    <h1>{`Count: ${count}`}</h1>
   );
 }
 ```
 
 ```jsx
+import { useScopedModelSelectors } from '@lxsmnsyc/react-scoped-model';
+
 function IncDec() {
-  const [increment, decrement] = Counter.useSelectors((state) => [
-    state.increment, 
+  const [increment, decrement] = useScopedModelSelectors(Counter, (state) => [
+    state.increment,
     state.decrement,
   ]);
   return (
-    <React.Fragment>
+    <>
       <button type="button" onClick={increment}>Increment</button>
       <button type="button" onClick={decrement}>Decrement</button>
-    </React.Fragment>
+    </>
   );
 }
 ```
@@ -124,18 +129,17 @@ Asynchronous selectors requires a second parameter called 'key', which is used f
 
 ```jsx
 function AsyncCount() {
-  const state = Counter.useAsyncSelector(async (state) => {
+  const result = useScopedModelAsyncSelector(Counter, async (state) => {
     await sleep(500);
 
     return state.count;
   });
 
-
-  switch (state.status) {
+  switch (result.status) {
     case 'failure': return <h1>An error occured.</h1>;
-    case 'success': return <h1>Count: {state.data}</h1>;
+    case 'success': return <h1>{`Count: ${result.data}`}</h1>;
     case 'pending': return <h1>Loading...</h1>;
-    default: 
+    default: return null;
   }
 }
 ```
@@ -145,15 +149,21 @@ function AsyncCount() {
 Like asynchronous selectors but for Suspense mode.
 
 ```jsx
-function SuspendedCount() {
-  const count = Counter.useSuspendedSelector(async (state) => {
-    await sleep(500);
+import { useScopedModelSuspenseSelector } from '@lxsmnsyc/react-scoped-model';
 
-    return state.count;
-  }, 'count/suspended');
+function SuspendedCount() {
+  const count = useScopedModelSuspenseSelector(
+    Counter,
+    async (state) => {
+      await sleep(500);
+
+      return state.count;
+    },
+    'count/suspended',
+  );
 
   return (
-    <h1>Count: {count}</h1>
+    <h1>{`Count: ${count ?? 'undefined'}`}</h1>
   );
 }
 ```
@@ -163,14 +173,20 @@ function SuspendedCount() {
 If you ever wanted to indefinitely suspend the component,
 
 ```jsx
+import { useScopedModelSuspendedState } from '@lxsmnsyc/react-scoped-model';
+
 function SuspendedState() {
-  const count = Counter.useSuspendedState((state) => ({
-    count: state.count,
-    suspend: state.count < 5,
-  }), 'state/suspended');
+  const count = useScopedModelSuspendedState(
+    Counter,
+    (state) => ({
+      value: state.count,
+      suspend: state.count < 5,
+    }),
+    'state/suspended',
+  );
 
   return (
-    <h1>Count: {count}</h1>
+    <h1>{`Count: ${count ?? 'undefined'}`}</h1>
   );
 }
 ```

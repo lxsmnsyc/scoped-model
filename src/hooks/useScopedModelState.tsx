@@ -25,23 +25,44 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-export interface AccessibleObject {
-  [key: string]: any;
-}
+import { useState, useEffect } from 'react';
+import { ScopedModel } from '../create-model';
+import { AccessibleObject } from '../types';
+import { defaultCompare } from '../utils/comparer';
+import useScopedModelContext from './useScopedModelContext';
 
-export interface AsyncFailure {
-  data: any;
-  status: 'failure';
-}
+/**
+ * Subscribes to the given model's state
+ * @param model the scoped model to read the state from
+ * @param shouldUpdate compares the previous state from the next
+ * state and re-renders the component and updates the value being
+ * consumed if the comparer function returns true.
+ */
+export default function useScopedModelState<Model, Props extends AccessibleObject>(
+  model: ScopedModel<Model, Props>,
+  shouldUpdate = defaultCompare,
+): Model {
+  const notifier = useScopedModelContext(model);
 
-export interface AsyncSuccess<T> {
-  data: T;
-  status: 'success';
-}
+  const [state, setState] = useState(() => notifier.value);
 
-export interface AsyncPending {
-  data?: Promise<any>;
-  status: 'pending';
-}
+  useEffect(() => {
+    const callback = (next: Model): void => {
+      setState((old) => {
+        if (shouldUpdate(old, next)) {
+          return next;
+        }
+        return old;
+      });
+    };
 
-export type AsyncState<T> = AsyncSuccess<T> | AsyncFailure | AsyncPending;
+    notifier.on(callback);
+
+    return (): void => notifier.off(callback);
+  }, [notifier, shouldUpdate]);
+
+  /**
+   * Return the current state value
+   */
+  return state;
+}

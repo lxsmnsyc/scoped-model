@@ -25,23 +25,16 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-export interface AccessibleObject {
-  [key: string]: any;
-}
+import { Dispatch, useReducer, Reducer } from 'react';
+import createModel, { ScopedModel, ModelOptions } from './create-model';
+import { AccessibleObject } from './types';
 
-export interface AsyncFailure {
-  data: any;
-  status: 'failure';
-}
+export type ReducerScopedModel<S, A> = ScopedModel<[S, Dispatch<A>], AccessibleObject>;
 
-export interface AsyncSuccess<T> {
-  data: T;
-  status: 'success';
+export default function createReducerModel<S, A>(
+  reducer: Reducer<S, A>,
+  initialState: S,
+  options?: ModelOptions<AccessibleObject>,
+): ReducerScopedModel<S, A> {
+  return createModel(() => useReducer(reducer, initialState), options);
 }
-
-export interface AsyncPending {
-  data?: Promise<any>;
-  status: 'pending';
-}
-
-export type AsyncState<T> = AsyncSuccess<T> | AsyncFailure | AsyncPending;

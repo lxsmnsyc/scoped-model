@@ -25,23 +25,17 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-export interface AccessibleObject {
-  [key: string]: any;
-}
+import { useState, Dispatch, SetStateAction } from 'react';
+import createModel, { ScopedModel, ModelOptions } from './create-model';
+import { AccessibleObject } from './types';
 
-export interface AsyncFailure {
-  data: any;
-  status: 'failure';
-}
+export type InitialState<T> = T | (() => T);
 
-export interface AsyncSuccess<T> {
-  data: T;
-  status: 'success';
-}
+export type StateScopedModel<T> = ScopedModel<[T, Dispatch<SetStateAction<T>>], AccessibleObject>;
 
-export interface AsyncPending {
-  data?: Promise<any>;
-  status: 'pending';
+export default function createStateModel<T>(
+  initialState: InitialState<T>,
+  options?: ModelOptions<AccessibleObject>,
+): StateScopedModel<T> {
+  return createModel(() => useState(initialState), options);
 }
-
-export type AsyncState<T> = AsyncSuccess<T> | AsyncFailure | AsyncPending;

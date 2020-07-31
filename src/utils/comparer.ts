@@ -25,23 +25,21 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-export interface AccessibleObject {
-  [key: string]: any;
+export function defaultCompare<T, R>(a: T, b: R): boolean {
+  return !Object.is(a, b);
 }
 
-export interface AsyncFailure {
-  data: any;
-  status: 'failure';
+export function compareList<T extends any[], R extends any[]>(
+  a: T, b: R,
+  compare = defaultCompare,
+): boolean {
+  if (a.length !== b.length) {
+    return true;
+  }
+  for (let i = 0; i < a.length; i += 1) {
+    if (compare(a[i], b[i])) {
+      return true;
+    }
+  }
+  return false;
 }
-
-export interface AsyncSuccess<T> {
-  data: T;
-  status: 'success';
-}
-
-export interface AsyncPending {
-  data?: Promise<any>;
-  status: 'pending';
-}
-
-export type AsyncState<T> = AsyncSuccess<T> | AsyncFailure | AsyncPending;
