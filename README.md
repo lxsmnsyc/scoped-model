@@ -26,6 +26,7 @@ yarn add @lxsmnsyc/react-scoped-model
 - [Scoped Model Hooks](/docs/hooks/README.md)
 - [Model Factories](/docs/model-factory.md)
 - [Hook Factories](/docs/hook-factory.md)
+- [Migrating from 0.16](/docs/migrating.md)
 
 ## License
 
