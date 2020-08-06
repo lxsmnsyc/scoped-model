@@ -38,7 +38,7 @@ import useScopedModelContext from './useScopedModelContext';
  * state and re-renders the component and updates the value being
  * consumed if the comparer function returns true.
  */
-export default function useScopedModelState<Model, Props extends AccessibleObject>(
+export default function useValue<Model, Props extends AccessibleObject>(
   model: ScopedModel<Model, Props>,
   shouldUpdate = defaultCompare,
 ): Model {

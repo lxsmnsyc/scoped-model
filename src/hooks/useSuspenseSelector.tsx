@@ -30,7 +30,7 @@ import { ScopedModel } from '../create-model';
 import useScopedModelContext from './useScopedModelContext';
 import { AccessibleObject } from '../types';
 import useForceUpdate from './useForceUpdate';
-import createCachedData, { suspendCacheData } from '../create-cached-data';
+import { suspendCacheData, createCachedData } from '../create-cached-data';
 
 /**
  * Listens to the model's properties for changes, and updates
@@ -45,7 +45,7 @@ export default function useSuspenseSelector<Model, Props extends AccessibleObjec
   model: ScopedModel<Model, Props>,
   selector: (model: Model) => Promise<R>,
   key: string,
-): R | undefined {
+): R {
   const notifier = useScopedModelContext(model);
 
   const forceUpdate = useForceUpdate();
@@ -62,13 +62,9 @@ export default function useSuspenseSelector<Model, Props extends AccessibleObjec
     return (): void => notifier.off(callback);
   }, [notifier, selector, key, forceUpdate]);
 
-  return suspendCacheData(key, notifier.cache, () => {
-    const cachedData = createCachedData(
-      selector(notifier.value),
-      key,
-      notifier.cache,
-    );
-
-    throw cachedData.data;
-  });
+  return suspendCacheData(key, notifier.cache, () => createCachedData(
+    selector(notifier.value),
+    key,
+    notifier.cache,
+  ));
 }

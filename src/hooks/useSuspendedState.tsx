@@ -30,7 +30,7 @@ import { AccessibleObject } from '../types';
 import useScopedModelContext from './useScopedModelContext';
 import { ScopedModel } from '../create-model';
 import useForceUpdate from './useForceUpdate';
-import createCachedData, { suspendCacheData } from '../create-cached-data';
+import { suspendCacheData, createCachedData } from '../create-cached-data';
 import Notifier from '../notifier';
 
 export interface SuspendSelector<T> {
@@ -71,11 +71,11 @@ function captureSuspendedValue<Model, R>(
  * @param selector selector function
  * @param key for caching purposes
  */
-export default function useScopedModelSuspendedState<Model, Props extends AccessibleObject, R>(
+export default function useSuspendedState<Model, Props extends AccessibleObject, R>(
   model: ScopedModel<Model, Props>,
   selector: (model: Model) => SuspendSelector<R>,
   key: string,
-): R | undefined {
+): R {
   const notifier = useScopedModelContext(model);
 
   const forceUpdate = useForceUpdate();
@@ -97,14 +97,10 @@ export default function useScopedModelSuspendedState<Model, Props extends Access
     return (): void => notifier.off(callback);
   }, [notifier, selector, key, forceUpdate]);
 
-  return suspendCacheData(key, notifier.cache, () => {
-    const cachedData = captureSuspendedValue(
-      notifier,
-      notifier.value,
-      selector,
-      key,
-    );
-
-    throw cachedData.data;
-  });
+  return suspendCacheData(key, notifier.cache, () => captureSuspendedValue(
+    notifier,
+    notifier.value,
+    selector,
+    key,
+  ));
 }

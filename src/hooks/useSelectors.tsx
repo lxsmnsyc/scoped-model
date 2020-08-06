@@ -29,7 +29,7 @@ import { useCallback } from 'react';
 import { ScopedModel } from '../create-model';
 import { AccessibleObject } from '../types';
 import { defaultCompare, compareList } from '../utils/comparer';
-import useScopedModelSelector from './useScopedModelSelector';
+import useSelector from './useSelector';
 
 /**
  * Transforms the model's state into a list of values and
@@ -45,7 +45,7 @@ import useScopedModelSelector from './useScopedModelSelector';
  * previously transformed value to the newly transformed value
  * and if it should replace the previous value and perform an update.
  */
-export default function useScopedModelSelectors<
+export default function useSelectors<
   Model,
   Props extends AccessibleObject,
   R extends any[],
@@ -57,5 +57,5 @@ export default function useScopedModelSelectors<
   const compare = useCallback((a, b) => (
     compareList(a, b, shouldUpdate)
   ), [shouldUpdate]);
-  return useScopedModelSelector(model, selector, compare);
+  return useSelector(model, selector, compare);
 }

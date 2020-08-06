@@ -25,56 +25,86 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
+
 import { useState, useEffect } from 'react';
-import { AccessibleObject } from '../types';
 import { ScopedModel } from '../create-model';
-import { defaultCompare } from '../utils/comparer';
+import { AccessibleObject, AsyncState } from '../types';
 import useScopedModelContext from './useScopedModelContext';
 
 /**
- * Transforms the model's state and listens for the returned value change.
+ * Listens to the model's properties for changes, and updates
+ * the component with a new async value.
  *
- * If the value changes, the component re-renders.
- *
- * uses the `Object.is` function for comparison by default.
- *
- * @param model the scoped model to read the state from
- * @param selector a function that receives the model state
- * and transforms it into a new value.
- * @param shouldUpdate a function that compares the
- * previously transformed value to the newly transformed value
- * and if it should replace the previous value and perform an update.
+ * @param selector selector function
  */
-export default function useScopedModelSelector<Model, Props extends AccessibleObject, R>(
+export default function useAsyncSelector<Model, Props extends AccessibleObject, R>(
   model: ScopedModel<Model, Props>,
-  selector: (model: Model) => R,
-  shouldUpdate = defaultCompare,
-): R {
-  /**
-   * Access context
-   */
+  selector: (model: Model) => Promise<R>,
+): AsyncState<R> {
   const notifier = useScopedModelContext(model);
 
-  const [state, setState] = useState(() => selector(notifier.value));
+  const [state, setState] = useState<AsyncState<R>>({ status: 'pending' });
 
   useEffect(() => {
-    const callback = (next: Model): void => {
-      setState((old) => {
-        const newValue = selector(next);
-        if (shouldUpdate(old, newValue)) {
-          return newValue;
+    let mounted = true;
+
+    selector(notifier.value).then(
+      (data) => {
+        if (mounted) {
+          setState({
+            status: 'success',
+            data,
+          });
         }
-        return old;
-      });
+      },
+      (data) => {
+        if (mounted) {
+          setState({
+            status: 'failure',
+            data,
+          });
+        }
+      },
+    );
+
+    return () => {
+      mounted = true;
+    };
+  }, [notifier, selector]);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const callback = (next: Model) => {
+      setState({ status: 'pending' });
+
+      selector(next).then(
+        (data) => {
+          if (mounted) {
+            setState({
+              status: 'success',
+              data,
+            });
+          }
+        },
+        (data) => {
+          if (mounted) {
+            setState({
+              status: 'failure',
+              data,
+            });
+          }
+        },
+      );
     };
 
     notifier.on(callback);
 
-    return (): void => notifier.off(callback);
-  }, [notifier, selector, shouldUpdate]);
+    return (): void => {
+      mounted = false;
+      notifier.off(callback);
+    };
+  }, [selector, notifier]);
 
-  /**
-   * Return the current state value
-   */
   return state;
 }
