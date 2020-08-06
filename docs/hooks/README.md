@@ -3,10 +3,10 @@
 `react-scoped-model` provides a set of React-based hooks for accessing model's state within the component tree.
 
 ## List of hooks
-- [useValue](use-value.md)
-- [useSelector](use-selector.md)
-- [useSelectors](use-selectors.md)
-- [useAsyncSelector](use-async-selector.md)
-- [useSuspenseSelector](use-suspense-selector.md)
-- [useSuspendedState](use-suspended-state.md)
+- [useValue](/docs/hooks/use-value.md)
+- [useSelector](/docs/hooks/use-selector.md)
+- [useSelectors](/docs/hooks/use-selectors.md)
+- [useAsyncSelector](/docs/hooks/use-async-selector.md)
+- [useSuspenseSelector](/docs/hooks/use-suspense-selector.md)
+- [useSuspendedState](/docs/hooks/use-suspended-state.md)
 

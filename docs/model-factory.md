@@ -64,6 +64,6 @@ const name = useSelector(UserDetails, (state) => state.name);
 ```
 
 ## See Also
-- [Create Model](/create-model.md)
-- [Hook Factory](/hook-factory.md)
-- [Hooks](/hooks/README.md)
+- [Create Model](/docs/create-model.md)
+- [Hook Factory](/docs/hook-factory.md)
+- [Hooks](/docs/hooks/README.md)

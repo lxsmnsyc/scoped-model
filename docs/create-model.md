@@ -96,6 +96,6 @@ If the model itself is mounted as a children from the same instance, components 
 Components outside of the model's component tree that attempts to access it's state will throw an error.
 
 ## See Also
-- [Model Factory](/model-factory.md)
-- [Hook Factory](/hook-factory.md)
-- [Hooks](/hooks/README.md)
+- [Model Factory](/docs/model-factory.md)
+- [Hook Factory](/docs/hook-factory.md)
+- [Hooks](/docs/hooks/README.md)
