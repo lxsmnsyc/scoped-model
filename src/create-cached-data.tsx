@@ -32,12 +32,7 @@ export function createCachedData<T>(
   key: string,
   cache: Map<string, AsyncState<any>>,
 ): AsyncState<T> {
-  const cachedData: AsyncState<T> = {
-    data: promise,
-    status: 'pending',
-  };
-
-  promise.then(
+  const fullPromise = promise.then(
     (data) => {
       cache.set(key, {
         status: 'success',
@@ -51,6 +46,12 @@ export function createCachedData<T>(
       });
     },
   );
+
+  const cachedData: AsyncState<T> = {
+    data: fullPromise,
+    status: 'pending',
+  };
+
 
   cache.set(key, cachedData);
 
