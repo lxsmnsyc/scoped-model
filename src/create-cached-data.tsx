@@ -27,11 +27,41 @@
  */
 import { AsyncState } from './types';
 
+export function createCachedData<T>(
+  promise: Promise<T>,
+  key: string,
+  cache: Map<string, AsyncState<any>>,
+): AsyncState<T> {
+  const cachedData: AsyncState<T> = {
+    data: promise,
+    status: 'pending',
+  };
+
+  promise.then(
+    (data) => {
+      cache.set(key, {
+        status: 'success',
+        data,
+      });
+    },
+    (data) => {
+      cache.set(key, {
+        status: 'failure',
+        data,
+      });
+    },
+  );
+
+  cache.set(key, cachedData);
+
+  return cachedData;
+}
+
 export function suspendCacheData<T>(
   key: string,
   cache: Map<string, AsyncState<any>>,
-  onFail: () => void,
-): T | undefined {
+  supplier: () => AsyncState<T>,
+): T {
   /**
    * Check if cache exists
    */
@@ -41,45 +71,11 @@ export function suspendCacheData<T>(
      */
     const state = cache.get(key) as AsyncState<T>;
 
-    /**
-     * If cached data exists, return data
-     */
-    if (state) {
-      if (state.status === 'success') {
-        return state.data;
-      }
-      throw state.data;
+    if (state.status === 'success') {
+      return state.data;
     }
-  } else {
-    onFail();
+    throw state.data;
   }
-  return undefined;
-}
 
-export default function createCachedData<T>(
-  promise: Promise<T>,
-  key: string,
-  cache: Map<string, AsyncState<any>>,
-): AsyncState<T> {
-  const cachedData: AsyncState<T> = {
-    data: promise.then(
-      (data) => {
-        cache.set(key, {
-          status: 'success',
-          data,
-        });
-      },
-      (data) => {
-        cache.set(key, {
-          status: 'failure',
-          data,
-        });
-      },
-    ),
-    status: 'pending',
-  };
-
-  cache.set(key, cachedData);
-
-  return cachedData;
+  throw supplier().data;
 }
