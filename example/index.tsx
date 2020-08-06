@@ -1,11 +1,11 @@
 import React, { useState, useCallback } from 'react';
 import ReactDOM from 'react-dom';
 import createModel, {
-  useScopedModelSelector,
-  useScopedModelSuspenseSelector,
-  useScopedModelSuspendedState,
-  useScopedModelAsyncSelector,
-  useScopedModelSelectors,
+  useSelector,
+  useSuspenseSelector,
+  useSuspendedState,
+  useAsyncSelector,
+  useSelectors,
 } from '..';
 
 interface CounterProps {
@@ -33,21 +33,21 @@ const Counter = createModel(({ initialCount }: CounterProps) => {
 });
 
 function Count() {
-  const count = useScopedModelSelector(Counter, (state) => state.count);
+  const count = useSelector(Counter, (state) => state.count);
   return (
     <h1>{`Count: ${count}`}</h1>
   );
 }
 
 function Increment() {
-  const increment = useScopedModelSelector(Counter, (state) => state.increment);
+  const increment = useSelector(Counter, (state) => state.increment);
   return (
     <button type="button" onClick={increment}>Increment</button>
   );
 }
 
 function Decrement() {
-  const decrement = useScopedModelSelector(Counter, (state) => state.decrement);
+  const decrement = useSelector(Counter, (state) => state.decrement);
   return (
     <button type="button" onClick={decrement}>Decrement</button>
   );
@@ -56,7 +56,7 @@ function Decrement() {
 const sleep = (time: number) => new Promise((res) => setTimeout(res, time));
 
 function SuspendedCount() {
-  const count = useScopedModelSuspenseSelector(
+  const count = useSuspenseSelector(
     Counter,
     async (state) => {
       await sleep(500);
@@ -72,7 +72,7 @@ function SuspendedCount() {
 }
 
 function SuspendedState() {
-  const count = useScopedModelSuspendedState(
+  const count = useSuspendedState(
     Counter,
     (state) => ({
       value: state.count,
@@ -87,7 +87,7 @@ function SuspendedState() {
 }
 
 function AsyncCount() {
-  const result = useScopedModelAsyncSelector(Counter, async (state) => {
+  const result = useAsyncSelector(Counter, async (state) => {
     await sleep(500);
 
     return state.count;
@@ -103,7 +103,7 @@ function AsyncCount() {
 
 
 function IncDec() {
-  const [increment, decrement] = useScopedModelSelectors(Counter, (state) => [
+  const [increment, decrement] = useSelectors(Counter, (state) => [
     state.increment,
     state.decrement,
   ]);
