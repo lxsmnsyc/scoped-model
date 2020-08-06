@@ -62,3 +62,8 @@ const UserDetails = createPropsSelectorModel();
 // ...
 const name = useSelector(UserDetails, (state) => state.name);
 ```
+
+## See Also
+- [Create Model](/create-model.md)
+- [Hook Factory](/hook-factory.md)
+- [Hooks](/hooks/README.md)
