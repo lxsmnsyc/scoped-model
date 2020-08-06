@@ -25,8 +25,8 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import createModel, { ScopedModel, ModelOptions } from './create-model';
-import { AccessibleObject } from './types';
+import createModel, { ScopedModel, ModelOptions } from '../create-model';
+import { AccessibleObject } from '../types';
 
 export type InitialState<T> = T | (() => T);
 

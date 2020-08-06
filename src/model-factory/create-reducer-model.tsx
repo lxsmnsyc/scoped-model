@@ -26,8 +26,8 @@
  * @copyright Alexis Munsayac 2020
  */
 import { Dispatch, useReducer, Reducer } from 'react';
-import createModel, { ScopedModel, ModelOptions } from './create-model';
-import { AccessibleObject } from './types';
+import createModel, { ScopedModel, ModelOptions } from '../create-model';
+import { AccessibleObject } from '../types';
 
 export type ReducerScopedModel<S, A> = ScopedModel<[S, Dispatch<A>], AccessibleObject>;
 

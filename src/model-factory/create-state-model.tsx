@@ -26,8 +26,8 @@
  * @copyright Alexis Munsayac 2020
  */
 import { useState, Dispatch, SetStateAction } from 'react';
-import createModel, { ScopedModel, ModelOptions } from './create-model';
-import { AccessibleObject } from './types';
+import createModel, { ScopedModel, ModelOptions } from '../create-model';
+import { AccessibleObject } from '../types';
 
 export type InitialState<T> = T | (() => T);
 
