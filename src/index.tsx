@@ -28,29 +28,33 @@
 import createModel from './create-model';
 
 // Model factory
-export { default as createStateModel } from './create-state-model';
-export { default as createReducerModel } from './create-reducer-model';
-export { default as createPropsSelectorModel } from './create-props-selector-model';
+export {
+  default as createStateModel,
+  StateScopedModel,
+} from './model-factory/create-state-model';
+export {
+  default as createReducerModel,
+  ReducerScopedModel,
+} from './model-factory/create-reducer-model';
+export {
+  default as createPropsSelectorModel,
+  PropsSelectorModel,
+} from './model-factory/create-props-selector-model';
+
+// Hook Factory
+export { default as createSelector } from './hook-factory/create-selector-hook';
+export { default as createSelectors } from './hook-factory/create-selectors-hook';
+export { default as createAsyncSelector } from './hook-factory/create-async-selector-hook';
+export { default as createSuspendedState } from './hook-factory/create-suspended-state-hook';
+export { default as createSuspenseSelector } from './hook-factory/create-suspense-selector-hook';
+export { default as createValue } from './hook-factory/create-value-hook';
 
 // Hooks
-export { default as useScopedModelState } from './hooks/useScopedModelState';
-export { default as useScopedModelSelector } from './hooks/useScopedModelSelector';
-export { default as useScopedModelSelectors } from './hooks/useScopedModelSelectors';
-export { default as useScopedModelAsyncSelector } from './hooks/useScopedModelAsyncSelector';
-export { default as useScopedModelSuspenseSelector } from './hooks/useScopedModelSuspenseSelector';
-export { default as useScopedModelSuspendedState } from './hooks/useScopedModelSuspendedState';
-export { default as useValue } from './hooks/useScopedModelState';
-export { default as useSelector } from './hooks/useScopedModelSelector';
-export { default as useSelectors } from './hooks/useScopedModelSelectors';
-export { default as useAsyncSelector } from './hooks/useScopedModelAsyncSelector';
-export { default as useSuspenseSelector } from './hooks/useScopedModelSuspenseSelector';
-export { default as useSuspendedState } from './hooks/useScopedModelSuspendedState';
-
-// Types
-export { ModelHook, ModelOptions, ScopedModel } from './create-model';
-export { StateScopedModel } from './create-state-model';
-export { ReducerScopedModel } from './create-reducer-model';
-export { PropsSelectorModel } from './create-props-selector-model';
-export { SuspendSelector } from './hooks/useScopedModelSuspendedState';
+export { default as useValue } from './hooks/useValue';
+export { default as useSelector } from './hooks/useSelector';
+export { default as useSelectors } from './hooks/useSelectors';
+export { default as useAsyncSelector } from './hooks/useAsyncSelector';
+export { default as useSuspenseSelector } from './hooks/useSuspenseSelector';
+export { default as useSuspendedState, SuspendSelector } from './hooks/useSuspendedState';
 
 export default createModel;
