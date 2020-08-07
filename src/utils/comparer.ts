@@ -25,58 +25,21 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { AsyncState } from './types';
-
-export function createCachedData<T>(
-  promise: Promise<T>,
-  key: string,
-  cache: Map<string, AsyncState<any>>,
-): AsyncState<T> {
-  const fullPromise = promise.then(
-    (data) => {
-      cache.set(key, {
-        status: 'success',
-        data,
-      });
-    },
-    (data) => {
-      cache.set(key, {
-        status: 'failure',
-        data,
-      });
-    },
-  );
-
-  const cachedData: AsyncState<T> = {
-    data: fullPromise,
-    status: 'pending',
-  };
-
-
-  cache.set(key, cachedData);
-
-  return cachedData;
+export function defaultCompare<T, R>(a: T, b: R): boolean {
+  return !Object.is(a, b);
 }
 
-export function suspendCacheData<T>(
-  key: string,
-  cache: Map<string, AsyncState<any>>,
-  supplier: () => AsyncState<T>,
-): T {
-  /**
-   * Check if cache exists
-   */
-  if (cache.has(key)) {
-    /**
-     * Get cache value
-     */
-    const state = cache.get(key) as AsyncState<T>;
-
-    if (state.status === 'success') {
-      return state.data;
-    }
-    throw state.data;
+export function compareList<T extends any[], R extends any[]>(
+  a: T, b: R,
+  compare = defaultCompare,
+): boolean {
+  if (a.length !== b.length) {
+    return true;
   }
-
-  throw supplier().data;
+  for (let i = 0; i < a.length; i += 1) {
+    if (compare(a[i], b[i])) {
+      return true;
+    }
+  }
+  return false;
 }

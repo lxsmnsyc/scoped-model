@@ -25,8 +25,6 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { WeakValidationMap, FC } from 'react';
-
 export interface AccessibleObject {
   [key: string]: any;
 }
@@ -47,47 +45,3 @@ export interface AsyncPending {
 }
 
 export type AsyncState<T> = AsyncSuccess<T> | AsyncFailure | AsyncPending;
-
-export type ModelHook<Model, Props extends AccessibleObject> = (props: Props) => Model;
-
-export interface SuspendSelector<T> {
-  value: T;
-  suspend: boolean;
-}
-
-export interface ModelOptions<Props> {
-  displayName?: string;
-  propTypes?: WeakValidationMap<Props>;
-  defaultProps?: Partial<Props>;
-}
-
-export type ShouldUpdate = <T, R>(a: T, b: R) => boolean;
-
-export interface ScopedModelInterface<
-  Model,
-  Props extends AccessibleObject,
-> {
-  Provider: FC<Props>;
-  useValue: (
-    shouldUpdate?: ShouldUpdate,
-  ) => Model;
-  useSelector: <T>(
-    selector: (model: Model) => T,
-    shouldUpdate?: ShouldUpdate,
-  ) => T;
-  useSelectors: <T extends any[]>(
-    selector: (model: Model) => T,
-    shouldUpdate?: ShouldUpdate,
-  ) => T;
-  useAsyncSelector: <T>(
-    selector: (model: Model) => Promise<T>,
-  ) => AsyncState<T>;
-  useSuspendedSelector: <T>(
-    selector: (model: Model) => Promise<T>,
-    key: string,
-  ) => T | undefined;
-  useSuspendedState: <T>(
-    selector: (model: Model) => SuspendSelector<T>,
-    key: string,
-  ) => T | undefined;
-}

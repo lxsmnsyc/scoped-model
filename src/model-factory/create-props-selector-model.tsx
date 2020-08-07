@@ -25,58 +25,16 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { AsyncState } from './types';
+import createModel, { ScopedModel, ModelOptions } from '../create-model';
+import { AccessibleObject } from '../types';
 
-export function createCachedData<T>(
-  promise: Promise<T>,
-  key: string,
-  cache: Map<string, AsyncState<any>>,
-): AsyncState<T> {
-  const fullPromise = promise.then(
-    (data) => {
-      cache.set(key, {
-        status: 'success',
-        data,
-      });
-    },
-    (data) => {
-      cache.set(key, {
-        status: 'failure',
-        data,
-      });
-    },
-  );
+export type InitialState<T> = T | (() => T);
 
-  const cachedData: AsyncState<T> = {
-    data: fullPromise,
-    status: 'pending',
-  };
+export type PropsSelectorModel<Props extends AccessibleObject> =
+  ScopedModel<Props, Props>;
 
-
-  cache.set(key, cachedData);
-
-  return cachedData;
-}
-
-export function suspendCacheData<T>(
-  key: string,
-  cache: Map<string, AsyncState<any>>,
-  supplier: () => AsyncState<T>,
-): T {
-  /**
-   * Check if cache exists
-   */
-  if (cache.has(key)) {
-    /**
-     * Get cache value
-     */
-    const state = cache.get(key) as AsyncState<T>;
-
-    if (state.status === 'success') {
-      return state.data;
-    }
-    throw state.data;
-  }
-
-  throw supplier().data;
+export default function createPropsSelectorModel<Props extends AccessibleObject>(
+  options?: ModelOptions<Props>,
+): PropsSelectorModel<Props> {
+  return createModel((props) => props, options);
 }

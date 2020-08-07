@@ -25,58 +25,37 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { AsyncState } from './types';
+import { useCallback } from 'react';
+import { ScopedModel } from '../create-model';
+import { AccessibleObject } from '../types';
+import { defaultCompare, compareList } from '../utils/comparer';
+import useSelector from './useSelector';
 
-export function createCachedData<T>(
-  promise: Promise<T>,
-  key: string,
-  cache: Map<string, AsyncState<any>>,
-): AsyncState<T> {
-  const fullPromise = promise.then(
-    (data) => {
-      cache.set(key, {
-        status: 'success',
-        data,
-      });
-    },
-    (data) => {
-      cache.set(key, {
-        status: 'failure',
-        data,
-      });
-    },
-  );
-
-  const cachedData: AsyncState<T> = {
-    data: fullPromise,
-    status: 'pending',
-  };
-
-
-  cache.set(key, cachedData);
-
-  return cachedData;
-}
-
-export function suspendCacheData<T>(
-  key: string,
-  cache: Map<string, AsyncState<any>>,
-  supplier: () => AsyncState<T>,
-): T {
-  /**
-   * Check if cache exists
-   */
-  if (cache.has(key)) {
-    /**
-     * Get cache value
-     */
-    const state = cache.get(key) as AsyncState<T>;
-
-    if (state.status === 'success') {
-      return state.data;
-    }
-    throw state.data;
-  }
-
-  throw supplier().data;
+/**
+ * Transforms the model's state into a list of values and
+ * listens for the changes from one of the values..
+ *
+ * If a value changes, the component re-renders.
+ *
+ * uses the `Object.is` function for comparison by default.
+ *
+ * @param model the scoped model to read the state from
+ * @param selector a function that receives the model state
+ * @param shouldUpdate a function that compares the
+ * previously transformed value to the newly transformed value
+ * and if it should replace the previous value and perform an update.
+ */
+export default function useSelectors<
+  Model,
+  Props extends AccessibleObject,
+  R extends any[],
+>(
+  model: ScopedModel<Model, Props>,
+  selector: (model: Model) => R,
+  shouldUpdate = defaultCompare,
+): R {
+  const compare = useCallback((a, b) => (
+    compareList(a, b, shouldUpdate)
+  ), [shouldUpdate]);
+  return useSelector(model, selector, compare);
 }

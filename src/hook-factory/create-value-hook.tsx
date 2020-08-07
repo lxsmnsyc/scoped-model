@@ -25,58 +25,17 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { AsyncState } from './types';
+import { ScopedModel } from '../create-model';
+import { AccessibleObject } from '../types';
+import { defaultCompare } from '../utils/comparer';
+import useValue from '../hooks/useValue';
 
-export function createCachedData<T>(
-  promise: Promise<T>,
-  key: string,
-  cache: Map<string, AsyncState<any>>,
-): AsyncState<T> {
-  const fullPromise = promise.then(
-    (data) => {
-      cache.set(key, {
-        status: 'success',
-        data,
-      });
-    },
-    (data) => {
-      cache.set(key, {
-        status: 'failure',
-        data,
-      });
-    },
-  );
-
-  const cachedData: AsyncState<T> = {
-    data: fullPromise,
-    status: 'pending',
-  };
-
-
-  cache.set(key, cachedData);
-
-  return cachedData;
-}
-
-export function suspendCacheData<T>(
-  key: string,
-  cache: Map<string, AsyncState<any>>,
-  supplier: () => AsyncState<T>,
-): T {
-  /**
-   * Check if cache exists
-   */
-  if (cache.has(key)) {
-    /**
-     * Get cache value
-     */
-    const state = cache.get(key) as AsyncState<T>;
-
-    if (state.status === 'success') {
-      return state.data;
-    }
-    throw state.data;
-  }
-
-  throw supplier().data;
+export default function createValueHook<
+  Model,
+  Props extends AccessibleObject,
+>(
+  model: ScopedModel<Model, Props>,
+  shouldUpdate = defaultCompare,
+): () => Model {
+  return () => useValue(model, shouldUpdate);
 }

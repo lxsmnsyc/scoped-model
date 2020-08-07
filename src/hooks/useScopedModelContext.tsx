@@ -25,58 +25,20 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { AsyncState } from './types';
+import { useContext } from 'react';
+import { ScopedModel } from '../create-model';
+import Notifier from '../notifier';
+import MissingScopedModelError from '../utils/MissingScopedModelError';
+import { AccessibleObject } from '../types';
 
-export function createCachedData<T>(
-  promise: Promise<T>,
-  key: string,
-  cache: Map<string, AsyncState<any>>,
-): AsyncState<T> {
-  const fullPromise = promise.then(
-    (data) => {
-      cache.set(key, {
-        status: 'success',
-        data,
-      });
-    },
-    (data) => {
-      cache.set(key, {
-        status: 'failure',
-        data,
-      });
-    },
-  );
+export default function useScopedModelContext<Model, Props extends AccessibleObject>(
+  model: ScopedModel<Model, Props>,
+): Notifier<Model> {
+  const context = useContext(model.context);
 
-  const cachedData: AsyncState<T> = {
-    data: fullPromise,
-    status: 'pending',
-  };
-
-
-  cache.set(key, cachedData);
-
-  return cachedData;
-}
-
-export function suspendCacheData<T>(
-  key: string,
-  cache: Map<string, AsyncState<any>>,
-  supplier: () => AsyncState<T>,
-): T {
-  /**
-   * Check if cache exists
-   */
-  if (cache.has(key)) {
-    /**
-     * Get cache value
-     */
-    const state = cache.get(key) as AsyncState<T>;
-
-    if (state.status === 'success') {
-      return state.data;
-    }
-    throw state.data;
+  if (!context) {
+    throw new MissingScopedModelError(model.context.displayName ?? 'AnonymousScopedModel');
   }
 
-  throw supplier().data;
+  return context;
 }

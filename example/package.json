@@ -8,7 +8,8 @@
     "build": "parcel build index.html"
   },
   "dependencies": {
-    "react-app-polyfill": "^1.0.0"
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
   },
   "alias": {
     "react": "../node_modules/react",
@@ -20,5 +21,12 @@
     "@types/react-dom": "^16.9.8",
     "parcel": "^1.12.4",
     "typescript": "^3.9.7"
-  }
+  },
+  "browserslist": [
+    "last 3 and_chr versions",
+    "last 3 chrome versions",
+    "last 3 opera versions",
+    "last 3 ios_saf versions",
+    "last 3 safari versions"
+  ]
 }

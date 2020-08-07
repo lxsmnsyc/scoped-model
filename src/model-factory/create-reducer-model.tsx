@@ -25,58 +25,16 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { AsyncState } from './types';
+import { Dispatch, useReducer, Reducer } from 'react';
+import createModel, { ScopedModel, ModelOptions } from '../create-model';
+import { AccessibleObject } from '../types';
 
-export function createCachedData<T>(
-  promise: Promise<T>,
-  key: string,
-  cache: Map<string, AsyncState<any>>,
-): AsyncState<T> {
-  const fullPromise = promise.then(
-    (data) => {
-      cache.set(key, {
-        status: 'success',
-        data,
-      });
-    },
-    (data) => {
-      cache.set(key, {
-        status: 'failure',
-        data,
-      });
-    },
-  );
+export type ReducerScopedModel<S, A> = ScopedModel<[S, Dispatch<A>], AccessibleObject>;
 
-  const cachedData: AsyncState<T> = {
-    data: fullPromise,
-    status: 'pending',
-  };
-
-
-  cache.set(key, cachedData);
-
-  return cachedData;
-}
-
-export function suspendCacheData<T>(
-  key: string,
-  cache: Map<string, AsyncState<any>>,
-  supplier: () => AsyncState<T>,
-): T {
-  /**
-   * Check if cache exists
-   */
-  if (cache.has(key)) {
-    /**
-     * Get cache value
-     */
-    const state = cache.get(key) as AsyncState<T>;
-
-    if (state.status === 'success') {
-      return state.data;
-    }
-    throw state.data;
-  }
-
-  throw supplier().data;
+export default function createReducerModel<S, A>(
+  reducer: Reducer<S, A>,
+  initialState: S,
+  options?: ModelOptions<AccessibleObject>,
+): ReducerScopedModel<S, A> {
+  return createModel(() => useReducer(reducer, initialState), options);
 }

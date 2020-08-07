@@ -25,58 +25,44 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { AsyncState } from './types';
+import { useState, useEffect } from 'react';
+import { ScopedModel } from '../create-model';
+import { AccessibleObject } from '../types';
+import { defaultCompare } from '../utils/comparer';
+import useScopedModelContext from './useScopedModelContext';
 
-export function createCachedData<T>(
-  promise: Promise<T>,
-  key: string,
-  cache: Map<string, AsyncState<any>>,
-): AsyncState<T> {
-  const fullPromise = promise.then(
-    (data) => {
-      cache.set(key, {
-        status: 'success',
-        data,
+/**
+ * Subscribes to the given model's state
+ * @param model the scoped model to read the state from
+ * @param shouldUpdate compares the previous state from the next
+ * state and re-renders the component and updates the value being
+ * consumed if the comparer function returns true.
+ */
+export default function useValue<Model, Props extends AccessibleObject>(
+  model: ScopedModel<Model, Props>,
+  shouldUpdate = defaultCompare,
+): Model {
+  const notifier = useScopedModelContext(model);
+
+  const [state, setState] = useState(() => notifier.value);
+
+  useEffect(() => {
+    const callback = (next: Model): void => {
+      setState((old) => {
+        if (shouldUpdate(old, next)) {
+          return next;
+        }
+        return old;
       });
-    },
-    (data) => {
-      cache.set(key, {
-        status: 'failure',
-        data,
-      });
-    },
-  );
+    };
 
-  const cachedData: AsyncState<T> = {
-    data: fullPromise,
-    status: 'pending',
-  };
+    notifier.on(callback);
 
+    return (): void => notifier.off(callback);
+  }, [notifier, shouldUpdate]);
 
-  cache.set(key, cachedData);
-
-  return cachedData;
-}
-
-export function suspendCacheData<T>(
-  key: string,
-  cache: Map<string, AsyncState<any>>,
-  supplier: () => AsyncState<T>,
-): T {
   /**
-   * Check if cache exists
+   * Return the current state value
    */
-  if (cache.has(key)) {
-    /**
-     * Get cache value
-     */
-    const state = cache.get(key) as AsyncState<T>;
-
-    if (state.status === 'success') {
-      return state.data;
-    }
-    throw state.data;
-  }
-
-  throw supplier().data;
+  return state;
 }
