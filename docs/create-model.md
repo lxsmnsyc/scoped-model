@@ -21,6 +21,7 @@ The `createModel` function accepts two parameters:
 - `options`: Optional.
   - `displayName`: Serves as the display name for both the model (for error logs) and the `Provider` component.
   - `propTypes`: Based on the prop-types library, provides runtime prop-types checking for the `Provider`.
+  - `defaultProps`
 
 The model returns an object with the property `Provider` which injects the model state as well as runs the model hook within the component tree.
 
