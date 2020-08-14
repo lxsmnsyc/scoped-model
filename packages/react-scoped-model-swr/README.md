@@ -1,6 +1,6 @@
 # @lxsmnsyc/react-scoped-model-swr
 
-> react-scoped-model + [Vercel's SWR](https://swr.vercel.app/)
+> [react-scoped-model](https://github.com/lxsmnsyc/scoped-model) + [Vercel's SWR](https://swr.vercel.app/)
 
 [![NPM](https://img.shields.io/npm/v/@lxsmnsyc/react-scoped-model-swr.svg)](https://www.npmjs.com/package/@lxsmnsyc/react-scoped-model-swr) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
