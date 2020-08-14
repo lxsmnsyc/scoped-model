@@ -57,4 +57,7 @@ export { default as useAsyncSelector } from './hooks/useAsyncSelector';
 export { default as useSuspenseSelector } from './hooks/useSuspenseSelector';
 export { default as useSuspendedState, SuspendSelector } from './hooks/useSuspendedState';
 
+export * from './types';
+export * from './create-model';
+
 export default createModel;
