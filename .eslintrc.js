@@ -1,13 +1,12 @@
 module.exports = {
-  env: {
-    browser: true,
-    es6: true,
-    node: true,
+  "root": true,
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true
   },
-  extends: [
-    'plugin:react/recommended',
-    'airbnb',
-    'airbnb/hooks',
+  "extends": [
+    "airbnb-base",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
@@ -15,33 +14,31 @@ module.exports = {
     "plugin:import/warnings",
     "plugin:import/typescript",
   ],
-  globals: {
-    Atomics: 'readonly',
-    SharedArrayBuffer: 'readonly',
+  "globals": {
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
   },
-  parser: '@typescript-eslint/parser',
-  parserOptions: {
-    project: './tsconfig.eslint.json',
-    ecmaFeatures: {
-      jsx: true,
-    },
-    ecmaVersion: 2018,
-    sourceType: 'module',
+  "parser": '@typescript-eslint/parser',
+  "parserOptions": {
+    "project": './tsconfig.eslint.json',
+    "ecmaVersion": 2018,
+    "sourceType": 'module',
   },
-  plugins: [
-    'react',
+  "plugins": [
     '@typescript-eslint',
   ],
-  settings: {
+  "settings": {
     "import/parsers": {
       "@typescript-eslint/parser": [".ts", ".tsx"]
     },
     "import/resolver": {
-      "typescript": {}
-    }
+      "typescript": {},
+    },
   },
-  rules: {
-    "@typescript-eslint/no-explicit-any": "off",
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "rules": {
     "import/extensions": [
       "error",
       "ignorePackages",
@@ -53,8 +50,7 @@ module.exports = {
       }
     ],
     "import/no-unresolved": "error",
-    "react/jsx-props-no-spreading": "off",
-    "react/jsx-filename-extension": [1, { "extensions": [".jsx", ".tsx"] }],
+    "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-unsafe-assignment": "off",
-  },
+  }
 };

@@ -15,6 +15,6 @@
     "moduleResolution": "node",
     "jsx": "react",
     "esModuleInterop": true,
-    "target": "ESNext"
+    "target": "ES2015"
   }
 }
