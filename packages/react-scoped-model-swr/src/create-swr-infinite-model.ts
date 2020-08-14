@@ -30,46 +30,42 @@ import createModel, {
   AccessibleObject,
   ModelOptions,
 } from '@lxsmnsyc/react-scoped-model';
-import useSWR, { responseInterface, ConfigInterface } from 'swr';
+import {
+  useSWRInfinite,
+  SWRInfiniteConfigInterface,
+  SWRInfiniteResponseInterface,
+} from 'swr';
+import { SWRModelBaseKey } from './create-swr-model';
 
 /**
- * Possible raw values that serves as a key for
- * the SWR.
- *
- * Null keys prevent SWR from fetching.
+ * A paginator function that produces a key for
+ * a page-based data based on the current index
+ * of data and the previously loaded page data.
  */
-export type SWRModelBaseKey = string | null | any[];
+export type SWRInfiniteModelBaseKey<D> =
+  (index: number, previousPageData: D | null) => SWRModelBaseKey;
 
 /**
  * A React-based hook that receives the SWR Model
  * props and produces the SWR key.
  */
-export type SWRModelKeyHook<P extends AccessibleObject> =
-  (props: P) => SWRModelBaseKey;
-
-/**
- * Key for the SWR Model.
- *
- * A key-returning function
- * will allow dependent or conditional SWR fetching.
- */
-export type SWRModelKey<P extends AccessibleObject> =
-  SWRModelBaseKey | SWRModelKeyHook<P>;
+export type SWRInfiniteModelKey<D, P extends AccessibleObject> =
+  (props: P) => SWRInfiniteModelBaseKey<D>;
 
 /**
  * The fetcher function for the SWR Model.
  *
  * Receives the produced SWR Key.
  */
-export type SWRModelBaseFetcher<D> =
+export type SWRInfiniteModelBaseFetcher<D> =
   (...args: any) => D | Promise<D>;
 
 /**
  * A React-based hook that receives the SWR Model props
  * and returns a fetcher callback.
  */
-export type SWRModelFetcher<D, P extends AccessibleObject> =
-  (props: P) => SWRModelBaseFetcher<D>;
+export type SWRInfiniteModelFetcher<D, P extends AccessibleObject> =
+  (props: P) => SWRInfiniteModelBaseFetcher<D>;
 
 /**
  * A React-based hook that receives the SWR Model props
@@ -77,33 +73,25 @@ export type SWRModelFetcher<D, P extends AccessibleObject> =
  *
  * Config is merged to the global config.
  */
-export type SWRModelConfigHook<D, E, P extends AccessibleObject> =
-  (props: P) => ConfigInterface<D, E>;
-export type SWRModelConfig<D, E, P extends AccessibleObject> =
-  ConfigInterface<D, E> | SWRModelConfigHook<D, E, P>;
+export type SWRInfiniteModelConfigHook<D, E, P extends AccessibleObject> =
+  (props: P) => SWRInfiniteConfigInterface<D, E>;
+export type SWRInfiniteModelConfig<D, E, P extends AccessibleObject> =
+  SWRInfiniteConfigInterface<D, E> | SWRInfiniteModelConfigHook<D, E, P>;
 
 /**
  * The SWR Model's state.
  */
-export type SWRModelState<D, E> = responseInterface<D, E>;
+export type SWRInfiniteModelState<D, E> = SWRInfiniteResponseInterface<D, E>;
 
 /**
  * Alias to the SWR Model's Scoped Model interface.
  */
-export type SWRModel<D, E, P extends AccessibleObject> =
-  ScopedModel<SWRModelState<D, E>, P>;
+export type SWRInfiniteModel<D, E, P extends AccessibleObject> =
+  ScopedModel<SWRInfiniteModelState<D, E>, P>;
 
-function createKeyHook<P extends AccessibleObject>(
-  key: SWRModelKey<P>,
-): SWRModelKeyHook<P> {
-  if (typeof key === 'function') {
-    return key;
-  }
-  return () => key;
-}
 function createConfigHook<D, E, P extends AccessibleObject>(
-  config: SWRModelConfig<D, E, P>,
-): SWRModelConfigHook<D, E, P> {
+  config: SWRInfiniteModelConfig<D, E, P>,
+): SWRInfiniteModelConfigHook<D, E, P> {
   if (typeof config === 'function') {
     return config;
   }
@@ -111,21 +99,20 @@ function createConfigHook<D, E, P extends AccessibleObject>(
 }
 
 /**
- * Creates a scoped model based on the SWR hook.
- *
+ * A scoped model based on the SWR Infinite hook.
  * @param key
  * @param fetcher
  * @param config
  * @param options
  */
-export default function createSWRModel
+export default function createSWRInfiniteModel
 <D, E, P extends AccessibleObject>(
-  key: SWRModelKey<P>,
-  fetcher: SWRModelFetcher<D, P>,
-  config: SWRModelConfig<D, E, P> = {},
+  key: SWRInfiniteModelKey<D, P>,
+  fetcher: SWRInfiniteModelFetcher<D, P>,
+  config: SWRInfiniteModelConfig<D, E, P> = {},
   options?: ModelOptions<P>,
-): SWRModel<D, E, P> {
-  const useKey = createKeyHook(key);
+): SWRInfiniteModel<D, E, P> {
+  const useKey = key;
   const useFetcher = fetcher;
   const useConfig = createConfigHook(config);
 
@@ -135,7 +122,7 @@ export default function createSWRModel
       const currentFetcher = useFetcher(props);
       const currentConfig = useConfig(props);
 
-      return useSWR(currentKey, currentFetcher, currentConfig);
+      return useSWRInfinite(currentKey, currentFetcher, currentConfig);
     },
     options,
   );
