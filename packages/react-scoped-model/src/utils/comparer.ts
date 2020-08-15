@@ -25,14 +25,23 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-export function defaultCompare<T, R>(a: T, b: R): boolean {
+export type Compare<T> = (a: T, b: T) => boolean;
+
+export function defaultCompare<T>(a: T, b: T): boolean {
   return !Object.is(a, b);
 }
 
-export function compareList<T extends any[], R extends any[]>(
-  a: T, b: R,
-  compare = defaultCompare,
+type ArrayType<T> = T extends Array<infer U> ? U : T;
+
+export type ListCompare<T extends any[]> = Compare<ArrayType<T>>;
+
+export function compareList<T extends any[]>(
+  a: T, b: T,
+  compare: Compare<ArrayType<T>> = defaultCompare,
 ): boolean {
+  if (a === b) {
+    return false;
+  }
   if (a.length !== b.length) {
     return true;
   }

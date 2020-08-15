@@ -27,7 +27,7 @@
  */
 import { ScopedModel } from '../create-model';
 import { AccessibleObject } from '../types';
-import { defaultCompare } from '../utils/comparer';
+import { defaultCompare, Compare } from '../utils/comparer';
 import useValue from '../hooks/useValue';
 
 export default function createValueHook<
@@ -35,7 +35,7 @@ export default function createValueHook<
   Props extends AccessibleObject,
 >(
   model: ScopedModel<Model, Props>,
-  shouldUpdate = defaultCompare,
+  shouldUpdate: Compare<Model> = defaultCompare,
 ): () => Model {
   return () => useValue(model, shouldUpdate);
 }
