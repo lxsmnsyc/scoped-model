@@ -2,4 +2,8 @@
 import { h, render } from 'preact';
 import App from './App';
 
-render(<App />, document.getElementById('app'));
+const element = document.getElementById('root');
+
+if (element) {
+  render(<App />, element);
+}

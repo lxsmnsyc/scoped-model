@@ -12,6 +12,7 @@
   "keywords": [
     "SWR"
   ],
+  "module": "dist/react-scoped-model-swr.esm.js",
   "author": "Alexis Munsayac <alexis.munsayac@gmail.com>",
   "homepage": "https://github.com/lxsmnsyc/scoped-model",
   "repository": {

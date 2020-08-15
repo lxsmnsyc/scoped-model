@@ -6,8 +6,8 @@
     "build": "vite build"
   },
   "dependencies": {
-    "preact": "^10.4.1",
-    "@lxsmnsyc/preact-scoped-model": "link:../../packages/preact-scoped-model"
+    "@lxsmnsyc/preact-scoped-model": "link:../../packages/preact-scoped-model",
+    "preact": "^10.4.1"
   },
   "devDependencies": {
     "@prefresh/vite": "^0.10.0",
