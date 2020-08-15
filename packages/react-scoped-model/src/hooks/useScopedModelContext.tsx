@@ -37,7 +37,7 @@ export default function useScopedModelContext<Model, Props extends AccessibleObj
   const context = useContext(model.context);
 
   if (!context) {
-    throw new MissingScopedModelError(model.context.displayName ?? 'AnonymousScopedModel');
+    throw new MissingScopedModelError(model.Provider.displayName ?? 'AnonymousScopedModel');
   }
 
   return context;
