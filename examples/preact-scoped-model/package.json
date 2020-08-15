@@ -1,0 +1,17 @@
+{
+  "name": "preact-scoped-model-vite",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "preact": "^10.4.1",
+    "@lxsmnsyc/preact-scoped-model": "link:../../packages/preact-scoped-model"
+  },
+  "devDependencies": {
+    "@prefresh/vite": "^0.10.0",
+    "typescript": "^3.9.3",
+    "vite": "^1.0.0-rc.1"
+  }
+}
