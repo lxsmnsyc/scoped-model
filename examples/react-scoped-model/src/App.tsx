@@ -1,12 +1,11 @@
 import React, { useState, useCallback } from 'react';
-import ReactDOM from 'react-dom';
 import createModel, {
   useSelector,
   useSuspenseSelector,
   useSuspendedState,
   useAsyncSelector,
   useSelectors,
-} from '../../packages/react-scoped-model';
+} from '@lxsmnsyc/react-scoped-model';
 
 interface CounterProps {
   initialCount?: number;
@@ -101,7 +100,6 @@ function AsyncCount() {
   }
 }
 
-
 function IncDec() {
   const [increment, decrement] = useSelectors(Counter, (state) => [
     state.increment,
@@ -150,5 +148,3 @@ export default function App(): JSX.Element {
     </Counter.Provider>
   );
 }
-
-ReactDOM.render(<App />, document.getElementById('root'));
