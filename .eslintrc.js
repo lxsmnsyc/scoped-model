@@ -6,7 +6,9 @@ module.exports = {
     "node": true
   },
   "extends": [
-    "airbnb-base",
+    'plugin:react/recommended',
+    'airbnb',
+    'airbnb/hooks',
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
@@ -52,5 +54,6 @@ module.exports = {
     "import/no-unresolved": "error",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-unsafe-assignment": "off",
+    "react/jsx-filename-extension": [1, { "extensions": [".jsx", ".tsx"] }],
   }
 };

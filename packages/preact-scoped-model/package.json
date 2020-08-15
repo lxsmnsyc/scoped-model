@@ -1,0 +1,44 @@
+{
+  "name": "@lxsmnsyc/preact-scoped-model",
+  "version": "0.1.0",
+  "description": "Scoped Model pattern for Preact",
+  "author": "Alexis Munsayac <alexis.munsayac@gmail.com>",
+  "homepage": "https://github.com/lxsmnsyc/scoped-model",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LXSMNSYC/scoped-model.git"
+  },
+  "bugs": {
+    "url": "https://github.com/LXSMNSYC/scoped-model/issues"
+  },
+  "dependencies": {
+    "preact": "^10.4.7"
+  },
+  "engines": {
+    "node": ">=10"
+  },
+  "scripts": {
+    "start": "tsdx watch",
+    "build": "tsdx build",
+    "test": "tsdx test --passWithNoTests",
+    "prepare": "tsdx build"
+  },
+  "peerDependencies": {
+    "preact": "^10.4.7"
+  },
+  "devDependencies": {
+    "tsdx": "^0.13.2",
+    "tslib": "^2.0.0",
+    "typescript": "^3.9.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
