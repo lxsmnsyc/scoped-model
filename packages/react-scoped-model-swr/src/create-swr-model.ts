@@ -135,7 +135,7 @@ export default function createSWRModel
       const currentFetcher = useFetcher(props);
       const currentConfig = useConfig(props);
 
-      return useSWR(currentKey, currentFetcher, currentConfig);
+      return { ...useSWR(currentKey, currentFetcher, currentConfig) };
     },
     options,
   );

@@ -122,7 +122,7 @@ export default function createSWRInfiniteModel
       const currentFetcher = useFetcher(props);
       const currentConfig = useConfig(props);
 
-      return useSWRInfinite(currentKey, currentFetcher, currentConfig);
+      return { ...useSWRInfinite(currentKey, currentFetcher, currentConfig) };
     },
     options,
   );
