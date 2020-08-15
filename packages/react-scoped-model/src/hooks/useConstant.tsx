@@ -25,14 +25,14 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import * as React from 'react';
+import { useRef } from 'react';
 
 interface Value<T> {
   value: T;
 }
 
 export default function useConstant<T>(supplier: () => T): T {
-  const ref = React.useRef<Value<T> | null>();
+  const ref = useRef<Value<T> | null>();
 
   if (!ref.current) {
     ref.current = {
