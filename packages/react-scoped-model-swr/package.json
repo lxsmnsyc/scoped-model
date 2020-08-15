@@ -42,7 +42,6 @@
   },
   "dependencies": {
     "@lxsmnsyc/react-scoped-model": "^1.0.0",
-    "prop-types": "^15.7.2",
     "swr": "^0.3.0"
   }
 }
