@@ -35,7 +35,7 @@ import useConstant from './hooks/useConstant';
 
 export type ModelHook<Model, Props extends AccessibleObject> = (props: Props) => Model;
 
-export interface ModelOptions<Props> {
+export interface ModelOptions<Props extends AccessibleObject> {
   displayName?: string;
   propTypes?: WeakValidationMap<Props>;
   defaultProps?: Partial<Props>;
