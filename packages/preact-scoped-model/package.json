@@ -18,9 +18,6 @@
   "bugs": {
     "url": "https://github.com/LXSMNSYC/scoped-model/issues"
   },
-  "dependencies": {
-    "preact": "^10.4.7"
-  },
   "engines": {
     "node": ">=10"
   },
@@ -36,7 +33,8 @@
   "devDependencies": {
     "tsdx": "^0.13.2",
     "tslib": "^2.0.0",
-    "typescript": "^3.9.2"
+    "typescript": "^3.9.2",
+    "preact": "^10.4.7"
   },
   "publishConfig": {
     "access": "public"

@@ -52,7 +52,6 @@ export function createCachedData<T>(
     status: 'pending',
   };
 
-
   cache.set(key, cachedData);
 
   return cachedData;

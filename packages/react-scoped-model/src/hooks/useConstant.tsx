@@ -32,7 +32,7 @@ interface Value<T> {
 }
 
 export default function useConstant<T>(supplier: () => T): T {
-  const ref = useRef<Value<T> | null>();
+  const ref = useRef<Value<T>>();
 
   if (!ref.current) {
     ref.current = {
