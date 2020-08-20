@@ -53,7 +53,7 @@ export interface ScopedModel<Model, Props extends AccessibleObject> {
  * @param useModelHook
  * @param options
  */
-export default function createModel<Model, Props extends AccessibleObject>(
+export default function createModel<Model, Props extends AccessibleObject = AccessibleObject>(
   useModelHook: ModelHook<Model, Props>,
   options: ModelOptions<Props> = {},
 ): ScopedModel<Model, Props> {
