@@ -39,5 +39,5 @@ export default function createSelectorsHook<
   selector: (model: Model) => R,
   shouldUpdate: ListCompare<R> = defaultCompare,
 ): () => R {
-  return () => useSelectors(model, selector, shouldUpdate);
+  return (): R => useSelectors(model, selector, shouldUpdate);
 }

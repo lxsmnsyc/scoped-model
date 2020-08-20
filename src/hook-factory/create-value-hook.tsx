@@ -37,5 +37,5 @@ export default function createValueHook<
   model: ScopedModel<Model, Props>,
   shouldUpdate: Compare<Model> = defaultCompare,
 ): () => Model {
-  return () => useValue(model, shouldUpdate);
+  return (): Model => useValue(model, shouldUpdate);
 }

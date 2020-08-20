@@ -37,5 +37,5 @@ export default function createAsyncSelectorHook<
   model: ScopedModel<Model, Props>,
   selector: (model: Model) => Promise<R>,
 ): () => AsyncState<R> {
-  return () => useAsyncSelector(model, selector);
+  return (): AsyncState<R> => useAsyncSelector(model, selector);
 }

@@ -39,5 +39,5 @@ export default function createSuspendedStateHook<
   selector: (model: Model) => SuspendSelector<R>,
   key: string,
 ): () => R {
-  return () => useSuspendedState(model, selector, key);
+  return (): R => useSuspendedState(model, selector, key);
 }

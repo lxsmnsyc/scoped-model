@@ -38,5 +38,5 @@ export default function createSuspenseSelectorHook<
   selector: (model: Model) => Promise<R>,
   key: string,
 ): () => R {
-  return () => useSuspenseSelector(model, selector, key);
+  return (): R => useSuspenseSelector(model, selector, key);
 }
