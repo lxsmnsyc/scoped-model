@@ -65,9 +65,9 @@ export default function createModel<Model, Props extends AccessibleObject = Acce
   const displayName = options.displayName || 'AnonymousScopedModel';
 
   const Provider: React.FC<Props> = ({ children, ...props }) => {
-    const emitter = useConstant(() => new Notifier<Model>({} as Model));
-
     const model = useModelHook(props as Props);
+  
+    const emitter = useConstant(() => new Notifier(model));
 
     emitter.sync(model);
 
