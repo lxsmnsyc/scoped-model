@@ -28,7 +28,7 @@
 import { useState, useEffect } from 'react';
 import { ScopedModel } from '../create-model';
 import { AccessibleObject } from '../types';
-import { defaultCompare } from '../utils/comparer';
+import { defaultCompare, Compare } from '../utils/comparer';
 import useScopedModelContext from './useScopedModelContext';
 
 /**
@@ -40,7 +40,7 @@ import useScopedModelContext from './useScopedModelContext';
  */
 export default function useValue<Model, Props extends AccessibleObject>(
   model: ScopedModel<Model, Props>,
-  shouldUpdate = defaultCompare,
+  shouldUpdate: Compare<Model> = defaultCompare,
 ): Model {
   const notifier = useScopedModelContext(model);
 

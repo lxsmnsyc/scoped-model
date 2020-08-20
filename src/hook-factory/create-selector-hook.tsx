@@ -27,7 +27,7 @@
  */
 import { ScopedModel } from '../create-model';
 import { AccessibleObject } from '../types';
-import { defaultCompare } from '../utils/comparer';
+import { defaultCompare, Compare } from '../utils/comparer';
 import useSelector from '../hooks/useSelector';
 
 export default function createSelectorHook<
@@ -37,7 +37,7 @@ export default function createSelectorHook<
 >(
   model: ScopedModel<Model, Props>,
   selector: (model: Model) => R,
-  shouldUpdate = defaultCompare,
+  shouldUpdate: Compare<R> = defaultCompare,
 ): () => R {
   return () => useSelector(model, selector, shouldUpdate);
 }

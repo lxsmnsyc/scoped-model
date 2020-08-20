@@ -60,4 +60,6 @@ export { default as useSuspendedState, SuspendSelector } from './hooks/useSuspen
 export * from './types';
 export * from './create-model';
 
+export { Compare, ListCompare } from './utils/comparer';
+
 export default createModel;

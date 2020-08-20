@@ -28,7 +28,7 @@
 import { useState, useEffect } from 'react';
 import { AccessibleObject } from '../types';
 import { ScopedModel } from '../create-model';
-import { defaultCompare } from '../utils/comparer';
+import { defaultCompare, Compare } from '../utils/comparer';
 import useScopedModelContext from './useScopedModelContext';
 
 /**
@@ -48,7 +48,7 @@ import useScopedModelContext from './useScopedModelContext';
 export default function useSelector<Model, Props extends AccessibleObject, R>(
   model: ScopedModel<Model, Props>,
   selector: (model: Model) => R,
-  shouldUpdate = defaultCompare,
+  shouldUpdate: Compare<R> = defaultCompare,
 ): R {
   /**
    * Access context

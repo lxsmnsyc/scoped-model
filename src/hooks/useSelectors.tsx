@@ -28,7 +28,7 @@
 import { useCallback } from 'react';
 import { ScopedModel } from '../create-model';
 import { AccessibleObject } from '../types';
-import { defaultCompare, compareList } from '../utils/comparer';
+import { defaultCompare, compareList, Compare, ListCompare } from '../utils/comparer';
 import useSelector from './useSelector';
 
 /**
@@ -52,9 +52,9 @@ export default function useSelectors<
 >(
   model: ScopedModel<Model, Props>,
   selector: (model: Model) => R,
-  shouldUpdate = defaultCompare,
+  shouldUpdate: ListCompare<R> = defaultCompare,
 ): R {
-  const compare = useCallback((a, b) => (
+  const compare = useCallback<Compare<R>>((a, b) => (
     compareList(a, b, shouldUpdate)
   ), [shouldUpdate]);
   return useSelector(model, selector, compare);
