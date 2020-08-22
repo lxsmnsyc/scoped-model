@@ -26,15 +26,15 @@
  * @copyright Alexis Munsayac 2020
  */
 import { Dispatch, useReducer, Reducer } from 'react';
-import createModel, { ScopedModel, ModelOptions } from '../create-model';
-import { AccessibleObject } from '../types';
+import createNullaryModel, { NullaryScopedModelOptions, NullaryScopedModel } from './create-nullary-model';
 
-export type ReducerScopedModel<S, A> = ScopedModel<[S, Dispatch<A>], AccessibleObject>;
+export type ReducerScopedModel<S, A> = NullaryScopedModel<[S, Dispatch<A>]>;
+export type ReducerScopedModelOptions = NullaryScopedModelOptions;
 
 export default function createReducerModel<S, A>(
   reducer: Reducer<S, A>,
   initialState: S,
-  options?: ModelOptions<AccessibleObject>,
+  options?: ReducerScopedModelOptions,
 ): ReducerScopedModel<S, A> {
-  return createModel(() => useReducer(reducer, initialState), options);
+  return createNullaryModel(() => useReducer(reducer, initialState), options);
 }

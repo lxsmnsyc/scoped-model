@@ -25,20 +25,21 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { useState, Dispatch, SetStateAction } from 'react';
-import createNullaryModel, {
-  NullaryScopedModel,
-  NullaryScopedModelOptions,
-} from './create-nullary-model';
+import { AccessibleObject } from '../types';
+import createModel, { ModelOptions, ScopedModel } from '../create-model';
 
-export type InitialState<T> = T | (() => T);
+export type NullaryScopedModel<Model> = ScopedModel<Model, AccessibleObject>;
+export type NullaryScopedModelHook<Model> = () => Model;
+export type NullaryScopedModelOptions = Omit<ModelOptions<AccessibleObject>, 'shouldUpdate' | 'propTypes' | 'defaultProps'>;
 
-export type StateScopedModel<T> = NullaryScopedModel<[T, Dispatch<SetStateAction<T>>]>;
-export type StateModelOptions = NullaryScopedModelOptions;
+const NEVER_UPDATE = () => true;
 
-export default function createStateModel<T>(
-  initialState: InitialState<T>,
-  options?: StateModelOptions,
-): StateScopedModel<T> {
-  return createNullaryModel(() => useState(initialState), options);
+export default function createNullaryModel<Model>(
+  useModelHook: NullaryScopedModelHook<Model>,
+  options?: NullaryScopedModelOptions,
+): NullaryScopedModel<Model> {
+  return createModel(useModelHook, {
+    displayName: options?.displayName,
+    shouldUpdate: NEVER_UPDATE,
+  });
 }

@@ -68,7 +68,7 @@ export default function useAsyncSelector<Model, Props extends AccessibleObject, 
     );
 
     return () => {
-      mounted = true;
+      mounted = false;
     };
   }, [notifier, selector]);
 

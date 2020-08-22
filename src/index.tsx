@@ -29,12 +29,20 @@ import createModel from './create-model';
 
 // Model factory
 export {
+  default as createNullaryModel,
+  NullaryScopedModel,
+  NullaryScopedModelHook,
+  NullaryScopedModelOptions
+} from './model-factory/create-nullary-model';
+export {
   default as createStateModel,
   StateScopedModel,
+  StateModelOptions,
 } from './model-factory/create-state-model';
 export {
   default as createReducerModel,
   ReducerScopedModel,
+  ReducerScopedModelOptions,
 } from './model-factory/create-reducer-model';
 export {
   default as createPropsSelectorModel,
