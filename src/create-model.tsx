@@ -26,24 +26,31 @@
  * @copyright Alexis Munsayac 2020
  */
 import React, {
-  createContext, Context, useEffect, WeakValidationMap,
+  createContext, Context, useEffect, WeakValidationMap, useContext,
 } from 'react';
 import * as PropTypes from 'prop-types';
 import { AccessibleObject } from './types';
 import Notifier from './notifier';
 import useConstant from './hooks/useConstant';
+import MissingScopedModelError from './utils/MissingScopedModelError';
+import generateId from './utils/id';
 
 export type ModelHook<Model, Props extends AccessibleObject> = (props: Props) => Model;
 
-export interface ModelOptions<Props> {
+export type ModelMemo<Props extends AccessibleObject> =
+  (prev: Props, next: Props) => boolean;
+
+export interface ModelOptions<Props extends AccessibleObject> {
   displayName?: string;
   propTypes?: WeakValidationMap<Props>;
   defaultProps?: Partial<Props>;
+  shouldUpdate?: ModelMemo<Props>;
 }
 
 export interface ScopedModel<Model, Props extends AccessibleObject> {
   context: Context<Notifier<Model> | null>;
   Provider: React.FC<Props>;
+  displayName: string;
 }
 
 /**
@@ -58,16 +65,21 @@ export default function createModel<Model, Props extends AccessibleObject = Acce
   options: ModelOptions<Props> = {},
 ): ScopedModel<Model, Props> {
   const context = createContext<Notifier<Model> | null>(null);
+  const id = generateId();
 
   /**
    * Display name for the model
    */
-  const displayName = options.displayName || 'AnonymousScopedModel';
+  const displayName = options.displayName || `ScopedModel-${id}`;
 
-  const Provider: React.FC<Props> = ({ children, ...props }) => {
-    const model = useModelHook(props as Props);
+  const ProcessorInner: React.FC<Props> = (props) => {
+    const emitter = useContext(context);
   
-    const emitter = useConstant(() => new Notifier(model));
+    if (!emitter) {
+      throw new MissingScopedModelError(displayName);
+    }
+
+    const model = useModelHook(props as Props);
 
     emitter.sync(model);
 
@@ -75,8 +87,23 @@ export default function createModel<Model, Props extends AccessibleObject = Acce
       emitter.consume(model);
     }, [emitter, model]);
 
+    return null;
+  };
+
+  const Processor = React.memo(
+    ProcessorInner,
+    options.shouldUpdate,
+  );
+
+  ProcessorInner.displayName = `${displayName}.Processor`;
+  Processor.displayName = `${displayName}.Processor`;
+
+  const Provider: React.FC<Props> = ({ children, ...props }) => {
+    const emitter = useConstant(() => new Notifier({} as Model));
+
     return (
       <context.Provider value={emitter}>
+        <Processor {...props as Props} />
         { children }
       </context.Provider>
     );
@@ -102,9 +129,11 @@ export default function createModel<Model, Props extends AccessibleObject = Acce
    * Display name for the Provider
    */
   Provider.displayName = displayName;
+  context.displayName = displayName;
 
   return {
     context,
     Provider,
+    displayName,
   };
 }

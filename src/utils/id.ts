@@ -25,20 +25,10 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { useContext } from 'react';
-import { ScopedModel } from '../create-model';
-import Notifier from '../notifier';
-import MissingScopedModelError from '../utils/MissingScopedModelError';
-import { AccessibleObject } from '../types';
+let ID = 0;
 
-export default function useScopedModelContext<Model, Props extends AccessibleObject>(
-  model: ScopedModel<Model, Props>,
-): Notifier<Model> {
-  const context = useContext(model.context);
-
-  if (!context) {
-    throw new MissingScopedModelError(model.displayName);
-  }
-
-  return context;
+export default function generateId() {
+  const current = ID;
+  ID = ID + 1;
+  return current;
 }
