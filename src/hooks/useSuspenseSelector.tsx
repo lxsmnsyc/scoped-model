@@ -26,9 +26,8 @@
  * @copyright Alexis Munsayac 2020
  */
 import { useEffect } from 'react';
-import { ScopedModel } from '../create-model';
+import { ScopedModel, ScopedModelModelType } from '../create-model';
 import useScopedModelContext from './useScopedModelContext';
-import { AccessibleObject } from '../types';
 import useForceUpdate from './useForceUpdate';
 import { suspendCacheData, createCachedData } from '../create-cached-data';
 
@@ -41,9 +40,9 @@ import { suspendCacheData, createCachedData } from '../create-cached-data';
  * @param selector selector function
  * @param key for caching purposes
  */
-export default function useSuspenseSelector<Model, Props extends AccessibleObject, R>(
-  model: ScopedModel<Model, Props>,
-  selector: (model: Model) => Promise<R>,
+export default function useSuspenseSelector<T extends ScopedModel<any, any>, R>(
+  model: T,
+  selector: (model: ScopedModelModelType<T>) => Promise<R>,
   key: string,
 ): R {
   const notifier = useScopedModelContext(model);
@@ -51,7 +50,7 @@ export default function useSuspenseSelector<Model, Props extends AccessibleObjec
   const forceUpdate = useForceUpdate();
 
   useEffect(() => {
-    const callback = (next: Model): void => {
+    const callback = (next: ScopedModelModelType<T>): void => {
       createCachedData(selector(next), key, notifier.cache);
 
       forceUpdate();

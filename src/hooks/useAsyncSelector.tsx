@@ -27,8 +27,8 @@
  */
 
 import { useState, useEffect } from 'react';
-import { ScopedModel } from '../create-model';
-import { AccessibleObject, AsyncState } from '../types';
+import { ScopedModel, ScopedModelModelType } from '../create-model';
+import { AsyncState } from '../types';
 import useScopedModelContext from './useScopedModelContext';
 
 /**
@@ -37,9 +37,9 @@ import useScopedModelContext from './useScopedModelContext';
  *
  * @param selector selector function
  */
-export default function useAsyncSelector<Model, Props extends AccessibleObject, R>(
-  model: ScopedModel<Model, Props>,
-  selector: (model: Model) => Promise<R>,
+export default function useAsyncSelector<T extends ScopedModel<any, any>, R>(
+  model: T,
+  selector: (model: ScopedModelModelType<T>) => Promise<R>,
 ): AsyncState<R> {
   const notifier = useScopedModelContext(model);
 
@@ -75,7 +75,7 @@ export default function useAsyncSelector<Model, Props extends AccessibleObject, 
   useEffect(() => {
     let mounted = true;
 
-    const callback = (next: Model) => {
+    const callback = (next: ScopedModelModelType<T>) => {
       setState({ status: 'pending' });
 
       selector(next).then(

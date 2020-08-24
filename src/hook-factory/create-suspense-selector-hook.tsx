@@ -25,18 +25,16 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { ScopedModel } from '../create-model';
-import { AccessibleObject } from '../types';
+import { ScopedModel, ScopedModelModelType } from '../create-model';
 import useSuspenseSelector from '../hooks/useSuspenseSelector';
 
 export default function createSuspenseSelectorHook<
-  Model,
-  Props extends AccessibleObject,
+  T extends ScopedModel<any, any>,
   R,
 >(
-  model: ScopedModel<Model, Props>,
-  selector: (model: Model) => Promise<R>,
+  model: T,
+  selector: (model: ScopedModelModelType<T>) => Promise<R>,
   key: string,
 ): () => R {
-  return (): R => useSuspenseSelector(model, selector, key);
+  return () => useSuspenseSelector(model, selector, key);
 }

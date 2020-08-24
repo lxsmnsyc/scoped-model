@@ -35,23 +35,30 @@ import useConstant from './hooks/useConstant';
 import MissingScopedModelError from './utils/MissingScopedModelError';
 import generateId from './utils/id';
 
-export type ModelHook<Model, Props extends AccessibleObject> = (props: Props) => Model;
+export type ScopedModelHook<Model, Props extends AccessibleObject = AccessibleObject> =
+  (props: Props) => Model;
 
-export type ModelMemo<Props extends AccessibleObject> =
+export type ScopedModelMemo<Props extends AccessibleObject = AccessibleObject> =
   (prev: Props, next: Props) => boolean;
 
-export interface ModelOptions<Props extends AccessibleObject> {
+
+export interface ScopedModelOptions<Props extends AccessibleObject = AccessibleObject> {
   displayName?: string;
   propTypes?: WeakValidationMap<Props>;
   defaultProps?: Partial<Props>;
-  shouldUpdate?: ModelMemo<Props>;
+  shouldUpdate?: ScopedModelMemo<Props>;
 }
 
-export interface ScopedModel<Model, Props extends AccessibleObject> {
+export interface ScopedModel<Model, Props extends AccessibleObject = AccessibleObject> {
   context: Context<Notifier<Model> | null>;
   Provider: React.FC<Props>;
   displayName: string;
 }
+
+export type ScopedModelModelType<T> =
+  T extends ScopedModel<infer U, any> ? U : T;
+export type ScopedModelPropsType<T> =
+  T extends ScopedModel<any, infer U> ? U : T;
 
 /**
  * Creates a scoped model instance that generates a state from a given
@@ -61,8 +68,8 @@ export interface ScopedModel<Model, Props extends AccessibleObject> {
  * @param options
  */
 export default function createModel<Model, Props extends AccessibleObject = AccessibleObject>(
-  useModelHook: ModelHook<Model, Props>,
-  options: ModelOptions<Props> = {},
+  useModelHook: ScopedModelHook<Model, Props>,
+  options: ScopedModelOptions<Props> = {},
 ): ScopedModel<Model, Props> {
   const context = createContext<Notifier<Model> | null>(null);
   const id = generateId();
