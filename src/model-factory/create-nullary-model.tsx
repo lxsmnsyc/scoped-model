@@ -28,8 +28,7 @@
 import { AccessibleObject } from '../types';
 import createModel, { ScopedModelOptions, ScopedModel } from '../create-model';
 
-export type NullaryScopedModel<Model> =
-  ScopedModel<Model, AccessibleObject>;
+export type NullaryScopedModel<Model> = ScopedModel<Model>;
 export type NullaryScopedModelHook<Model> =
   () => Model;
 export type NullaryScopedModelOptions =
