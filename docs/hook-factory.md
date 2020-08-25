@@ -29,7 +29,8 @@ const seconds = useTimerSeconds();
 - `createAsyncSelector`: creates a hook based on [useAsyncSelector](/docs/hooks/use-async-selector.md).
 - `createSuspenseSelector`: creates a hook based on [useSuspenseSelector](/docs/hooks/use-suspense-selector.md).
 - `createSuspendedState`: creates a hook based on [useSuspendedState](/docs/hooks/use-suspended-state.md)`.
-
+- `createValueOnce`: a non-reactive hook that receives the model once similar to `useValue`.
+- `createSelectorOnce`: a non-reactive hook that receives a transformed value once similar to `useSelector`.
 ## See Also
 - [Create Model](/docs/create-model.md)
 - [Model Factory](/docs/model-factory.md)
