@@ -26,25 +26,39 @@
  * @copyright Alexis Munsayac 2020
  */
 import React, {
-  createContext, Context, useEffect, WeakValidationMap,
+  createContext, Context, useEffect, WeakValidationMap, useContext,
 } from 'react';
 import * as PropTypes from 'prop-types';
 import { AccessibleObject } from './types';
 import Notifier from './notifier';
 import useConstant from './hooks/useConstant';
+import MissingScopedModelError from './utils/MissingScopedModelError';
+import generateId from './utils/id';
 
-export type ModelHook<Model, Props extends AccessibleObject> = (props: Props) => Model;
+export type ScopedModelHook<Model, Props extends AccessibleObject = AccessibleObject> =
+  (props: Props) => Model;
 
-export interface ModelOptions<Props extends AccessibleObject> {
+export type ScopedModelMemo<Props extends AccessibleObject = AccessibleObject> =
+  (prev: Props, next: Props) => boolean;
+
+
+export interface ScopedModelOptions<Props extends AccessibleObject = AccessibleObject> {
   displayName?: string;
   propTypes?: WeakValidationMap<Props>;
   defaultProps?: Partial<Props>;
+  shouldUpdate?: ScopedModelMemo<Props>;
 }
 
-export interface ScopedModel<Model, Props extends AccessibleObject> {
+export interface ScopedModel<Model, Props extends AccessibleObject = AccessibleObject> {
   context: Context<Notifier<Model> | null>;
   Provider: React.FC<Props>;
+  displayName: string;
 }
+
+export type ScopedModelModelType<T> =
+  T extends ScopedModel<infer U, any> ? U : T;
+export type ScopedModelPropsType<T> =
+  T extends ScopedModel<any, infer U> ? U : T;
 
 /**
  * Creates a scoped model instance that generates a state from a given
@@ -53,19 +67,24 @@ export interface ScopedModel<Model, Props extends AccessibleObject> {
  * @param useModelHook
  * @param options
  */
-export default function createModel<Model, Props extends AccessibleObject>(
-  useModelHook: ModelHook<Model, Props>,
-  options: ModelOptions<Props> = {},
+export default function createModel<Model, Props extends AccessibleObject = AccessibleObject>(
+  useModelHook: ScopedModelHook<Model, Props>,
+  options: ScopedModelOptions<Props> = {},
 ): ScopedModel<Model, Props> {
   const context = createContext<Notifier<Model> | null>(null);
+  const id = generateId();
 
   /**
    * Display name for the model
    */
-  const displayName = options.displayName || 'AnonymousScopedModel';
+  const displayName = options.displayName || `ScopedModel-${id}`;
 
-  const Provider: React.FC<Props> = ({ children, ...props }) => {
-    const emitter = useConstant(() => new Notifier<Model>({} as Model));
+  const ProcessorInner: React.FC<Props> = (props) => {
+    const emitter = useContext(context);
+  
+    if (!emitter) {
+      throw new MissingScopedModelError(displayName);
+    }
 
     const model = useModelHook(props as Props);
 
@@ -75,8 +94,23 @@ export default function createModel<Model, Props extends AccessibleObject>(
       emitter.consume(model);
     }, [emitter, model]);
 
+    return null;
+  };
+
+  const Processor = React.memo(
+    ProcessorInner,
+    options.shouldUpdate,
+  );
+
+  ProcessorInner.displayName = `${displayName}.Processor`;
+  Processor.displayName = `${displayName}.Processor`;
+
+  const Provider: React.FC<Props> = ({ children, ...props }) => {
+    const emitter = useConstant(() => new Notifier({} as Model));
+
     return (
       <context.Provider value={emitter}>
+        <Processor {...props as Props} />
         { children }
       </context.Provider>
     );
@@ -102,9 +136,11 @@ export default function createModel<Model, Props extends AccessibleObject>(
    * Display name for the Provider
    */
   Provider.displayName = displayName;
+  context.displayName = displayName;
 
   return {
     context,
     Provider,
+    displayName,
   };
 }

@@ -25,10 +25,10 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { MutableRefObject } from 'react';
+import * as React from 'react';
 import useConstant from './useConstant';
 
-export default function useRefSupplier<T>(supplier: () => T): MutableRefObject<T> {
+export default function useRefSupplier<T>(supplier: () => T): React.MutableRefObject<T> {
   return useConstant(() => ({
     current: supplier(),
   }));

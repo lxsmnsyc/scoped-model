@@ -26,16 +26,14 @@
  * @copyright Alexis Munsayac 2020
  */
 import { ScopedModel, ScopedModelModelType } from '../create-model';
-import { defaultCompare, Compare } from '../utils/comparer';
-import useSelector from '../hooks/useSelector';
+import useSelectorOnce from '../hooks/useSelectorOnce';
 
-export default function createSelectorHook<
+export default function createSelectorOnceHook<
   T extends ScopedModel<any, any>,
   R,
 >(
   model: T,
   selector: (model: ScopedModelModelType<T>) => R,
-  shouldUpdate: Compare<R> = defaultCompare,
 ): () => R {
-  return () => useSelector(model, selector, shouldUpdate);
+  return () => useSelectorOnce(model, selector);
 }

@@ -25,17 +25,21 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { ScopedModel, ScopedModelModelType } from '../create-model';
-import { defaultCompare, Compare } from '../utils/comparer';
-import useSelector from '../hooks/useSelector';
 
-export default function createSelectorHook<
-  T extends ScopedModel<any, any>,
-  R,
->(
+import { ScopedModel, ScopedModelModelType } from '../create-model';
+import useConsume from './useValueOnce';
+
+/**
+ * Receives and transforms the model's state. Unlike useSelector,
+ * useSelectorOnce does not reactively update to the model's state.
+ * @param model 
+ * @param selector 
+ */
+export default function useSelectorOnce<T extends ScopedModel<any, any>, R>(
   model: T,
   selector: (model: ScopedModelModelType<T>) => R,
-  shouldUpdate: Compare<R> = defaultCompare,
-): () => R {
-  return () => useSelector(model, selector, shouldUpdate);
+): R {
+  const context = useConsume(model);
+
+  return selector(context);
 }

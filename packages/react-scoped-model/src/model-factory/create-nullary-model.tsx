@@ -25,17 +25,23 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { ScopedModel, ScopedModelModelType } from '../create-model';
-import { defaultCompare, Compare } from '../utils/comparer';
-import useSelector from '../hooks/useSelector';
+import { AccessibleObject } from '../types';
+import createModel, { ScopedModelOptions, ScopedModel } from '../create-model';
 
-export default function createSelectorHook<
-  T extends ScopedModel<any, any>,
-  R,
->(
-  model: T,
-  selector: (model: ScopedModelModelType<T>) => R,
-  shouldUpdate: Compare<R> = defaultCompare,
-): () => R {
-  return () => useSelector(model, selector, shouldUpdate);
+export type NullaryScopedModel<Model> = ScopedModel<Model>;
+export type NullaryScopedModelHook<Model> =
+  () => Model;
+export type NullaryScopedModelOptions =
+  Omit<ScopedModelOptions<AccessibleObject>, 'shouldUpdate' | 'propTypes' | 'defaultProps'>;
+
+const NEVER_UPDATE = () => true;
+
+export default function createNullaryModel<Model>(
+  useModelHook: NullaryScopedModelHook<Model>,
+  options?: NullaryScopedModelOptions,
+): NullaryScopedModel<Model> {
+  return createModel(useModelHook, {
+    displayName: options?.displayName,
+    shouldUpdate: NEVER_UPDATE,
+  });
 }

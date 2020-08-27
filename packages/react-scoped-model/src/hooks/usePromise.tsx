@@ -25,7 +25,7 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { useRef, DependencyList, useCallback } from 'react';
+import * as React from 'react';
 import useIsomorphicEffect from './useIsomorphicEffect';
 
 export type PromiseWrapper = <T>(promise: Promise<T>) => Promise<T>;
@@ -34,8 +34,8 @@ export interface Cleaner {
   flag: boolean;
 }
 
-export default function usePromise(deps?: DependencyList): PromiseWrapper {
-  const ref = useRef({ flag: false });
+export default function usePromise(deps?: React.DependencyList): PromiseWrapper {
+  const ref = React.useRef({ flag: false });
 
   useIsomorphicEffect(() => {
     const state = {
@@ -49,7 +49,7 @@ export default function usePromise(deps?: DependencyList): PromiseWrapper {
     };
   }, deps);
 
-  return useCallback((promise: Promise<any>) => new Promise((resolve, reject) => {
+  return React.useCallback((promise: Promise<any>) => new Promise((resolve, reject) => {
     const state = ref.current;
     promise.then(
       (value) => state.flag && resolve(value),

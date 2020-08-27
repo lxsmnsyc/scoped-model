@@ -26,9 +26,8 @@
  * @copyright Alexis Munsayac 2020
  */
 import { useEffect } from 'react';
-import { AccessibleObject } from '../types';
 import useScopedModelContext from './useScopedModelContext';
-import { ScopedModel } from '../create-model';
+import { ScopedModel, ScopedModelModelType } from '../create-model';
 import useForceUpdate from './useForceUpdate';
 import { suspendCacheData, createCachedData } from '../create-cached-data';
 import Notifier from '../notifier';
@@ -71,9 +70,9 @@ function captureSuspendedValue<Model, R>(
  * @param selector selector function
  * @param key for caching purposes
  */
-export default function useSuspendedState<Model, Props extends AccessibleObject, R>(
-  model: ScopedModel<Model, Props>,
-  selector: (model: Model) => SuspendSelector<R>,
+export default function useSuspendedState<T extends ScopedModel<any, any>, R>(
+  model: T,
+  selector: (model: ScopedModelModelType<T>) => SuspendSelector<R>,
   key: string,
 ): R {
   const notifier = useScopedModelContext(model);
@@ -81,7 +80,7 @@ export default function useSuspendedState<Model, Props extends AccessibleObject,
   const forceUpdate = useForceUpdate();
 
   useEffect(() => {
-    const callback = (next: Model): void => {
+    const callback = (next: ScopedModelModelType<T>): void => {
       captureSuspendedValue(
         notifier,
         next,

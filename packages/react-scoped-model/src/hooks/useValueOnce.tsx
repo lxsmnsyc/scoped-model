@@ -26,16 +26,17 @@
  * @copyright Alexis Munsayac 2020
  */
 import { ScopedModel, ScopedModelModelType } from '../create-model';
-import { defaultCompare, Compare } from '../utils/comparer';
-import useSelector from '../hooks/useSelector';
+import useScopedModelContext from './useScopedModelContext';
 
-export default function createSelectorHook<
-  T extends ScopedModel<any, any>,
-  R,
->(
-  model: T,
-  selector: (model: ScopedModelModelType<T>) => R,
-  shouldUpdate: Compare<R> = defaultCompare,
-): () => R {
-  return () => useSelector(model, selector, shouldUpdate);
+/**
+ * Receives the model's state. Unlike useValue, useConsume does
+ * not reactively update to the current model's state.
+ * @param model
+ */
+export default function useValueOnce<T extends ScopedModel<any, any>>(
+  model: T
+): ScopedModelModelType<T> {
+  const context = useScopedModelContext(model);
+
+  return context.value;
 }
