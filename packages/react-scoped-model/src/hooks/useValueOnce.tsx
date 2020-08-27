@@ -33,8 +33,8 @@ import useScopedModelContext from './useScopedModelContext';
  * not reactively update to the current model's state.
  * @param model
  */
-export default function useValueOnce<T extends ScopedModel<any, any>>(
-  model: T
+export default function useValueOnce<T extends ScopedModel<unknown>>(
+  model: T,
 ): ScopedModelModelType<T> {
   const context = useScopedModelContext(model);
 
