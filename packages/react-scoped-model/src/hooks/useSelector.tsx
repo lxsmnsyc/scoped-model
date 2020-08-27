@@ -31,6 +31,7 @@ import { defaultCompare, Compare } from '../utils/comparer';
 import useScopedModelContext from './useScopedModelContext';
 import useIsomorphicEffect from './useIsomorphicEffect';
 
+
 /**
  * Transforms the model's state and listens for the returned value change.
  *

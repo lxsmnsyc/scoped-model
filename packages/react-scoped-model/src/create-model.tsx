@@ -81,7 +81,6 @@ export default function createModel<Model, Props extends AccessibleObject = Acce
 
   const ProcessorInner: React.FC<Props> = (props) => {
     const emitter = useContext(context);
-
     if (!emitter) {
       throw new MissingScopedModelError(displayName);
     }

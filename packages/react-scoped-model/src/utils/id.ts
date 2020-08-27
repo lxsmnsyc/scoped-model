@@ -27,8 +27,8 @@
  */
 let ID = 0;
 
-export default function generateId(): number {
+export default function generateId() {
   const current = ID;
-  ID += 1;
+  ID = ID + 1;
   return current;
 }

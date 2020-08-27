@@ -25,7 +25,6 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-
 import { useState } from 'react';
 import { ScopedModel, ScopedModelModelType } from '../create-model';
 import { AsyncState } from '../types';

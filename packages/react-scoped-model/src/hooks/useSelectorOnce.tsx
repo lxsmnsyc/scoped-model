@@ -27,17 +27,19 @@
  */
 
 import { ScopedModel, ScopedModelModelType } from '../create-model';
-import useValueOnce from './useValueOnce';
+import useConsume from './useValueOnce';
 
 /**
  * Receives and transforms the model's state. Unlike useSelector,
  * useSelectorOnce does not reactively update to the model's state.
- * @param model
- * @param selector
+ * @param model 
+ * @param selector 
  */
-export default function useSelectorOnce<T extends ScopedModel<unknown>, R>(
+export default function useSelectorOnce<T extends ScopedModel<any, any>, R>(
   model: T,
   selector: (model: ScopedModelModelType<T>) => R,
 ): R {
-  return selector(useValueOnce(model));
+  const context = useConsume(model);
+
+  return selector(context);
 }

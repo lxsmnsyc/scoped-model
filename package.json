@@ -27,7 +27,14 @@
   "version": "0.1.0",
   "description": "Contextual State Management",
   "main": "index.js",
-  "repository": "https://github.com/LXSMNSYC/scoped-model.git",
   "author": "Alexis Munsayac <alexis.munsayac@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "url": "https://github.com/lxsmnsyc/scoped-model.git",
+    "type": "git"
+  },
+  "homepage": "https://github.com/lxsmnsyc/scoped-model",
+  "bugs": {
+    "url": "https://github.com/lxsmnsyc/scoped-model/issues"
+  }
 }

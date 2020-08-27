@@ -29,12 +29,14 @@ import { ScopedModel, ScopedModelModelType } from '../create-model';
 import useScopedModelContext from './useScopedModelContext';
 
 /**
- * Receives the model's state. Unlike useValue, useValueOnce does
+ * Receives the model's state. Unlike useValue, useConsume does
  * not reactively update to the current model's state.
  * @param model
  */
-export default function useValueOnce<T extends ScopedModel<unknown>>(
-  model: T,
+export default function useValueOnce<T extends ScopedModel<any, any>>(
+  model: T
 ): ScopedModelModelType<T> {
-  return useScopedModelContext(model).value;
+  const context = useScopedModelContext(model);
+
+  return context.value;
 }

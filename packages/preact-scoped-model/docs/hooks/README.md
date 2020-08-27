@@ -9,4 +9,5 @@
 - [useAsyncSelector](/docs/hooks/use-async-selector.md)
 - [useSuspenseSelector](/docs/hooks/use-suspense-selector.md)
 - [useSuspendedState](/docs/hooks/use-suspended-state.md)
-
+- [useValueOnce](/docs/hooks/use-value-once.md)
+- [useSelectorOnce](/docs/hooks/use-selector-once.md)
