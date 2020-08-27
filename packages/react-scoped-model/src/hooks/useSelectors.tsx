@@ -27,7 +27,9 @@
  */
 import { useCallback } from 'react';
 import { ScopedModel, ScopedModelModelType } from '../create-model';
-import { defaultCompare, compareList, Compare, ListCompare } from '../utils/comparer';
+import {
+  defaultCompare, compareList, Compare, ListCompare,
+} from '../utils/comparer';
 import useSelector from './useSelector';
 
 /**
@@ -45,7 +47,7 @@ import useSelector from './useSelector';
  * and if it should replace the previous value and perform an update.
  */
 export default function useSelectors<
-  T extends ScopedModel<any, any>,
+  T extends ScopedModel<unknown>,
   R extends any[],
 >(
   model: T,

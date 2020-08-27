@@ -26,7 +26,7 @@
  * @copyright Alexis Munsayac 2020
  */
 import React, {
-  createContext, Context, useEffect, WeakValidationMap, useContext,
+  createContext, Context, WeakValidationMap, useContext,
 } from 'react';
 import * as PropTypes from 'prop-types';
 import { AccessibleObject } from './types';
@@ -34,13 +34,13 @@ import Notifier from './notifier';
 import useConstant from './hooks/useConstant';
 import MissingScopedModelError from './utils/MissingScopedModelError';
 import generateId from './utils/id';
+import useIsomorphicEffect from './hooks/useIsomorphicEffect';
 
 export type ScopedModelHook<Model, Props extends AccessibleObject = AccessibleObject> =
   (props: Props) => Model;
 
 export type ScopedModelMemo<Props extends AccessibleObject = AccessibleObject> =
   (prev: Props, next: Props) => boolean;
-
 
 export interface ScopedModelOptions<Props extends AccessibleObject = AccessibleObject> {
   displayName?: string;
@@ -56,9 +56,9 @@ export interface ScopedModel<Model, Props extends AccessibleObject = AccessibleO
 }
 
 export type ScopedModelModelType<T> =
-  T extends ScopedModel<infer U, any> ? U : T;
+  T extends ScopedModel<infer U> ? U : T;
 export type ScopedModelPropsType<T> =
-  T extends ScopedModel<any, infer U> ? U : T;
+  T extends ScopedModel<unknown, infer U> ? U : T;
 
 /**
  * Creates a scoped model instance that generates a state from a given
@@ -81,7 +81,7 @@ export default function createModel<Model, Props extends AccessibleObject = Acce
 
   const ProcessorInner: React.FC<Props> = (props) => {
     const emitter = useContext(context);
-  
+
     if (!emitter) {
       throw new MissingScopedModelError(displayName);
     }
@@ -90,7 +90,7 @@ export default function createModel<Model, Props extends AccessibleObject = Acce
 
     emitter.sync(model);
 
-    useEffect(() => {
+    useIsomorphicEffect(() => {
       emitter.consume(model);
     }, [emitter, model]);
 

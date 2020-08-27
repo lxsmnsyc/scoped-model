@@ -29,12 +29,20 @@ import createModel from './create-model';
 
 // Model factory
 export {
+  default as createNullaryModel,
+  NullaryScopedModel,
+  NullaryScopedModelHook,
+  NullaryScopedModelOptions,
+} from './model-factory/create-nullary-model';
+export {
   default as createStateModel,
   StateScopedModel,
+  StateModelOptions,
 } from './model-factory/create-state-model';
 export {
   default as createReducerModel,
   ReducerScopedModel,
+  ReducerScopedModelOptions,
 } from './model-factory/create-reducer-model';
 export {
   default as createPropsSelectorModel,
@@ -48,6 +56,8 @@ export { default as createAsyncSelector } from './hook-factory/create-async-sele
 export { default as createSuspendedState } from './hook-factory/create-suspended-state-hook';
 export { default as createSuspenseSelector } from './hook-factory/create-suspense-selector-hook';
 export { default as createValue } from './hook-factory/create-value-hook';
+export { default as createValueOnce } from './hook-factory/create-value-once-hook';
+export { default as createSelectorOnce } from './hook-factory/create-selector-once-hook';
 
 // Hooks
 export { default as useValue } from './hooks/useValue';
@@ -56,8 +66,12 @@ export { default as useSelectors } from './hooks/useSelectors';
 export { default as useAsyncSelector } from './hooks/useAsyncSelector';
 export { default as useSuspenseSelector } from './hooks/useSuspenseSelector';
 export { default as useSuspendedState, SuspendSelector } from './hooks/useSuspendedState';
+export { default as useValueOnce } from './hooks/useValueOnce';
+export { default as useSelectorOnce } from './hooks/useSelectorOnce';
 
 export * from './types';
 export * from './create-model';
+
+export { Compare, ListCompare } from './utils/comparer';
 
 export default createModel;

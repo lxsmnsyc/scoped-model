@@ -29,7 +29,7 @@ import { ScopedModel, ScopedModelModelType } from '../create-model';
 import useSelectorOnce from '../hooks/useSelectorOnce';
 
 export default function createSelectorOnceHook<
-  T extends ScopedModel<any, any>,
+  T extends ScopedModel<unknown>,
   R,
 >(
   model: T,

@@ -25,36 +25,19 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { useRef, useCallback, Inputs } from 'preact/hooks';
-import useIsomorphicEffect from './useIsomorphicEffect';
 
-export type PromiseWrapper = <T>(promise: Promise<T>) => Promise<T>;
+import { ScopedModel, ScopedModelModelType } from '../create-model';
+import useValueOnce from './useValueOnce';
 
-export interface Cleaner {
-  flag: boolean;
-}
-
-export default function usePromise(deps?: Inputs): PromiseWrapper {
-  const ref = useRef({ flag: false });
-
-  useIsomorphicEffect(() => {
-    const state = {
-      flag: true,
-    };
-
-    ref.current = state;
-
-    return () => {
-      state.flag = false;
-    };
-  }, deps);
-
-  return useCallback((promise: Promise<any>) => new Promise((resolve, reject) => {
-    const state = ref.current;
-    promise.then(
-      (value) => state.flag && resolve(value),
-      (error) => state.flag && reject(error),
-    );
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }), deps || [{}]);
+/**
+ * Receives and transforms the model's state. Unlike useSelector,
+ * useSelectorOnce does not reactively update to the model's state.
+ * @param model
+ * @param selector
+ */
+export default function useSelectorOnce<T extends ScopedModel<unknown>, R>(
+  model: T,
+  selector: (model: ScopedModelModelType<T>) => R,
+): R {
+  return selector(useValueOnce(model));
 }

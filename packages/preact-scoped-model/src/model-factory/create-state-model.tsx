@@ -26,16 +26,19 @@
  * @copyright Alexis Munsayac 2020
  */
 import { useState, StateUpdater } from 'preact/hooks';
-import createModel, { ScopedModel, ModelOptions } from '../create-model';
-import { AccessibleObject } from '../types';
+import createNullaryModel, {
+  NullaryScopedModel,
+  NullaryScopedModelOptions,
+} from './create-nullary-model';
 
 export type InitialState<T> = T | (() => T);
 
-export type StateScopedModel<T> = ScopedModel<[T, StateUpdater<T>], AccessibleObject>;
+export type StateScopedModel<T> = NullaryScopedModel<[T, StateUpdater<T>]>;
+export type StateModelOptions = NullaryScopedModelOptions;
 
 export default function createStateModel<T>(
   initialState: InitialState<T>,
-  options?: ModelOptions<AccessibleObject>,
+  options?: StateModelOptions,
 ): StateScopedModel<T> {
-  return createModel(() => useState(initialState), options);
+  return createNullaryModel(() => useState(initialState), options);
 }

@@ -29,7 +29,7 @@ import { ScopedModel, ScopedModelModelType } from '../create-model';
 import useSuspenseSelector from '../hooks/useSuspenseSelector';
 
 export default function createSuspenseSelectorHook<
-  T extends ScopedModel<any, any>,
+  T extends ScopedModel<unknown>,
   R,
 >(
   model: T,

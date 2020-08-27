@@ -25,11 +25,11 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { useEffect } from 'react';
 import { ScopedModel, ScopedModelModelType } from '../create-model';
 import useScopedModelContext from './useScopedModelContext';
 import useForceUpdate from './useForceUpdate';
 import { suspendCacheData, createCachedData } from '../create-cached-data';
+import useIsomorphicEffect from './useIsomorphicEffect';
 
 /**
  * Listens to the model's properties for changes, and updates
@@ -40,7 +40,7 @@ import { suspendCacheData, createCachedData } from '../create-cached-data';
  * @param selector selector function
  * @param key for caching purposes
  */
-export default function useSuspenseSelector<T extends ScopedModel<any, any>, R>(
+export default function useSuspenseSelector<T extends ScopedModel<unknown>, R>(
   model: T,
   selector: (model: ScopedModelModelType<T>) => Promise<R>,
   key: string,
@@ -49,7 +49,7 @@ export default function useSuspenseSelector<T extends ScopedModel<any, any>, R>(
 
   const forceUpdate = useForceUpdate();
 
-  useEffect(() => {
+  useIsomorphicEffect(() => {
     const callback = (next: ScopedModelModelType<T>): void => {
       createCachedData(selector(next), key, notifier.cache);
 

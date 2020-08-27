@@ -26,21 +26,18 @@
  * @copyright Alexis Munsayac 2020
  */
 import { useContext } from 'preact/hooks';
-import { ScopedModel } from '../create-model';
+import { ScopedModel, ScopedModelModelType } from '../create-model';
 import Notifier from '../notifier';
 import MissingScopedModelError from '../utils/MissingScopedModelError';
-import { AccessibleObject } from '../types';
 
-export default function useScopedModelContext<Model, Props extends AccessibleObject>(
-  model: ScopedModel<Model, Props>,
-): Notifier<Model> {
+export default function useScopedModelContext<T extends ScopedModel<unknown>>(
+  model: T,
+): Notifier<ScopedModelModelType<T>> {
   const context = useContext(model.context);
 
   if (!context) {
-    throw new MissingScopedModelError(
-      model.Provider.displayName ?? 'AnonymousScopedModel',
-    );
+    throw new MissingScopedModelError(model.displayName);
   }
 
-  return context;
+  return context as Notifier<ScopedModelModelType<T>>;
 }

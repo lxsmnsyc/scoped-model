@@ -32,7 +32,7 @@ export {
   default as createNullaryModel,
   NullaryScopedModel,
   NullaryScopedModelHook,
-  NullaryScopedModelOptions
+  NullaryScopedModelOptions,
 } from './model-factory/create-nullary-model';
 export {
   default as createStateModel,

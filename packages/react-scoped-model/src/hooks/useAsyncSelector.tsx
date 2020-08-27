@@ -26,10 +26,11 @@
  * @copyright Alexis Munsayac 2020
  */
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { ScopedModel, ScopedModelModelType } from '../create-model';
 import { AsyncState } from '../types';
 import useScopedModelContext from './useScopedModelContext';
+import useIsomorphicEffect from './useIsomorphicEffect';
 
 /**
  * Listens to the model's properties for changes, and updates
@@ -37,7 +38,7 @@ import useScopedModelContext from './useScopedModelContext';
  *
  * @param selector selector function
  */
-export default function useAsyncSelector<T extends ScopedModel<any, any>, R>(
+export default function useAsyncSelector<T extends ScopedModel<unknown>, R>(
   model: T,
   selector: (model: ScopedModelModelType<T>) => Promise<R>,
 ): AsyncState<R> {
@@ -45,7 +46,7 @@ export default function useAsyncSelector<T extends ScopedModel<any, any>, R>(
 
   const [state, setState] = useState<AsyncState<R>>({ status: 'pending' });
 
-  useEffect(() => {
+  useIsomorphicEffect(() => {
     let mounted = true;
 
     selector(notifier.value).then(
@@ -72,7 +73,7 @@ export default function useAsyncSelector<T extends ScopedModel<any, any>, R>(
     };
   }, [notifier, selector]);
 
-  useEffect(() => {
+  useIsomorphicEffect(() => {
     let mounted = true;
 
     const callback = (next: ScopedModelModelType<T>) => {

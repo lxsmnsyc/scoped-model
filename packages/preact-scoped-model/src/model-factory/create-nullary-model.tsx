@@ -25,11 +25,23 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { Ref } from 'preact/hooks';
-import useConstant from './useConstant';
+import { AccessibleObject } from '../types';
+import createModel, { ScopedModelOptions, ScopedModel } from '../create-model';
 
-export default function useRefSupplier<T>(supplier: () => T): Ref<T> {
-  return useConstant(() => ({
-    current: supplier(),
-  }));
+export type NullaryScopedModel<Model> = ScopedModel<Model>;
+export type NullaryScopedModelHook<Model> =
+  () => Model;
+export type NullaryScopedModelOptions =
+  Omit<ScopedModelOptions<AccessibleObject>, 'shouldUpdate' | 'propTypes' | 'defaultProps'>;
+
+const NEVER_UPDATE = () => true;
+
+export default function createNullaryModel<Model>(
+  useModelHook: NullaryScopedModelHook<Model>,
+  options?: NullaryScopedModelOptions,
+): NullaryScopedModel<Model> {
+  return createModel(useModelHook, {
+    displayName: options?.displayName,
+    shouldUpdate: NEVER_UPDATE,
+  });
 }

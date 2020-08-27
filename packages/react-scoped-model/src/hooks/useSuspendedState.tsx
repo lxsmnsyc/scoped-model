@@ -25,12 +25,12 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { useEffect } from 'react';
 import useScopedModelContext from './useScopedModelContext';
 import { ScopedModel, ScopedModelModelType } from '../create-model';
 import useForceUpdate from './useForceUpdate';
 import { suspendCacheData, createCachedData } from '../create-cached-data';
 import Notifier from '../notifier';
+import useIsomorphicEffect from './useIsomorphicEffect';
 
 export interface SuspendSelector<T> {
   value: T;
@@ -70,7 +70,7 @@ function captureSuspendedValue<Model, R>(
  * @param selector selector function
  * @param key for caching purposes
  */
-export default function useSuspendedState<T extends ScopedModel<any, any>, R>(
+export default function useSuspendedState<T extends ScopedModel<unknown>, R>(
   model: T,
   selector: (model: ScopedModelModelType<T>) => SuspendSelector<R>,
   key: string,
@@ -79,7 +79,7 @@ export default function useSuspendedState<T extends ScopedModel<any, any>, R>(
 
   const forceUpdate = useForceUpdate();
 
-  useEffect(() => {
+  useIsomorphicEffect(() => {
     const callback = (next: ScopedModelModelType<T>): void => {
       captureSuspendedValue(
         notifier,

@@ -25,7 +25,7 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import * as React from 'react';
+import React from 'react';
 
 // https://github.com/reduxjs/react-redux/blob/v7-beta/src/components/connectAdvanced.js#L35
 // React currently throws a warning when using useLayoutEffect on the server.

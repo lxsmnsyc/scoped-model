@@ -25,12 +25,11 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { useEffect } from 'preact/hooks';
-import { ScopedModel } from '../create-model';
+import { ScopedModel, ScopedModelModelType } from '../create-model';
 import useScopedModelContext from './useScopedModelContext';
-import { AccessibleObject } from '../types';
 import useForceUpdate from './useForceUpdate';
 import { suspendCacheData, createCachedData } from '../create-cached-data';
+import useIsomorphicEffect from './useIsomorphicEffect';
 
 /**
  * Listens to the model's properties for changes, and updates
@@ -41,17 +40,17 @@ import { suspendCacheData, createCachedData } from '../create-cached-data';
  * @param selector selector function
  * @param key for caching purposes
  */
-export default function useSuspenseSelector<Model, Props extends AccessibleObject, R>(
-  model: ScopedModel<Model, Props>,
-  selector: (model: Model) => Promise<R>,
+export default function useSuspenseSelector<T extends ScopedModel<unknown>, R>(
+  model: T,
+  selector: (model: ScopedModelModelType<T>) => Promise<R>,
   key: string,
 ): R {
   const notifier = useScopedModelContext(model);
 
   const forceUpdate = useForceUpdate();
 
-  useEffect(() => {
-    const callback = (next: Model): void => {
+  useIsomorphicEffect(() => {
+    const callback = (next: ScopedModelModelType<T>): void => {
       createCachedData(selector(next), key, notifier.cache);
 
       forceUpdate();

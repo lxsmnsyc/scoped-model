@@ -25,16 +25,16 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import createModel, { ScopedModel, ModelOptions } from '../create-model';
+import createModel, { ScopedModel, ScopedModelOptions } from '../create-model';
 import { AccessibleObject } from '../types';
 
-export type InitialState<T> = T | (() => T);
-
-export type PropsSelectorModel<Props extends AccessibleObject> =
+export type PropsSelectorModel<Props extends AccessibleObject = AccessibleObject> =
   ScopedModel<Props, Props>;
 
-export default function createPropsSelectorModel<Props extends AccessibleObject>(
-  options?: ModelOptions<Props>,
+export default function createPropsSelectorModel<
+  Props extends AccessibleObject = AccessibleObject,
+>(
+  options?: ScopedModelOptions<Props>,
 ): PropsSelectorModel<Props> {
   return createModel((props) => props, options);
 }

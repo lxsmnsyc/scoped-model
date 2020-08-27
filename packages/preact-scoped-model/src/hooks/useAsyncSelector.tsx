@@ -26,10 +26,11 @@
  * @copyright Alexis Munsayac 2020
  */
 
-import { useState, useEffect } from 'preact/hooks';
-import { ScopedModel } from '../create-model';
-import { AccessibleObject, AsyncState } from '../types';
+import { useState } from 'preact/hooks';
+import { ScopedModel, ScopedModelModelType } from '../create-model';
+import { AsyncState } from '../types';
 import useScopedModelContext from './useScopedModelContext';
+import useIsomorphicEffect from './useIsomorphicEffect';
 
 /**
  * Listens to the model's properties for changes, and updates
@@ -37,15 +38,15 @@ import useScopedModelContext from './useScopedModelContext';
  *
  * @param selector selector function
  */
-export default function useAsyncSelector<Model, Props extends AccessibleObject, R>(
-  model: ScopedModel<Model, Props>,
-  selector: (model: Model) => Promise<R>,
+export default function useAsyncSelector<T extends ScopedModel<unknown>, R>(
+  model: T,
+  selector: (model: ScopedModelModelType<T>) => Promise<R>,
 ): AsyncState<R> {
   const notifier = useScopedModelContext(model);
 
   const [state, setState] = useState<AsyncState<R>>({ status: 'pending' });
 
-  useEffect(() => {
+  useIsomorphicEffect(() => {
     let mounted = true;
 
     selector(notifier.value).then(
@@ -68,14 +69,14 @@ export default function useAsyncSelector<Model, Props extends AccessibleObject, 
     );
 
     return () => {
-      mounted = true;
+      mounted = false;
     };
   }, [notifier, selector]);
 
-  useEffect(() => {
+  useIsomorphicEffect(() => {
     let mounted = true;
 
-    const callback = (next: Model) => {
+    const callback = (next: ScopedModelModelType<T>) => {
       setState({ status: 'pending' });
 
       selector(next).then(

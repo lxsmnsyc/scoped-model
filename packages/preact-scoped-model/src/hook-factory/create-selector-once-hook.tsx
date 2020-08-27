@@ -25,11 +25,15 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import * as React from 'react';
-import useConstant from './useConstant';
+import { ScopedModel, ScopedModelModelType } from '../create-model';
+import useSelectorOnce from '../hooks/useSelectorOnce';
 
-export default function useRefSupplier<T>(supplier: () => T): React.MutableRefObject<T> {
-  return useConstant(() => ({
-    current: supplier(),
-  }));
+export default function createSelectorOnceHook<
+  T extends ScopedModel<unknown>,
+  R,
+>(
+  model: T,
+  selector: (model: ScopedModelModelType<T>) => R,
+): () => R {
+  return () => useSelectorOnce(model, selector);
 }

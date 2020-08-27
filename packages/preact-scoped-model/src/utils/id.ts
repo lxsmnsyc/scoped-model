@@ -25,36 +25,10 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import * as React from 'react';
-import useIsomorphicEffect from './useIsomorphicEffect';
+let ID = 0;
 
-export type PromiseWrapper = <T>(promise: Promise<T>) => Promise<T>;
-
-export interface Cleaner {
-  flag: boolean;
-}
-
-export default function usePromise(deps?: React.DependencyList): PromiseWrapper {
-  const ref = React.useRef({ flag: false });
-
-  useIsomorphicEffect(() => {
-    const state = {
-      flag: true,
-    };
-
-    ref.current = state;
-
-    return () => {
-      state.flag = false;
-    };
-  }, deps);
-
-  return React.useCallback((promise: Promise<any>) => new Promise((resolve, reject) => {
-    const state = ref.current;
-    promise.then(
-      (value) => state.flag && resolve(value),
-      (error) => state.flag && reject(error),
-    );
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }), deps || [{}]);
+export default function generateId(): number {
+  const current = ID;
+  ID += 1;
+  return current;
 }

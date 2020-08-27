@@ -25,11 +25,11 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { ScopedModel, ScopedModelModelType } from '../create-model';
 import { defaultCompare, Compare } from '../utils/comparer';
 import useScopedModelContext from './useScopedModelContext';
-
+import useIsomorphicEffect from './useIsomorphicEffect';
 
 /**
  * Transforms the model's state and listens for the returned value change.
@@ -45,7 +45,7 @@ import useScopedModelContext from './useScopedModelContext';
  * previously transformed value to the newly transformed value
  * and if it should replace the previous value and perform an update.
  */
-export default function useSelector<T extends ScopedModel<any, any>, R>(
+export default function useSelector<T extends ScopedModel<unknown>, R>(
   model: T,
   selector: (model: ScopedModelModelType<T>) => R,
   shouldUpdate: Compare<R> = defaultCompare,
@@ -57,7 +57,7 @@ export default function useSelector<T extends ScopedModel<any, any>, R>(
 
   const [state, setState] = useState(() => selector(notifier.value));
 
-  useEffect(() => {
+  useIsomorphicEffect(() => {
     const callback = (next: ScopedModelModelType<T>): void => {
       setState((old) => {
         const newValue = selector(next);

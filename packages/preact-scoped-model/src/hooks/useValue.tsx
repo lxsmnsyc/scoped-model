@@ -25,11 +25,11 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { useState, useEffect } from 'preact/hooks';
-import { ScopedModel } from '../create-model';
-import { AccessibleObject } from '../types';
+import { useState } from 'preact/hooks';
+import { ScopedModel, ScopedModelModelType } from '../create-model';
 import { defaultCompare, Compare } from '../utils/comparer';
 import useScopedModelContext from './useScopedModelContext';
+import useIsomorphicEffect from './useIsomorphicEffect';
 
 /**
  * Subscribes to the given model's state
@@ -38,16 +38,16 @@ import useScopedModelContext from './useScopedModelContext';
  * state and re-renders the component and updates the value being
  * consumed if the comparer function returns true.
  */
-export default function useValue<Model, Props extends AccessibleObject>(
-  model: ScopedModel<Model, Props>,
-  shouldUpdate: Compare<Model> = defaultCompare,
-): Model {
+export default function useValue<T extends ScopedModel<unknown>>(
+  model: T,
+  shouldUpdate: Compare<ScopedModelModelType<T>> = defaultCompare,
+): ScopedModelModelType<T> {
   const notifier = useScopedModelContext(model);
 
   const [state, setState] = useState(() => notifier.value);
 
-  useEffect(() => {
-    const callback = (next: Model): void => {
+  useIsomorphicEffect(() => {
+    const callback = (next: ScopedModelModelType<T>): void => {
       setState((old) => {
         if (shouldUpdate(old, next)) {
           return next;
