@@ -4,6 +4,8 @@
 
 ## List of Model Factories
 
+- `createNullaryModel`: creates a scoped model that doesn't need a props. The syntax is similar to `createModel` but the options only accept the `displayName` property.
+
 - `createStateModel`: creates a scoped model based on `useState` hook.
 
 ```tsx
