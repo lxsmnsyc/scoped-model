@@ -28,7 +28,7 @@
 import createModel, {
   ScopedModel,
   AccessibleObject,
-  ModelOptions,
+  ScopedModelOptions,
 } from '@lxsmnsyc/react-scoped-model';
 import {
   useSWRInfinite,
@@ -106,11 +106,11 @@ function createConfigHook<D, E, P extends AccessibleObject>(
  * @param options
  */
 export default function createSWRInfiniteModel
-<D, E, P extends AccessibleObject>(
+<D, E, P extends AccessibleObject = AccessibleObject>(
   key: SWRInfiniteModelKey<D, P>,
   fetcher: SWRInfiniteModelFetcher<D, P>,
   config: SWRInfiniteModelConfig<D, E, P> = {},
-  options?: ModelOptions<P>,
+  options?: ScopedModelOptions<P>,
 ): SWRInfiniteModel<D, E, P> {
   const useKey = key;
   const useFetcher = fetcher;

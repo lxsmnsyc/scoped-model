@@ -24,10 +24,10 @@
   "author": "Alexis Munsayac <alexis.munsayac@gmail.com>",
   "module": "dist/preact-scoped-model.esm.js",
   "devDependencies": {
-    "tsdx": "^0.13.2",
+    "preact": "^10.4.7",
+    "tsdx": "^0.13.3",
     "tslib": "^2.0.0",
-    "typescript": "^3.9.2",
-    "preact": "^10.4.7"
+    "typescript": "^3.9.2"
   },
   "publishConfig": {
     "access": "public"
@@ -39,5 +39,7 @@
   "bugs": {
     "url": "https://github.com/LXSMNSYC/scoped-model/issues"
   },
-  "homepage": "https://github.com/lxsmnsyc/scoped-model"
+  "homepage": "https://github.com/lxsmnsyc/scoped-model",
+  "dependencies": {
+  }
 }

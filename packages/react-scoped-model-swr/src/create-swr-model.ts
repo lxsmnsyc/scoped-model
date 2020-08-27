@@ -28,7 +28,7 @@
 import createModel, {
   ScopedModel,
   AccessibleObject,
-  ModelOptions,
+  ScopedModelOptions,
 } from '@lxsmnsyc/react-scoped-model';
 import useSWR, { responseInterface, ConfigInterface } from 'swr';
 
@@ -123,7 +123,7 @@ export default function createSWRModel
   key: SWRModelKey<P>,
   fetcher: SWRModelFetcher<D, P>,
   config: SWRModelConfig<D, E, P> = {},
-  options?: ModelOptions<P>,
+  options?: ScopedModelOptions<P>,
 ): SWRModel<D, E, P> {
   const useKey = createKeyHook(key);
   const useFetcher = fetcher;
