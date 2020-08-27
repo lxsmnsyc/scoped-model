@@ -1,0 +1,49 @@
+{
+  "name": "@lxsmnsyc/react-scoped-model-swr",
+  "version": "0.1.0",
+  "description": "SWR + react-scoped-model",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "keywords": [
+    "SWR"
+  ],
+  "module": "dist/react-scoped-model-swr.esm.js",
+  "author": "Alexis Munsayac <alexis.munsayac@gmail.com>",
+  "homepage": "https://github.com/lxsmnsyc/scoped-model",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LXSMNSYC/scoped-model.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "start": "tsdx watch",
+    "build": "tsdx build",
+    "test": "tsdx test --passWithNoTests",
+    "prepare": "tsdx build"
+  },
+  "bugs": {
+    "url": "https://github.com/lxsmnsyc/scoped-model/issues"
+  },
+  "devDependencies": {
+    "@lxsmnsyc/react-scoped-model": "^1.0.0",
+    "@types/react": "^16.9.35",
+    "react": "^16.13.1",
+    "tsdx": "^0.13.3",
+    "tslib": "^2.0.0",
+    "typescript": "^3.9.2"
+  },
+  "peerDependencies": {
+    "@lxsmnsyc/react-scoped-model": "^1.0.0",
+    "react": "^16.12.0"
+  },
+  "dependencies": {
+    "swr": "^0.3.0"
+  }
+}
