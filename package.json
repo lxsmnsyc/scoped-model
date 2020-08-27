@@ -2,7 +2,8 @@
   "name": "scoped-model",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "examples/*"
   ],
   "scripts": {
     "lint": "eslint 'packages/**/*.ts{,x}'",
