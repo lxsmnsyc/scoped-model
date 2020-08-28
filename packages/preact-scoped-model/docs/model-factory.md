@@ -4,6 +4,8 @@
 
 ## List of Model Factories
 
+- `createNullaryModel`: creates a scoped model that doesn't need a props. The syntax is similar to `createModel` but the options only accept the `displayName` property.
+
 - `createStateModel`: creates a scoped model based on `useState` hook.
 
 ```tsx
@@ -64,6 +66,6 @@ const name = useSelector(UserDetails, (state) => state.name);
 ```
 
 ## See Also
-- [Create Model](/docs/create-model.md)
-- [Hook Factory](/docs/hook-factory.md)
-- [Hooks](/docs/hooks/README.md)
+- [Create Model](/packages/preact-scoped-model/docs/create-model.md)
+- [Hook Factory](/packages/preact-scoped-model/docs/hook-factory.md)
+- [Hooks](/packages/preact-scoped-model/docs/hooks/README.md)

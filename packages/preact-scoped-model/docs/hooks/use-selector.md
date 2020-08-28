@@ -33,3 +33,7 @@ function TimerValue() {
   return <h1>{`Seconds: ${seconds}`}</h1>;
 }
 ```
+
+## See Also
+- [Hooks](/packages/preact-scoped-model/hooks/README.md)
+- [Hook Factory](/packages/preact-scoped-model/docs/hook-factory.md)

@@ -43,3 +43,7 @@ function Controls() {
   );
 }
 ```
+
+## See Also
+- [Hooks](/packages/preact-scoped-model/hooks/README.md)
+- [Hook Factory](/packages/preact-scoped-model/docs/hook-factory.md)
