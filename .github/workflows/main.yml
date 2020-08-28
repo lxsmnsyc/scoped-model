@@ -26,8 +26,18 @@ jobs:
         env:
           CI: true
 
+      - name: Begin bootstrap
+        run: yarn bootstrap
+        env:
+          CI: true
+
       - name: Build
         run: yarn build
+        env:
+          CI: true
+
+      - name: Begin type check
+        run: yarn type-check
         env:
           CI: true
 
