@@ -60,9 +60,10 @@ export interface ScopedModel<Model, Props extends AccessibleObject = AccessibleO
 }
 
 export type ScopedModelModelType<T> =
-  T extends ScopedModel<infer U> ? U : T;
+  T extends ScopedModel<infer U, any> ? U : T;
 export type ScopedModelPropsType<T> =
-  T extends ScopedModel<unknown, infer U> ? U : T;
+  T extends ScopedModel<any, infer U> ? U : T;
+
 /**
  * Creates a scoped model instance that generates a state from a given
  * Preact-based hook function which allows fine-grained control on injected

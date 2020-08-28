@@ -3,13 +3,16 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build"
+    "build": "tsc && vite build",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@lxsmnsyc/react-scoped-model": "^1.4.0",
     "@lxsmnsyc/react-scoped-model-swr": "^0.1.0",
     "@pika/react": "^16.13.1",
-    "@pika/react-dom": "^16.13.1"
+    "@pika/react-dom": "^16.13.1",
+    "react": "npm:@pika/react",
+    "react-dom": "npm:@pika/react-dom"
   },
   "devDependencies": {
     "@types/react": "^16.9.35",

@@ -31,11 +31,14 @@ import useForceUpdate from './useForceUpdate';
 import { suspendCacheData, createCachedData } from '../create-cached-data';
 import Notifier from '../notifier';
 import useIsomorphicEffect from './useIsomorphicEffect';
+import { SelectorFn } from './useSelector';
 
 export interface SuspendSelector<T> {
   value: T;
   suspend: boolean;
 }
+
+export type SuspendSelectorFn<T extends ScopedModel<any>, R> = SelectorFn<T, SuspendSelector<R>>;
 
 function captureSuspendedValue<Model, R>(
   notifier: Notifier<Model>,
@@ -70,9 +73,9 @@ function captureSuspendedValue<Model, R>(
  * @param selector selector function
  * @param key for caching purposes
  */
-export default function useSuspendedState<T extends ScopedModel<unknown>, R>(
+export default function useSuspendedState<T extends ScopedModel<any>, R>(
   model: T,
-  selector: (model: ScopedModelModelType<T>) => SuspendSelector<R>,
+  selector: SuspendSelectorFn<T, R>,
   key: string,
 ): R {
   const notifier = useScopedModelContext(model);

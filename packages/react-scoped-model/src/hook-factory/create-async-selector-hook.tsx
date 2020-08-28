@@ -25,16 +25,16 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { ScopedModel, ScopedModelModelType } from '../create-model';
+import { ScopedModel } from '../create-model';
 import { AsyncState } from '../types';
-import useAsyncSelector from '../hooks/useAsyncSelector';
+import useAsyncSelector, { AsyncSelectorFn } from '../hooks/useAsyncSelector';
 
 export default function createAsyncSelectorHook<
-  T extends ScopedModel<unknown>,
+  T extends ScopedModel<any>,
   R,
 >(
   model: T,
-  selector: (model: ScopedModelModelType<T>) => Promise<R>,
+  selector: AsyncSelectorFn<T, R>,
 ): () => AsyncState<R> {
   return () => useAsyncSelector(model, selector);
 }

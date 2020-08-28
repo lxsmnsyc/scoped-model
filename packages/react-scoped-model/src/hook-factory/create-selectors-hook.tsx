@@ -25,16 +25,16 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { ScopedModel, ScopedModelModelType } from '../create-model';
+import { ScopedModel } from '../create-model';
 import { defaultCompare, ListCompare } from '../utils/comparer';
-import useSelectors from '../hooks/useSelectors';
+import useSelectors, { SelectorsFn } from '../hooks/useSelectors';
 
 export default function createSelectorsHook<
-  T extends ScopedModel<unknown>,
+  T extends ScopedModel<any>,
   R extends any[],
 >(
   model: T,
-  selector: (model: ScopedModelModelType<T>) => R,
+  selector: SelectorsFn<T, R>,
   shouldUpdate: ListCompare<R> = defaultCompare,
 ): () => R {
   return () => useSelectors(model, selector, shouldUpdate);

@@ -26,11 +26,14 @@
  * @copyright Alexis Munsayac 2020
  */
 import { useCallback } from 'preact/hooks';
-import { ScopedModel, ScopedModelModelType } from '../create-model';
+import { ScopedModel } from '../create-model';
 import {
   defaultCompare, compareList, ListCompare, Compare,
 } from '../utils/comparer';
-import useSelector from './useSelector';
+import useSelector, { SelectorFn } from './useSelector';
+
+export type SelectorsFn<T extends ScopedModel<any>, R extends any[]>
+  = SelectorFn<T, R>;
 
 /**
  * Transforms the model's state into a list of values and
@@ -47,11 +50,11 @@ import useSelector from './useSelector';
  * and if it should replace the previous value and perform an update.
  */
 export default function useSelectors<
-  T extends ScopedModel<unknown>,
+  T extends ScopedModel<any>,
   R extends any[],
 >(
   model: T,
-  selector: (model: ScopedModelModelType<T>) => R,
+  selector: SelectorsFn<T, R>,
   shouldUpdate: ListCompare<R> = defaultCompare,
 ): R {
   const compare = useCallback<Compare<R>>((a, b) => (

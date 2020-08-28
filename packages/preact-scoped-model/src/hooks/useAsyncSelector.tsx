@@ -31,6 +31,9 @@ import { ScopedModel, ScopedModelModelType } from '../create-model';
 import { AsyncState } from '../types';
 import useScopedModelContext from './useScopedModelContext';
 import useIsomorphicEffect from './useIsomorphicEffect';
+import { SelectorFn } from './useSelector';
+
+export type AsyncSelectorFn<T extends ScopedModel<any>, R> = SelectorFn<T, Promise<R>>;
 
 /**
  * Listens to the model's properties for changes, and updates
@@ -38,9 +41,9 @@ import useIsomorphicEffect from './useIsomorphicEffect';
  *
  * @param selector selector function
  */
-export default function useAsyncSelector<T extends ScopedModel<unknown>, R>(
+export default function useAsyncSelector<T extends ScopedModel<any>, R>(
   model: T,
-  selector: (model: ScopedModelModelType<T>) => Promise<R>,
+  selector: AsyncSelectorFn<T, R>,
 ): AsyncState<R> {
   const notifier = useScopedModelContext(model);
 

@@ -33,7 +33,7 @@ import useScopedModelContext from './useScopedModelContext';
  * not reactively update to the current model's state.
  * @param model
  */
-export default function useValueOnce<T extends ScopedModel<unknown>>(
+export default function useValueOnce<T extends ScopedModel<any>>(
   model: T,
 ): ScopedModelModelType<T> {
   return useScopedModelContext(model).value;

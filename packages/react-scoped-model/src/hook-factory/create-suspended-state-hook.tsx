@@ -26,15 +26,12 @@
  * @copyright Alexis Munsayac 2020
  */
 
-import { ScopedModel, ScopedModelModelType } from '../create-model';
-import useSuspendedState, { SuspendSelector } from '../hooks/useSuspendedState';
+import { ScopedModel } from '../create-model';
+import useSuspendedState, { SuspendSelectorFn } from '../hooks/useSuspendedState';
 
-export default function createSuspendedStateHook<
-  T extends ScopedModel<unknown>,
-  R,
->(
+export default function createSuspendedStateHook<T extends ScopedModel<any>, R>(
   model: T,
-  selector: (model: ScopedModelModelType<T>) => SuspendSelector<R>,
+  selector: SuspendSelectorFn<T, R>,
   key: string,
 ): () => R {
   return () => useSuspendedState(model, selector, key);

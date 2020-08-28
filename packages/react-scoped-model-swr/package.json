@@ -26,7 +26,8 @@
     "start": "tsdx watch",
     "build": "tsdx build",
     "test": "tsdx test --passWithNoTests",
-    "prepare": "tsdx build"
+    "prepare": "tsdx build",
+    "type-check": "tsc --noEmit"
   },
   "bugs": {
     "url": "https://github.com/lxsmnsyc/scoped-model/issues"

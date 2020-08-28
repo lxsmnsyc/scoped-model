@@ -31,6 +31,9 @@ import { defaultCompare, Compare } from '../utils/comparer';
 import useScopedModelContext from './useScopedModelContext';
 import useIsomorphicEffect from './useIsomorphicEffect';
 
+export type SelectorFn<T extends ScopedModel<any>, R> =
+  (model: Readonly<ScopedModelModelType<T>>) => R;
+
 /**
  * Transforms the model's state and listens for the returned value change.
  *
@@ -45,9 +48,9 @@ import useIsomorphicEffect from './useIsomorphicEffect';
  * previously transformed value to the newly transformed value
  * and if it should replace the previous value and perform an update.
  */
-export default function useSelector<T extends ScopedModel<unknown>, R>(
+export default function useSelector<T extends ScopedModel<any>, R>(
   model: T,
-  selector: (model: ScopedModelModelType<T>) => R,
+  selector: SelectorFn<T, R>,
   shouldUpdate: Compare<R> = defaultCompare,
 ): R {
   /**

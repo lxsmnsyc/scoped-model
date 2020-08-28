@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@lxsmnsyc/preact-scoped-model": "^0.1.0",

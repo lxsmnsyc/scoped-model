@@ -30,6 +30,7 @@ import useScopedModelContext from './useScopedModelContext';
 import useForceUpdate from './useForceUpdate';
 import { suspendCacheData, createCachedData } from '../create-cached-data';
 import useIsomorphicEffect from './useIsomorphicEffect';
+import { AsyncSelectorFn } from './useAsyncSelector';
 
 /**
  * Listens to the model's properties for changes, and updates
@@ -40,9 +41,9 @@ import useIsomorphicEffect from './useIsomorphicEffect';
  * @param selector selector function
  * @param key for caching purposes
  */
-export default function useSuspenseSelector<T extends ScopedModel<unknown>, R>(
+export default function useSuspenseSelector<T extends ScopedModel<any>, R>(
   model: T,
-  selector: (model: ScopedModelModelType<T>) => Promise<R>,
+  selector: AsyncSelectorFn<T, R>,
   key: string,
 ): R {
   const notifier = useScopedModelContext(model);

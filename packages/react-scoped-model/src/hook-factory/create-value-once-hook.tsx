@@ -28,7 +28,7 @@
 import { ScopedModel, ScopedModelModelType } from '../create-model';
 import useValueOnce from '../hooks/useValueOnce';
 
-export default function createValueOnceHook<T extends ScopedModel<unknown>>(
+export default function createValueOnceHook<T extends ScopedModel<any>>(
   model: T,
 ): () => ScopedModelModelType<T> {
   return () => useValueOnce(model);

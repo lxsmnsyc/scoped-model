@@ -26,8 +26,9 @@
  * @copyright Alexis Munsayac 2020
  */
 
-import { ScopedModel, ScopedModelModelType } from '../create-model';
-import useConsume from './useValueOnce';
+import { ScopedModel } from '../create-model';
+import useValueOnce from './useValueOnce';
+import { SelectorFn } from './useSelector';
 
 /**
  * Receives and transforms the model's state. Unlike useSelector,
@@ -35,11 +36,9 @@ import useConsume from './useValueOnce';
  * @param model
  * @param selector
  */
-export default function useSelectorOnce<T extends ScopedModel<unknown>, R>(
+export default function useSelectorOnce<T extends ScopedModel<any>, R>(
   model: T,
-  selector: (model: ScopedModelModelType<T>) => R,
+  selector: SelectorFn<T, R>,
 ): R {
-  const context = useConsume(model);
-
-  return selector(context);
+  return selector(useValueOnce(model));
 }

@@ -60,14 +60,35 @@ export { default as createValueOnce } from './hook-factory/create-value-once-hoo
 export { default as createSelectorOnce } from './hook-factory/create-selector-once-hook';
 
 // Hooks
-export { default as useValue } from './hooks/useValue';
-export { default as useSelector } from './hooks/useSelector';
-export { default as useSelectors } from './hooks/useSelectors';
-export { default as useAsyncSelector } from './hooks/useAsyncSelector';
-export { default as useSuspenseSelector } from './hooks/useSuspenseSelector';
-export { default as useSuspendedState, SuspendSelector } from './hooks/useSuspendedState';
-export { default as useValueOnce } from './hooks/useValueOnce';
-export { default as useSelectorOnce } from './hooks/useSelectorOnce';
+export {
+  default as useValue,
+} from './hooks/useValue';
+export {
+  default as useSelector,
+  SelectorFn,
+} from './hooks/useSelector';
+export {
+  default as useSelectors,
+  SelectorsFn,
+} from './hooks/useSelectors';
+export {
+  default as useAsyncSelector,
+  AsyncSelectorFn,
+} from './hooks/useAsyncSelector';
+export {
+  default as useSuspenseSelector,
+} from './hooks/useSuspenseSelector';
+export {
+  default as useSuspendedState,
+  SuspendSelector,
+  SuspendSelectorFn,
+} from './hooks/useSuspendedState';
+export {
+  default as useValueOnce,
+} from './hooks/useValueOnce';
+export {
+  default as useSelectorOnce,
+} from './hooks/useSelectorOnce';
 
 export * from './types';
 export * from './create-model';

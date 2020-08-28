@@ -17,7 +17,8 @@
     "start": "tsdx watch",
     "build": "tsdx build",
     "test": "tsdx test --passWithNoTests",
-    "prepare": "tsdx build"
+    "prepare": "tsdx build",
+    "type-check": "tsc --noEmit"
   },
   "peerDependencies": {
     "preact": "^10.4.0"

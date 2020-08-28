@@ -56,5 +56,6 @@ module.exports = {
     "@typescript-eslint/no-unsafe-assignment": "off",
     "react/jsx-filename-extension": [1, { "extensions": [".jsx", ".tsx"] }],
     "react/jsx-props-no-spreading": "off",
+    "@typescript-eslint/no-unsafe-return": "off",
   }
 };
