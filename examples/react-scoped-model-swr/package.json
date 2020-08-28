@@ -1,6 +1,6 @@
 {
   "name": "react-scoped-model-swr",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@lxsmnsyc/react-scoped-model": "^1.4.0",
-    "@lxsmnsyc/react-scoped-model-swr": "^0.1.0",
+    "@lxsmnsyc/react-scoped-model-swr": "0.1.1",
     "@pika/react": "^16.13.1",
     "@pika/react-dom": "^16.13.1",
     "react": "npm:@pika/react",

@@ -1,6 +1,6 @@
 {
   "name": "@lxsmnsyc/preact-scoped-model",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Scoped Model pattern for Preact",
   "license": "MIT",
   "main": "dist/index.js",
@@ -40,7 +40,5 @@
   "bugs": {
     "url": "https://github.com/LXSMNSYC/scoped-model/issues"
   },
-  "homepage": "https://github.com/lxsmnsyc/scoped-model",
-  "dependencies": {
-  }
+  "homepage": "https://github.com/lxsmnsyc/scoped-model"
 }

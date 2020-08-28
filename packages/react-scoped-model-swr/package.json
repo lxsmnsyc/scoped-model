@@ -1,6 +1,6 @@
 {
   "name": "@lxsmnsyc/react-scoped-model-swr",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "SWR + react-scoped-model",
   "license": "MIT",
   "main": "dist/index.js",
