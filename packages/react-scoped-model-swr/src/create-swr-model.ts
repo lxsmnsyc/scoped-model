@@ -90,7 +90,7 @@ export type SWRModelState<D, E> = responseInterface<D, E>;
 /**
  * Alias to the SWR Model's Scoped Model interface.
  */
-export type SWRModel<D, E, P extends AccessibleObject> =
+export type SWRModel<D, E, P extends AccessibleObject = AccessibleObject> =
   ScopedModel<SWRModelState<D, E>, P>;
 
 function createKeyHook<P extends AccessibleObject>(
@@ -119,7 +119,7 @@ function createConfigHook<D, E, P extends AccessibleObject>(
  * @param options
  */
 export default function createSWRModel
-<D, E, P extends AccessibleObject>(
+<D, E, P extends AccessibleObject = AccessibleObject>(
   key: SWRModelKey<P>,
   fetcher: SWRModelFetcher<D, P>,
   config: SWRModelConfig<D, E, P> = {},

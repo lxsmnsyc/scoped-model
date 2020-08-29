@@ -30,7 +30,7 @@ import useSelectorOnce from '../hooks/useSelectorOnce';
 import { SelectorFn } from '../hooks/useSelector';
 
 export default function createSelectorOnceHook<
-  T extends ScopedModel<any>,
+  T extends ScopedModel<any, any>,
   R,
 >(
   model: T,

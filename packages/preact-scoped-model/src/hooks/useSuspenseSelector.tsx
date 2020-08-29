@@ -41,7 +41,7 @@ import { AsyncSelectorFn } from './useAsyncSelector';
  * @param selector selector function
  * @param key for caching purposes
  */
-export default function useSuspenseSelector<T extends ScopedModel<any>, R>(
+export default function useSuspenseSelector<T extends ScopedModel<any, any>, R>(
   model: T,
   selector: AsyncSelectorFn<T, R>,
   key: string,

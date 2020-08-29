@@ -30,7 +30,7 @@ import { ScopedModel, ScopedModelModelType } from '../create-model';
 import Notifier from '../notifier';
 import MissingScopedModelError from '../utils/MissingScopedModelError';
 
-export default function useScopedModelContext<T extends ScopedModel<any>>(
+export default function useScopedModelContext<T extends ScopedModel<any, any>>(
   model: T,
 ): Notifier<ScopedModelModelType<T>> {
   const context = useContext(model.context);

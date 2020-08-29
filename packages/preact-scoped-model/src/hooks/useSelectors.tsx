@@ -32,7 +32,7 @@ import {
 } from '../utils/comparer';
 import useSelector, { SelectorFn } from './useSelector';
 
-export type SelectorsFn<T extends ScopedModel<any>, R extends any[]>
+export type SelectorsFn<T extends ScopedModel<any, any>, R extends any[]>
   = SelectorFn<T, R>;
 
 /**
@@ -50,7 +50,7 @@ export type SelectorsFn<T extends ScopedModel<any>, R extends any[]>
  * and if it should replace the previous value and perform an update.
  */
 export default function useSelectors<
-  T extends ScopedModel<any>,
+  T extends ScopedModel<any, any>,
   R extends any[],
 >(
   model: T,

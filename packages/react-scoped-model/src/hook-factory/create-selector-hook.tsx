@@ -30,7 +30,7 @@ import { defaultCompare, Compare } from '../utils/comparer';
 import useSelector, { SelectorFn } from '../hooks/useSelector';
 
 export default function createSelectorHook<
-  T extends ScopedModel<any>,
+  T extends ScopedModel<any, any>,
   R,
 >(
   model: T,

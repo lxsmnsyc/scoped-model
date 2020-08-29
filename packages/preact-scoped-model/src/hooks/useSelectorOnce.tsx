@@ -36,7 +36,7 @@ import { SelectorFn } from './useSelector';
  * @param model
  * @param selector
  */
-export default function useSelectorOnce<T extends ScopedModel<any>, R>(
+export default function useSelectorOnce<T extends ScopedModel<any, any>, R>(
   model: T,
   selector: SelectorFn<T, R>,
 ): R {

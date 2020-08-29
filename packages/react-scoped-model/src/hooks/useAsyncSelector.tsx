@@ -32,7 +32,7 @@ import useScopedModelContext from './useScopedModelContext';
 import useIsomorphicEffect from './useIsomorphicEffect';
 import { SelectorFn } from './useSelector';
 
-export type AsyncSelectorFn<T extends ScopedModel<any>, R> = SelectorFn<T, Promise<R>>;
+export type AsyncSelectorFn<T extends ScopedModel<any, any>, R> = SelectorFn<T, Promise<R>>;
 
 /**
  * Listens to the model's properties for changes, and updates
@@ -40,7 +40,7 @@ export type AsyncSelectorFn<T extends ScopedModel<any>, R> = SelectorFn<T, Promi
  *
  * @param selector selector function
  */
-export default function useAsyncSelector<T extends ScopedModel<any>, R>(
+export default function useAsyncSelector<T extends ScopedModel<any, any>, R>(
   model: T,
   selector: (model: ScopedModelModelType<T>) => Promise<R>,
 ): AsyncState<R> {

@@ -38,7 +38,7 @@ import useIsomorphicEffect from './useIsomorphicEffect';
  * state and re-renders the component and updates the value being
  * consumed if the comparer function returns true.
  */
-export default function useValue<T extends ScopedModel<any>>(
+export default function useValue<T extends ScopedModel<any, any>>(
   model: T,
   shouldUpdate: Compare<ScopedModelModelType<T>> = defaultCompare,
 ): ScopedModelModelType<T> {

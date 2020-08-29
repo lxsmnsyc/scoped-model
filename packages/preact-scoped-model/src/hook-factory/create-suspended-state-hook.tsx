@@ -30,7 +30,7 @@ import { ScopedModel } from '../create-model';
 import useSuspendedState, { SuspendSelectorFn } from '../hooks/useSuspendedState';
 
 export default function createSuspendedStateHook<
-  T extends ScopedModel<any>,
+  T extends ScopedModel<any, any>,
   R,
 >(
   model: T,

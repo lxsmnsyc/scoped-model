@@ -30,7 +30,7 @@ import { AsyncState } from '../types';
 import useAsyncSelector, { AsyncSelectorFn } from '../hooks/useAsyncSelector';
 
 export default function createAsyncSelectorHook<
-  T extends ScopedModel<any>,
+  T extends ScopedModel<any, any>,
   R,
 >(
   model: T,

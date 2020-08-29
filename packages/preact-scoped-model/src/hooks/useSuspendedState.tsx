@@ -38,7 +38,7 @@ export interface SuspendSelector<T> {
   suspend: boolean;
 }
 
-export type SuspendSelectorFn<T extends ScopedModel<any>, R> = SelectorFn<T, SuspendSelector<R>>;
+export type SuspendSelectorFn<T extends ScopedModel<any, any>, R> = SelectorFn<T, SuspendSelector<R>>;
 
 function captureSuspendedValue<Model, R>(
   notifier: Notifier<Model>,
@@ -73,7 +73,7 @@ function captureSuspendedValue<Model, R>(
  * @param selector selector function
  * @param key for caching purposes
  */
-export default function useSuspendedState<T extends ScopedModel<any>, R>(
+export default function useSuspendedState<T extends ScopedModel<any, any>, R>(
   model: T,
   selector: SuspendSelectorFn<T, R>,
   key: string,

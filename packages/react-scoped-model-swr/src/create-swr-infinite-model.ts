@@ -86,7 +86,7 @@ export type SWRInfiniteModelState<D, E> = SWRInfiniteResponseInterface<D, E>;
 /**
  * Alias to the SWR Model's Scoped Model interface.
  */
-export type SWRInfiniteModel<D, E, P extends AccessibleObject> =
+export type SWRInfiniteModel<D, E, P extends AccessibleObject = AccessibleObject> =
   ScopedModel<SWRInfiniteModelState<D, E>, P>;
 
 function createConfigHook<D, E, P extends AccessibleObject>(
