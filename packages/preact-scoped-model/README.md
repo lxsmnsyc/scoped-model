@@ -22,10 +22,10 @@ yarn add @lxsmnsyc/preact-scoped-model
 
 ## Documentation
 
-- [Creating a model](/docs/create-model.md)
-- [Scoped Model Hooks](/docs/hooks/README.md)
-- [Model Factories](/docs/model-factory.md)
-- [Hook Factories](/docs/hook-factory.md)
+- [Creating a model](/packages/preact-scoped-model/docs/create-model.md)
+- [Scoped Model Hooks](/packages/preact-scoped-model/docs/hooks/README.md)
+- [Model Factories](/packages/preact-scoped-model/docs/model-factory.md)
+- [Hook Factories](/packages/preact-scoped-model/docs/hook-factory.md)
 
 ## License
 
