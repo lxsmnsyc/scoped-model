@@ -1,6 +1,6 @@
 {
   "name": "@lxsmnsyc/react-scoped-model-swr",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "SWR + react-scoped-model",
   "license": "MIT",
   "main": "dist/index.js",
@@ -33,7 +33,7 @@
     "url": "https://github.com/lxsmnsyc/scoped-model/issues"
   },
   "devDependencies": {
-    "@lxsmnsyc/react-scoped-model": "^1.4.0",
+    "@lxsmnsyc/react-scoped-model": "1.4.2",
     "@types/react": "^16.9.35",
     "react": "^16.13.1",
     "tsdx": "^0.13.3",
