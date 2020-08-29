@@ -1,5 +1,5 @@
 {
-  "name": "re-scoped-model",
+  "name": "@lxsmnsyc/re-scoped-model",
   "reason": {
     "react-jsx": 3
   },
@@ -13,7 +13,7 @@
     "in-source": true
   }],
   "suffix": ".bs.js",
-  "namespace": true,
+  "namespace": "re-scoped-model",
   "bs-dependencies": [
     "reason-react"
   ],
