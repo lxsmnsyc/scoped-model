@@ -11,16 +11,16 @@
     "re:clean": "bsb -clean-world"
   },
   "dependencies": {
+    "@pika/react": "^16.8.0",
+    "@pika/react-dom": "^16.8.0",
     "@lxsmnsyc/re-scoped-model": "1.0.0",
-    "@pika/react": "^16.13.1",
-    "@pika/react-dom": "^16.13.1",
     "react": "npm:@pika/react",
-    "react-dom": "npm:@pika/react-dom"
+    "react-dom": "npm:@pika/react-dom",
+    "reason-react": "^0.9.1"
   },
   "devDependencies": {
     "bs-platform": "^7.3.2",
     "npm-run-all": "^4.1.5",
-    "reason-react": "^0.8.0",
     "vite": "^1.0.0-rc.1",
     "vite-plugin-react": "^3.0.0"
   },
