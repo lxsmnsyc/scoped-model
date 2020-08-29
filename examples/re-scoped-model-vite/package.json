@@ -1,6 +1,6 @@
 {
   "name": "re-scoped-model-vite",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "scripts": {
     "dev": "run-p re:watch vite:serve",
     "build": "run-s re:build vite:build",
@@ -11,11 +11,11 @@
     "re:clean": "bsb -clean-world"
   },
   "dependencies": {
+    "@lxsmnsyc/re-scoped-model": "1.0.0",
     "@pika/react": "^16.13.1",
     "@pika/react-dom": "^16.13.1",
     "react": "npm:@pika/react",
-    "react-dom": "npm:@pika/react-dom",
-    "@lxsmnsyc/re-scoped-model": "^0.6.0"
+    "react-dom": "npm:@pika/react-dom"
   },
   "devDependencies": {
     "bs-platform": "^7.3.2",
