@@ -1,0 +1,32 @@
+{
+  "name": "@lxsmnsyc/re-scoped-model",
+  "description": "Scoped Model pattern in ReasonReact (but with Hooks)",
+  "version": "0.6.0",
+  "scripts": {
+    "build": "bsb -make-world",
+    "start": "bsb -make-world -w -ws _ ",
+    "clean": "bsb -clean-world"
+  },
+  "author": "lxsmnsyc",
+  "license": "MIT",
+  "dependencies": {
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "reason-react": "^0.8.0"
+  },
+  "devDependencies": {
+    "bs-platform": "^7.3.2",
+    "moduleserve": "^0.9.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/LXSMNSYC/scoped-model/issues"
+  },
+  "repository": {
+    "url": "https://github.com/lxsmnsyc/scoped-model.git",
+    "type": "git"
+  },
+  "homepage": "https://github.com/lxsmnsyc/scoped-model"
+}
