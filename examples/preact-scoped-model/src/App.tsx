@@ -1,5 +1,5 @@
 /* @jsx h */
-import { Fragment, h } from 'preact';
+import { Fragment, h, VNode } from 'preact';
 import { Suspense } from 'preact/compat';
 import { useState, useCallback } from 'preact/hooks';
 
@@ -16,14 +16,22 @@ interface CounterProps {
 }
 
 const Counter = createModel(({ initialCount }: CounterProps) => {
+  console.log(useState(0));
   const [count, setCount] = useState(initialCount ?? 0);
+  console.log(useState(0));
 
   const increment = useCallback(() => {
-    setCount((c) => c + 1);
+    setCount((c) => {
+      console.log(c);
+      return c + 1;
+    });
   }, []);
 
   const decrement = useCallback(() => {
-    setCount((c) => c - 1);
+    setCount((c) => {
+      console.log(c);
+      return c - 1;
+    });
   }, []);
 
   return {
@@ -117,7 +125,7 @@ function IncDec() {
   );
 }
 
-export default function App(): JSX.Element {
+export default function App(): VNode {
   return (
     <Counter.Provider initialCount={1}>
       <Counter.Provider>
