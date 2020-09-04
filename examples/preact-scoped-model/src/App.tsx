@@ -16,20 +16,20 @@ interface CounterProps {
 }
 
 const Counter = createModel(({ initialCount }: CounterProps) => {
-  console.log(useState(0));
+  console.log('First call', useState(0));
   const [count, setCount] = useState(initialCount ?? 0);
-  console.log(useState(0));
+  console.log('Next call', useState(0));
 
   const increment = useCallback(() => {
     setCount((c) => {
-      console.log(c);
+      console.log('Current State', c);
       return c + 1;
     });
   }, []);
 
   const decrement = useCallback(() => {
     setCount((c) => {
-      console.log(c);
+      console.log('Current State', c);
       return c - 1;
     });
   }, []);
