@@ -24,12 +24,4 @@
         "@lxsmnsyc/re-scoped-model"
     ],
     "refmt": 3
-    // You can uncomment the next warnings sections to get a stricter compilation.
-    // e.g: fail compilation on non exhaustive pattern matches and other goodies.
-    // For more information please refer to this blog post:
-    // https://dev.to/yawaramin/ocaml-reasonml-best-practice-warnings-and-errors-4mkm
-    //   "warnings": {
-    //     "number": "+A-48",
-    //     "error": "+A-3-44-102"
-    //   }
 }

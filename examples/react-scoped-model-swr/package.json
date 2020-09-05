@@ -10,9 +10,7 @@
     "@lxsmnsyc/react-scoped-model": "1.4.3",
     "@lxsmnsyc/react-scoped-model-swr": "0.1.3",
     "@pika/react": "^16.13.1",
-    "@pika/react-dom": "^16.13.1",
-    "react": "npm:@pika/react",
-    "react-dom": "npm:@pika/react-dom"
+    "@pika/react-dom": "^16.13.1"
   },
   "devDependencies": {
     "@types/react": "^16.9.35",
