@@ -1,4 +1,5 @@
 /* @jsx h */
+import "preact/debug";
 import { Fragment, h, VNode } from 'preact';
 import { Suspense } from 'preact/compat';
 import { useState, useCallback } from 'preact/hooks';
