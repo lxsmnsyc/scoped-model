@@ -34,5 +34,5 @@ export default function createSuspendedStateHook<T extends ScopedModel<any, any>
   selector: SuspendSelectorFn<T, R>,
   key: string,
 ): () => R {
-  return () => useSuspendedState(model, selector, key);
+  return (): R => useSuspendedState(model, selector, key);
 }

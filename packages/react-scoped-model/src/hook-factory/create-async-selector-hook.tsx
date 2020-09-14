@@ -36,5 +36,5 @@ export default function createAsyncSelectorHook<
   model: T,
   selector: AsyncSelectorFn<T, R>,
 ): () => AsyncState<R> {
-  return () => useAsyncSelector(model, selector);
+  return (): AsyncState<R> => useAsyncSelector(model, selector);
 }

@@ -37,5 +37,5 @@ export default function createSelectorHook<
   selector: SelectorFn<T, R>,
   shouldUpdate: Compare<R> = defaultCompare,
 ): () => R {
-  return () => useSelector(model, selector, shouldUpdate);
+  return (): R => useSelector(model, selector, shouldUpdate);
 }

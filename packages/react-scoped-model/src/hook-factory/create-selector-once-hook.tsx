@@ -33,5 +33,5 @@ export default function createSelectorOnceHook<T extends ScopedModel<any, any>, 
   model: T,
   selector: SelectorFn<T, R>,
 ): () => R {
-  return () => useSelectorOnce(model, selector);
+  return (): R => useSelectorOnce(model, selector);
 }

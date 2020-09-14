@@ -34,5 +34,5 @@ export default function createSuspenseSelectorHook<T extends ScopedModel<any, an
   selector: AsyncSelectorFn<T, R>,
   key: string,
 ): () => R {
-  return () => useSuspenseSelector(model, selector, key);
+  return (): R => useSuspenseSelector(model, selector, key);
 }

@@ -33,5 +33,5 @@ export default function createValueHook<T extends ScopedModel<any, any>>(
   model: T,
   shouldUpdate: Compare<ScopedModelModelType<T>> = defaultCompare,
 ): () => ScopedModelModelType<T> {
-  return () => useValue(model, shouldUpdate);
+  return (): ScopedModelModelType<T> => useValue(model, shouldUpdate);
 }
