@@ -10,6 +10,7 @@
     "bootstrap": "lerna bootstrap",
     "build": "lerna run build",
     "type-check": "lerna run type-check",
+    "test": "lerna run test",
     "lerna": "lerna"
   },
   "devDependencies": {
