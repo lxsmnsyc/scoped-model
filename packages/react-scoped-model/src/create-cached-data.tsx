@@ -30,7 +30,7 @@ import { AsyncState } from './types';
 export function createCachedData<T>(
   promise: Promise<T>,
   key: string,
-  cache: Map<string, AsyncState<any>>,
+  cache: Map<string, AsyncState<unknown>>,
 ): AsyncState<T> {
   const fullPromise = promise.then(
     (data) => {
@@ -59,7 +59,7 @@ export function createCachedData<T>(
 
 export function suspendCacheData<T>(
   key: string,
-  cache: Map<string, AsyncState<any>>,
+  cache: Map<string, AsyncState<unknown>>,
   supplier: () => AsyncState<T>,
 ): T {
   /**
