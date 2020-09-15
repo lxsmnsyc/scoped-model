@@ -25,16 +25,15 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { AccessibleObject } from '../types';
 import createModel, { ScopedModelOptions, ScopedModel } from '../create-model';
 
-export type NullaryScopedModel<Model> = ScopedModel<Model>;
+export type NullaryScopedModel<Model> = ScopedModel<Model, any>;
 export type NullaryScopedModelHook<Model> =
   () => Model;
 export type NullaryScopedModelOptions =
-  Omit<ScopedModelOptions<AccessibleObject>, 'shouldUpdate' | 'propTypes' | 'defaultProps'>;
+  Omit<ScopedModelOptions<any>, 'shouldUpdate' | 'propTypes' | 'defaultProps'>;
 
-const NEVER_UPDATE = () => true;
+const NEVER_UPDATE = (): boolean => true;
 
 export default function createNullaryModel<Model>(
   useModelHook: NullaryScopedModelHook<Model>,
