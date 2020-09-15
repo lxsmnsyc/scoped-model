@@ -1,7 +1,7 @@
 module.exports = {
   "root": true,
   "extends": [
-    "lxsmnsyc/typescript/react"
+    'lxsmnsyc/typescript/react',
   ],
   "parserOptions": {
     "project": "./tsconfig.eslint.json",
@@ -14,6 +14,9 @@ module.exports = {
       }
     ],
     "react/jsx-props-no-spreading": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-unsafe-assignment": "off",
+    "@typescript-eslint/no-unsafe-return": "off",
   },
 };
 
