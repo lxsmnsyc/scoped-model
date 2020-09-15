@@ -42,7 +42,7 @@ export type AsyncSelectorFn<T extends ScopedModel<any, any>, R> = SelectorFn<T, 
  */
 export default function useAsyncSelector<T extends ScopedModel<any, any>, R>(
   model: T,
-  selector: (model: ScopedModelModelType<T>) => Promise<R>,
+  selector: AsyncSelectorFn<T, R>,
 ): AsyncState<R> {
   const notifier = useScopedModelContext(model);
 
@@ -70,7 +70,7 @@ export default function useAsyncSelector<T extends ScopedModel<any, any>, R>(
       },
     );
 
-    return () => {
+    return (): void => {
       mounted = false;
     };
   }, [notifier, selector]);
@@ -78,7 +78,7 @@ export default function useAsyncSelector<T extends ScopedModel<any, any>, R>(
   useIsomorphicEffect(() => {
     let mounted = true;
 
-    const callback = (next: ScopedModelModelType<T>) => {
+    const callback = (next: ScopedModelModelType<T>): void => {
       setState({ status: 'pending' });
 
       selector(next).then(

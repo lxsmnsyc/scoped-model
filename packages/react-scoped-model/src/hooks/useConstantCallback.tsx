@@ -27,6 +27,7 @@
  */
 import useConstant from './useConstant';
 
-export default function useConstantCallback<T extends((...args: any[]) => any)>(callback: T): T {
+export default function useConstantCallback<T extends((...args: any[]) => any)>
+(callback: T): T {
   return useConstant<T>(() => callback);
 }

@@ -32,20 +32,22 @@ import { suspendCacheData, createCachedData } from '../create-cached-data';
 import Notifier from '../notifier';
 import useIsomorphicEffect from './useIsomorphicEffect';
 import { SelectorFn } from './useSelector';
+import { AsyncState } from '../types';
 
 export interface SuspendSelector<T> {
   value: T;
   suspend: boolean;
 }
 
-export type SuspendSelectorFn<T extends ScopedModel<any, any>, R> = SelectorFn<T, SuspendSelector<R>>;
+export type SuspendSelectorFn<T extends ScopedModel<any, any>, R> =
+  SelectorFn<T, SuspendSelector<R>>;
 
 function captureSuspendedValue<Model, R>(
   notifier: Notifier<Model>,
   next: Model,
   selector: (model: Model) => SuspendSelector<R>,
   key: string,
-) {
+): AsyncState<R> {
   return createCachedData(new Promise<R>((resolve) => {
     const { value, suspend } = selector(next);
     if (!suspend) {
