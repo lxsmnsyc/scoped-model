@@ -80,34 +80,33 @@ export default function createModel<Model, Props = unknown>(
    */
   const displayName = options.displayName || `ScopedModel-${id}`;
 
-  const Processor = memo(
-    (props) => {
-      const emitter = useContext(context);
-      if (!emitter) {
-        throw new MissingScopedModelError(displayName);
-      }
+  const ProcessorInner = (props: Props) => {
+    const emitter = useContext(context);
+    if (!emitter) {
+      throw new MissingScopedModelError(displayName);
+    }
 
-      const model = useModelHook(props as Props);
+    const model = useModelHook(props);
 
-      emitter.sync(model);
+    emitter.sync(model);
 
-      useIsomorphicEffect(() => {
-        emitter.consume(model);
-      }, [emitter, model]);
+    useIsomorphicEffect(() => {
+      emitter.consume(model);
+    }, [emitter, model]);
 
-      return null;
-    },
-    options.shouldUpdate,
-  );
+    return null;
+  };
 
-  Processor.displayName = `${displayName}.Processor`;
+  ProcessorInner.displayName = `ScopedModelProcessor(${displayName}.Processor)`;
+
+  const Processor = memo(ProcessorInner, options.shouldUpdate);
 
   const Provider: FC<Props> = ({ children, ...props }) => {
     const emitter = useConstant(() => new Notifier<Model>());
 
     return (
       <context.Provider value={emitter}>
-        <Processor {...props as Props} />
+        <Processor {...props as any} />
         { children }
       </context.Provider>
     );
@@ -123,7 +122,7 @@ export default function createModel<Model, Props = unknown>(
   /**
    * Display name for the Provider
    */
-  Provider.displayName = displayName;
+  Provider.displayName = `ScopedModel(${displayName})`;
   context.displayName = displayName;
 
   return {
