@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
   cleanup, render, screen, waitFor,
 } from '@testing-library/react';
-import createModel, { useAsyncSelector } from '../../src';
+import createModel, { createAsyncSelector } from '../../src';
 import { supressWarnings, restoreWarnings } from '../suppress-warnings';
 
 import '@testing-library/jest-dom/extend-expect';
@@ -10,24 +10,26 @@ import '@testing-library/jest-dom';
 
 afterEach(cleanup);
 
-jest.useFakeTimers();
-
 const sleep = (count: number) => new Promise((resolve) => {
   setTimeout(resolve, count * 1000, true);
 });
 
-describe('useAsyncSelector', () => {
+jest.useFakeTimers();
+
+describe('createAsyncSelector', () => {
   it('should receive a pending state on initial render.', () => {
     const finder = 'example';
     const expected = 'Pending';
 
     const Example = createModel(() => 'Hello World');
 
+    const useExample = createAsyncSelector(Example, async (state) => {
+      await sleep(1);
+      return state;
+    });
+
     function Consumer(): JSX.Element {
-      const value = useAsyncSelector(Example, async (state) => {
-        await sleep(1);
-        return state;
-      });
+      const value = useExample();
 
       return (
         <p title={finder}>
@@ -52,11 +54,13 @@ describe('useAsyncSelector', () => {
 
     const Example = createModel(() => expected);
 
+    const useExample = createAsyncSelector(Example, async (state) => {
+      await sleep(1);
+      return state;
+    });
+
     function Consumer(): JSX.Element {
-      const value = useAsyncSelector(Example, async (state) => {
-        await sleep(1);
-        return state;
-      });
+      const value = useExample();
 
       return (
         <>
@@ -87,11 +91,13 @@ describe('useAsyncSelector', () => {
 
     const Example = createModel(() => expected);
 
+    const useExample = createAsyncSelector(Example, async () => {
+      await sleep(1);
+      throw new Error('failed');
+    });
+
     function Consumer(): JSX.Element {
-      const value = useAsyncSelector(Example, async () => {
-        await sleep(1);
-        throw new Error('failed');
-      });
+      const value = useExample();
 
       return (
         <>
@@ -134,13 +140,13 @@ describe('useAsyncSelector', () => {
       return state;
     });
 
-    const selector = async (state: string) => {
+    const useExample = createAsyncSelector(Example, async (state) => {
       await sleep(1);
       return state;
-    };
+    });
 
     function Consumer(): JSX.Element {
-      const value = useAsyncSelector(Example, selector);
+      const value = useExample();
 
       return (
         <>
@@ -181,13 +187,13 @@ describe('useAsyncSelector', () => {
       return state;
     });
 
-    const selector = async (state: string) => {
+    const useExample = createAsyncSelector(Example, async (state) => {
       await sleep(1);
       return state;
-    };
+    });
 
     function Consumer(): JSX.Element {
-      const value = useAsyncSelector(Example, selector);
+      const value = useExample();
 
       return (
         <>
@@ -230,16 +236,16 @@ describe('useAsyncSelector', () => {
       return state;
     });
 
-    const selector = async (state: string) => {
+    const useExample = createAsyncSelector(Example, async (state: string) => {
       await sleep(1);
       if (state === 'Update') {
         throw new Error('failed');
       }
       return state;
-    };
+    });
 
     function Consumer(): JSX.Element {
-      const value = useAsyncSelector(Example, selector);
+      const value = useExample();
 
       return (
         <>
@@ -269,11 +275,13 @@ describe('useAsyncSelector', () => {
   it('should throw an error if the model is not mounted before accessing.', () => {
     const Expected = createModel(() => 'Test');
 
+    const useExample = createAsyncSelector(Expected, async (state) => {
+      await sleep(1);
+      return state;
+    });
+
     function Consumer(): JSX.Element {
-      useAsyncSelector(Expected, async (state) => {
-        await sleep(1);
-        return state;
-      });
+      useExample();
 
       return <>Test</>;
     }
