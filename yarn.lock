@@ -3742,10 +3742,15 @@ es6-promisify@^5.0.0:
   dependencies:
     es6-promise "^4.0.3"
 
-esbuild@^0.6.10, esbuild@^0.6.33:
+esbuild@^0.6.10:
   version "0.6.34"
   resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.6.34.tgz#76565a60e006f45d5f273b6e59e61ed0816551f5"
   integrity sha512-InRdL/Q96pUucPqovJzvuLhquZr6jOn81FDVwFjCKz1rYKIm9OdOC+7Fs4vr6x48vKBl5LzKgtjU39BUpO636A==
+
+esbuild@^0.7.1:
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.7.1.tgz#53c40e75c1b104845a4cf2521dfdcd34ba8fda1c"
+  integrity sha512-QpdO0VlJLnm4MtZAPYn0fKUGqAqSmG9FO8ZWiLYB9H2K4qpM88SFnhgMhOWsTiyoFGqXWcJIhPojmcJm3mK0mQ==
 
 escalade@^3.0.2:
   version "3.0.2"
@@ -7656,33 +7661,14 @@ pretty-format@^26.4.2:
     ansi-styles "^4.0.0"
     react-is "^16.12.0"
 
-pridepack@^0.0.28:
-  version "0.0.28"
-  resolved "https://registry.yarnpkg.com/pridepack/-/pridepack-0.0.28.tgz#28db96c9a789bb8c0e558213b96285396625d01a"
-  integrity sha512-ASOF0nhNSuaOdCetHY4Z9y+INvyiSeCOLMH7v+/9pBG6IYqm9iw2l8eYF73GhICK+sKIbjfmsINzdVVaecMTsQ==
+pridepack@^0.0.31:
+  version "0.0.31"
+  resolved "https://registry.yarnpkg.com/pridepack/-/pridepack-0.0.31.tgz#0c7a414d4f1ad446816d8551d882451431d483a5"
+  integrity sha512-JBxh7xoe2Hqr2UY2z67uOWpQ/Wk2/N19GE+uGrfv8/JqIQnT3z0VcbghIetW4xOtU7VeH52/OfNrl2Ger7RHPg==
   dependencies:
     "@jest/types" "^26.3.0"
     dotenv "^8.2.0"
-    esbuild "^0.6.33"
-    eslint "^7.8.1"
-    execa "^4.0.3"
-    fs-extra "^9.0.1"
-    jest "^26.4.2"
-    listr2 "^3.0.1"
-    package-json-type "^1.0.3"
-    ts-jest "^26.3.0"
-    tslib "^2.0.1"
-    typescript "^4.0.2"
-    yargs "^15.4.1"
-
-pridepack@^0.0.29:
-  version "0.0.29"
-  resolved "https://registry.yarnpkg.com/pridepack/-/pridepack-0.0.29.tgz#700ca54837a8c5ca8c5660ba743c1f3c90a8236a"
-  integrity sha512-ekxHGCEdsktNdOHI4KqKDNSElymelkgUM/gO3gpNL1KlP9LWN9MjnXVldqgTLQHSz4/DnXrStiDEiiGM4QxTXw==
-  dependencies:
-    "@jest/types" "^26.3.0"
-    dotenv "^8.2.0"
-    esbuild "^0.6.33"
+    esbuild "^0.7.1"
     eslint "^7.8.1"
     execa "^4.0.3"
     fs-extra "^9.0.1"
