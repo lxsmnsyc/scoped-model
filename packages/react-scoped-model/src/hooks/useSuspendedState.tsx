@@ -28,7 +28,7 @@
 import useScopedModelContext from './useScopedModelContext';
 import { ScopedModel, ScopedModelModelType } from '../create-model';
 import useForceUpdate from './useForceUpdate';
-import { suspendCacheData, createCachedData } from '../create-cached-data';
+import { suspendCacheData, createCachedData, mutateCacheData } from '../create-cached-data';
 import Notifier from '../notifier';
 import useIsomorphicEffect from './useIsomorphicEffect';
 import { SelectorFn } from './useSelector';
@@ -48,22 +48,26 @@ function captureSuspendedValue<Model, R>(
   selector: (model: Model) => SuspendSelector<R>,
   key: string,
 ): AsyncState<R> {
-  return createCachedData(new Promise<R>((resolve) => {
-    const { value, suspend } = selector(next);
-    if (!suspend) {
-      resolve(value);
-    } else {
-      const listener = (m: Model): void => {
-        const { value: innerValue, suspend: innerSuspend } = selector(m);
-        if (!innerSuspend) {
-          resolve(innerValue);
-          notifier.off(listener);
-        }
-      };
+  const { value, suspend } = selector(next);
+  if (!suspend) {
+    mutateCacheData(notifier.cache, key, value);
+    return {
+      data: value,
+      status: 'success',
+    };
+  }
 
-      notifier.on(listener);
-    }
-  }), key, notifier.cache);
+  return createCachedData(notifier.cache, key, new Promise<R>((resolve) => {
+    const listener = (m: Model): void => {
+      const { value: innerValue, suspend: innerSuspend } = selector(m);
+      if (!innerSuspend) {
+        resolve(innerValue);
+        notifier.off(listener);
+      }
+    };
+
+    notifier.on(listener);
+  }));
 }
 
 /**
@@ -101,7 +105,7 @@ export default function useSuspendedState<T extends ScopedModel<any, any>, R>(
     return (): void => notifier.off(callback);
   }, [notifier, selector, key, forceUpdate]);
 
-  return suspendCacheData(key, notifier.cache, () => captureSuspendedValue(
+  return suspendCacheData(notifier.cache, key, () => captureSuspendedValue(
     notifier,
     notifier.value,
     selector,
