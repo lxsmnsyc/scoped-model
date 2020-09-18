@@ -45,7 +45,7 @@ interface GraphNodeTask<T> {
   target: GraphNode<T>;
 }
 
-const GraphLogic = createNullaryModel(() => {
+const GraphStateDomain = createNullaryModel(() => {
   const nodes = useConstant<GraphNodeInstanceMap>(() => new Map());
   const state = useConstant<GraphNodeStateMap>(() => new Map());
 
@@ -173,9 +173,9 @@ const GraphLogic = createNullaryModel(() => {
     removeListener,
   };
 }, {
-  displayName: 'GraphLogic',
+  displayName: 'GraphStateDomain',
 });
 
-export const useGraphLogic = createValueOnce(GraphLogic);
+export const useGraphStateDomain = createValueOnce(GraphStateDomain);
 
-export default GraphLogic;
+export default GraphStateDomain;

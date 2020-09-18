@@ -25,13 +25,13 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { useGraphLogic } from '../GraphLogic';
+import { useGraphStateDomain } from '../GraphStateDomain';
 import { GraphNode } from '../graph-node';
 import useIsomorphicEffect from './useIsomorphicEffect';
 import useForceUpdate from './useForceUpdate';
 
 export default function useGraphNodeValue<T>(node: GraphNode<T>): T {
-  const logic = useGraphLogic();
+  const logic = useGraphStateDomain();
 
   const forceUpdate = useForceUpdate();
 

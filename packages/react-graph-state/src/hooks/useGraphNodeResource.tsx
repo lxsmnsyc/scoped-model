@@ -25,10 +25,10 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { GraphNodeAsync } from '../graph-node';
+import { GraphNodeResource } from '../graph-node';
 import useGraphNodeValue from './useGraphNodeValue';
 
-export default function useGraphNodeSuspenseValue<T>(node: GraphNodeAsync<T>): T {
+export default function useGraphNodeResource<T>(node: GraphNodeResource<T>): T {
   const value = useGraphNodeValue(node);
 
   if (value.status === 'success') {

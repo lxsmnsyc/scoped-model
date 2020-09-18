@@ -27,7 +27,7 @@
  */
 export { default as useGraphNodeValue } from './hooks/useGraphNodeValue';
 export { default as useGraphNodeSetValue } from './hooks/useGraphNodeSetValue';
-export { default as useGraphNodeSuspenseValue } from './hooks/useGraphNodeSuspenseValue';
+export { default as useGraphNodeResource } from './hooks/useGraphNodeResource';
 export { default as GraphCore } from './GraphCore';
 
 export * from './graph-node';

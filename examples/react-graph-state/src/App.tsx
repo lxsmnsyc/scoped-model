@@ -1,11 +1,11 @@
 import React, { Suspense, useCallback } from 'react';
 import {
-  createAsyncGraphNode,
+  createGraphNodeResource,
   createGraphNode,
   GraphCore,
+  useGraphNodeResource,
   useGraphNodeSetValue,
   useGraphNodeValue,
-  useGraphNodeSuspenseValue,
 } from '@lxsmnsyc/react-graph-state';
 
 const temperatureF = createGraphNode({
@@ -38,7 +38,7 @@ const temperature = createGraphNode({
   },
 });
 
-const asyncTemperature = createAsyncGraphNode(temperature);
+const asyncTemperature = createGraphNodeResource(temperature);
 
 function Celsius(): JSX.Element {
   const celsius = useGraphNodeValue(temperatureC);
@@ -87,7 +87,7 @@ function Temperature(): JSX.Element {
 }
 
 function DelayedTemperature(): JSX.Element {
-  const value = useGraphNodeSuspenseValue(asyncTemperature);
+  const value = useGraphNodeResource(asyncTemperature);
   
   return <h1>{ value }</h1>
 }

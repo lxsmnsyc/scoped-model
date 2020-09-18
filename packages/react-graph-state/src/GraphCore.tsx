@@ -26,7 +26,7 @@
  * @copyright Alexis Munsayac 2020
  */
 import React, { ReactNode } from 'react';
-import GraphLogic from './GraphLogic';
+import GraphStateDomain from './GraphStateDomain';
 
 export interface GraphCoreProps {
   children?: ReactNode;
@@ -34,8 +34,8 @@ export interface GraphCoreProps {
 
 export default function GraphCore({ children }: GraphCoreProps): JSX.Element {
   return (
-    <GraphLogic.Provider>
+    <GraphStateDomain.Provider>
       { children }
-    </GraphLogic.Provider>
+    </GraphStateDomain.Provider>
   );
 }

@@ -82,11 +82,11 @@ export type GraphNodeAsyncResult<T> =
   | GraphNodeAsyncSuccess<T>
   | GraphNodeAsyncFailure;
 
-export type GraphNodeAsync<T> = GraphNode<GraphNodeAsyncResult<T>>;
+export type GraphNodeResource<T> = GraphNode<GraphNodeAsyncResult<T>>;
 
-export function createAsyncGraphNode<T>(
+export function createGraphNodeResource<T>(
   graphNode: GraphNode<Promise<T>>,
-): GraphNodeAsync<T> {
+): GraphNodeResource<T> {
   return createGraphNode({
     get: (get, set) => {
       const promise = get(graphNode);
