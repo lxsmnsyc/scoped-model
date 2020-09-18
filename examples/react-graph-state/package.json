@@ -1,5 +1,5 @@
 {
-  "name": "react-scoped-model-graph-vite",
+  "name": "react-graph-state-vite",
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
@@ -7,7 +7,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@lxsmnsyc/react-scoped-model-graph": "^0.0.0",
+    "@lxsmnsyc/react-graph-state": "^0.0.0",
     "@pika/react": "^16.13.1",
     "@pika/react-dom": "^16.13.1",
     "react": "npm:@pika/react",

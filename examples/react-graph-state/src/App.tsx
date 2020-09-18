@@ -6,7 +6,7 @@ import {
   useGraphNodeSetValue,
   useGraphNodeValue,
   useGraphNodeSuspenseValue,
-} from '@lxsmnsyc/react-scoped-model-graph';
+} from '@lxsmnsyc/react-graph-state';
 
 const temperatureF = createGraphNode({
   get: 32,
