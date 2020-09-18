@@ -2,7 +2,7 @@
 
 > Scoped Model pattern in Preact (but with Hooks)
 
-[![NPM](https://img.shields.io/npm/v/@lxsmnsyc/preact-scoped-model.svg)](https://www.npmjs.com/package/@lxsmnsyc/preact-scoped-model) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+[![NPM](https://img.shields.io/npm/v/@lxsmnsyc/preact-scoped-model.svg)](https://www.npmjs.com/package/@lxsmnsyc/preact-scoped-model) [![JavaScript Style Guide](https://badgen.net/badge/code%20style/airbnb/ff5a5f?icon=airbnb)](https://github.com/airbnb/javascript)
 
 ## Features
 
