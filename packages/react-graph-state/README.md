@@ -61,6 +61,22 @@ const timer = createGraphNode<number>({
     return count;
   },
 });
+
+const temperatureF = createGraphNode({
+  get: 32,
+});
+
+const temperatureC = createGraphNode<number>({
+  get: (get) => {
+    const fahrenheit = get(temperatureF);
+
+    return (fahrenheit - 32) * 5 / 9;
+  },
+  set: (_, set, newValue) => {
+    set(temperatureF, (newValue * 9) / 5 + 32);
+  },
+});
+
 ```
 
 ### Accessing a graph node
