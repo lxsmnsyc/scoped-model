@@ -25,23 +25,17 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
+import { Ref } from 'preact/hooks';
 import { AsyncState } from './types';
 
 type Listener<T> = (value: T) => void;
 
 export default class Notifier<T> {
-  private currentValue: T;
+  private ref?: Ref<T>;
 
-  private suspenseCache: Map<string, AsyncState<any>>;
+  private suspenseCache= new Map<string, AsyncState<any>>();
 
-  private listeners: Set<Listener<T>>;
-
-  constructor(defaultValue: T) {
-    this.currentValue = defaultValue;
-
-    this.listeners = new Set();
-    this.suspenseCache = new Map<string, AsyncState<any>>();
-  }
+  private listeners = new Set<Listener<T>>();
 
   on(callback: Listener<T>): void {
     this.listeners.add(callback);
@@ -52,21 +46,26 @@ export default class Notifier<T> {
   }
 
   consume(value: T): void {
-    this.currentValue = value;
+    this.sync(value);
     new Set(this.listeners).forEach((cb) => {
       cb(value);
     });
   }
 
   sync(value: T): void {
-    this.currentValue = value;
+    this.ref = {
+      current: value,
+    };
   }
 
   get value(): T {
-    return this.currentValue;
+    if (this.ref == null) {
+      throw new Error('Unexpected missing model reference.');
+    }
+    return this.ref.current;
   }
 
-  get cache(): Map<string, AsyncState<any>> {
+  get cache(): Map<string, AsyncState<unknown>> {
     return this.suspenseCache;
   }
 }

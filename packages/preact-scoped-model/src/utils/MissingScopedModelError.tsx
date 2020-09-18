@@ -26,11 +26,15 @@
  * @copyright Alexis Munsayac 2020
  */
 export default class MissingScopedModelError extends Error {
+  public modelName: string;
+
   constructor(modelName: string) {
     super(`
   The scoped model '${modelName}' is missing from the ancestor component tree.
   Make sure that the model's Provider is mounted first before trying to access
   the model's state.
   `);
+
+    this.modelName = modelName;
   }
 }

@@ -1,0 +1,7 @@
+{
+  "jsxFactory": "h",
+  "jsxFragment": "Fragment",
+  "jest": {
+    "testEnvironment": "jsdom"
+  }
+}

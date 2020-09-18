@@ -52,7 +52,7 @@ export default function useSuspenseSelector<T extends ScopedModel<any, any>, R>(
 
   useIsomorphicEffect(() => {
     const callback = (next: ScopedModelModelType<T>): void => {
-      createCachedData(selector(next), key, notifier.cache);
+      createCachedData(notifier.cache, key, selector(next));
 
       forceUpdate();
     };
@@ -62,9 +62,9 @@ export default function useSuspenseSelector<T extends ScopedModel<any, any>, R>(
     return (): void => notifier.off(callback);
   }, [notifier, selector, key, forceUpdate]);
 
-  return suspendCacheData(key, notifier.cache, () => createCachedData(
-    selector(notifier.value),
-    key,
+  return suspendCacheData(notifier.cache, key, () => createCachedData(
     notifier.cache,
+    key,
+    selector(notifier.value),
   ));
 }
