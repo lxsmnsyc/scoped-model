@@ -3,6 +3,7 @@
   "description": "Scoped Model pattern in ReasonReact (but with Hooks)",
   "version": "1.0.1",
   "scripts": {
+    "prepublish": "yarn build",
     "build": "bsb -make-world",
     "start": "bsb -make-world -w -ws _ ",
     "clean": "bsb -clean-world"
