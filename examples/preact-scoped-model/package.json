@@ -11,8 +11,8 @@
     "preact": "^10.4.8"
   },
   "devDependencies": {
-    "@prefresh/vite": "^0.10.0",
-    "typescript": "^3.9.3",
+    "@prefresh/vite": "^1.0.2",
+    "typescript": "^4.0.2",
     "vite": "^1.0.0-rc.4"
   },
   "private": true
