@@ -6,20 +6,20 @@ import * as Caml_obj from "bs-platform/lib/es6/caml_obj.js";
 import * as ScopedModel$ReScopedModel from "@lxsmnsyc/re-scoped-model/src/ScopedModel.bs.js";
 
 function call(props) {
-  var match = React.useState((function () {
-          return props;
-        }));
+  var match = React.useState(function () {
+        return props;
+      });
   var setCount = match[1];
   var decrement = React.useCallback((function (param) {
           return Curry._1(setCount, (function (current) {
                         return current - 1 | 0;
                       }));
-        }), ([]));
+        }), []);
   var increment = React.useCallback((function (param) {
           return Curry._1(setCount, (function (current) {
                         return current + 1 | 0;
                       }));
-        }), ([]));
+        }), []);
   return {
           decrement: decrement,
           increment: increment,
@@ -106,7 +106,7 @@ function App(Props) {
             }, React.createElement(CounterModel.Provider.make, {
                   props: 100,
                   children: null
-                }, React.createElement(App$Count, { }), React.createElement(App$Increment, { }), React.createElement(App$Decrement, { })), React.createElement(App$Count, { }), React.createElement(App$Increment, { }), React.createElement(App$Decrement, { }));
+                }, React.createElement(App$Count, {}), React.createElement(App$Increment, {}), React.createElement(App$Decrement, {})), React.createElement(App$Count, {}), React.createElement(App$Increment, {}), React.createElement(App$Decrement, {}));
 }
 
 var make = App;
