@@ -25,11 +25,13 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-export { default as useGraphNodeValue } from './hooks/useGraphNodeValue';
-export { default as useGraphNodeState } from './hooks/useGraphNodeValue';
-export { default as useGraphNodeSetValue } from './hooks/useGraphNodeSetValue';
-export { default as useGraphNodeResource } from './hooks/useGraphNodeResource';
-export { default as GraphDomain } from './GraphDomain';
-
-export * from './graph-node';
-export * from './GraphDomain';
+export default class OutOfGraphDomainError extends Error {
+  constructor() {
+    super(`
+  Attempt to access a graph domain instance externally.
+  Please make sure that the <GraphDomain> is mounted and
+  is an ancestor and the hook is being used inside a
+  <GraphDomain>;
+`);
+  }
+}

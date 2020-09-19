@@ -25,11 +25,21 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-export { default as useGraphNodeValue } from './hooks/useGraphNodeValue';
-export { default as useGraphNodeState } from './hooks/useGraphNodeValue';
-export { default as useGraphNodeSetValue } from './hooks/useGraphNodeSetValue';
-export { default as useGraphNodeResource } from './hooks/useGraphNodeResource';
-export { default as GraphDomain } from './GraphDomain';
+import React, { ReactNode, useRef } from 'react';
+import GraphCore from './GraphCore';
+import { GraphCoreValue, GraphDomainContext } from './GraphDomainContext';
 
-export * from './graph-node';
-export * from './GraphDomain';
+export interface GraphDomainProps {
+  children?: ReactNode;
+}
+
+export default function GraphDomain({ children }: GraphDomainProps): JSX.Element {
+  const ref = useRef<GraphCoreValue>({});
+
+  return (
+    <GraphDomainContext.Provider value={ref}>
+      <GraphCore />
+      { children }
+    </GraphDomainContext.Provider>
+  );
+}
