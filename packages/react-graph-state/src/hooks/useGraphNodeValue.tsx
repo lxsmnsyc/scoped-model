@@ -25,13 +25,14 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { useGraphStateDomain } from '../GraphStateDomain';
+import { useMemo } from 'react';
+import { useGraphDomainInterface } from '../GraphDomainContext';
 import { GraphNode } from '../graph-node';
 import useIsomorphicEffect from './useIsomorphicEffect';
 import useForceUpdate from './useForceUpdate';
 
 export default function useGraphNodeValue<T>(node: GraphNode<T>): T {
-  const logic = useGraphStateDomain();
+  const logic = useGraphDomainInterface();
 
   const forceUpdate = useForceUpdate();
 
@@ -43,5 +44,5 @@ export default function useGraphNodeValue<T>(node: GraphNode<T>): T {
     };
   }, [logic, node]);
 
-  return logic.getState(node);
+  return useMemo(() => logic.getState(node), [logic, node]);
 }
