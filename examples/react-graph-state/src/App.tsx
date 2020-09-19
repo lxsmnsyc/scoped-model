@@ -2,7 +2,7 @@ import React, { Suspense, useCallback } from 'react';
 import {
   createGraphNodeResource,
   createGraphNode,
-  GraphCore,
+  GraphDomain,
   useGraphNodeResource,
   useGraphNodeSetValue,
   useGraphNodeValue,
@@ -123,7 +123,7 @@ function Timer(): JSX.Element {
 
 export default function App(): JSX.Element {
   return (
-    <GraphCore>
+    <GraphDomain>
       <Fahrenheit />
       <Celsius />
       <Temperature />
@@ -132,6 +132,6 @@ export default function App(): JSX.Element {
       </Suspense>
       <AsyncTemperature />
       <Timer />
-    </GraphCore>
+    </GraphDomain>
   );
 }
