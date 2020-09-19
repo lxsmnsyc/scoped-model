@@ -51,7 +51,7 @@ const dependentNode = createGraphNode({
 });
 
 // A self-updating node
-const timer = createGraphNode<number>({
+const timer = createGraphNode({
   get: (_, set) => {
     let count = 0;
     setInterval(() => {
@@ -66,7 +66,7 @@ const temperatureF = createGraphNode({
   get: 32,
 });
 
-const temperatureC = createGraphNode<number>({
+const temperatureC = createGraphNode({
   get: (get) => {
     const fahrenheit = get(temperatureF);
 
@@ -158,7 +158,7 @@ Graph nodes can have synchronous or asynchronous states, but having raw asynchro
  * tedious task.
  */
 const asyncUserNode = createGraphNode(
-  get: (get) => {
+  get: async (get) => {
     // Get current user id
     const id = get(userIdNode);
 
@@ -220,6 +220,22 @@ function UserProfile() {
   );
 }
 ```
+
+## Comparisons
+
+### Recoil
+
+* `createGraphNode` is a conjuction of `atom` and `selector`.
+* `createGraphNode` has an optional `key` field.
+* `selector` with no `set` fields in Recoil are not writeable. Since graph nodes are a conjuction of `atom` and `selector`, they are both readable and writeable.
+* `get` field in `createGraphNode` can receive a second parameter which allows self-updating state.
+* `set` field in `createGraphNode` does not have a `reset` function.
+* Asynchronous graph nodes, in contrast to Promise-providing `atom`, does not suspend when accessed with `useGraphNodeValue`.
+* Using `useRecoilValue` may suspend the component if the `atom` returns a Promise, or using `useRecoilValueLoadable` returns a Promise result (aka `Lodable`). Graph nodes can achieve similar feature by using `createGraphNodeResource` to turn the graph node into both a `Loadable` and a valid React resource, as well as using `useGraphNodeResource` to suspend the component.
+* `react-graph-state` does not have higher-order graph nodes, in contrast with `atomFamily` and `selectorFamily`.
+* `react-graph-state` does not have public access to snapshots.
+
+### jotai
 
 ## License
 
