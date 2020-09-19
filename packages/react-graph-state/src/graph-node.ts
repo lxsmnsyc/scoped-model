@@ -107,6 +107,6 @@ export function createGraphNodeResource<T>(
         status: 'pending',
       };
     },
-    key: `Async-${graphNode.key}`,
+    key: `Resource(${graphNode.key})`,
   });
 }
