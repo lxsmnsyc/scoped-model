@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import {
-  cleanup, render, screen, waitFor,
+  act,
+  cleanup,
+  render,
+  screen,
+  waitFor,
 } from '@testing-library/react';
 import createModel, { createAsyncSelector } from '../../src';
 import { supressWarnings, restoreWarnings } from '../suppress-warnings';
@@ -14,7 +18,11 @@ const sleep = (count: number) => new Promise((resolve) => {
   setTimeout(resolve, count * 1000, true);
 });
 
-jest.useFakeTimers();
+const step = () => {
+  act(() => {
+    jest.advanceTimersByTime(1000);
+  });
+};
 
 describe('createAsyncSelector', () => {
   it('should receive a pending state on initial render.', () => {
@@ -80,7 +88,7 @@ describe('createAsyncSelector', () => {
       </Example.Provider>,
     );
 
-    jest.advanceTimersByTime(1000);
+    step();
     await waitFor(() => screen.getByRole('alert'));
 
     expect(screen.getByTitle(finder)).toContainHTML(expected);
@@ -117,7 +125,7 @@ describe('createAsyncSelector', () => {
       </Example.Provider>,
     );
 
-    jest.advanceTimersByTime(1000);
+    step();
     await waitFor(() => screen.getByRole('alert'));
 
     expect(screen.getByTitle(finder)).toContainHTML('Error');
@@ -164,9 +172,9 @@ describe('createAsyncSelector', () => {
     );
 
     expect(screen.getByTitle(finderA)).toContainHTML('Pending');
-    jest.advanceTimersByTime(1000);
+    step();
     expect(await waitFor(() => screen.getByTitle(finderB))).toContainHTML('Initial');
-    jest.advanceTimersByTime(1000);
+    step();
     expect(await waitFor(() => screen.getByTitle(finderA))).toContainHTML('Pending');
   });
   it('should receive a success state upon resolution after model state update.', async () => {
@@ -211,11 +219,11 @@ describe('createAsyncSelector', () => {
     );
 
     expect(screen.getByTitle(finderA)).toContainHTML('Pending');
-    jest.advanceTimersByTime(1000);
+    step();
     expect(await waitFor(() => screen.getByTitle(finderB))).toContainHTML('Initial');
-    jest.advanceTimersByTime(1000);
+    step();
     expect(await waitFor(() => screen.getByTitle(finderA))).toContainHTML('Pending');
-    jest.advanceTimersByTime(1000);
+    step();
     expect(await waitFor(() => screen.getByTitle(finderB))).toContainHTML('Update');
   });
   it('should receive a failure state upon rejection after model state update.', async () => {
@@ -265,11 +273,11 @@ describe('createAsyncSelector', () => {
     );
 
     expect(screen.getByTitle(finderA)).toContainHTML('Pending');
-    jest.advanceTimersByTime(1000);
+    step();
     expect(await waitFor(() => screen.getByTitle(finderB))).toContainHTML('Initial');
-    jest.advanceTimersByTime(1000);
+    step();
     expect(await waitFor(() => screen.getByTitle(finderA))).toContainHTML('Pending');
-    jest.advanceTimersByTime(1000);
+    step();
     expect(await waitFor(() => screen.getByTitle(finderB))).toContainHTML('Error');
   });
   it('should throw an error if the model is not mounted before accessing.', () => {
