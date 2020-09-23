@@ -25,8 +25,9 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import useConstantCallback from './useConstantCallback';
+import useIsomorphicEffect from './useIsomorphicEffect';
 
 export type Enqueue<T> = (node: T) => void;
 export type QueueReset = () => void;
@@ -34,15 +35,28 @@ export type QueueReset = () => void;
 export default function useWorkQueue<T>(): [T[], Enqueue<T>, QueueReset] {
   const [state, setState] = useState<T[]>([]);
 
+  const lifecycle = useRef(false);
+
+  useIsomorphicEffect(() => {
+    lifecycle.current = true;
+    return () => {
+      lifecycle.current = false;
+    };
+  }, []);
+
   const schedule = useConstantCallback((node: T) => {
-    setState((current) => {
-      const filtered = current.filter((temp) => temp !== node);
-      return [...filtered, node];
-    });
+    if (lifecycle.current) {
+      setState((current) => {
+        const filtered = current.filter((temp) => temp !== node);
+        return [...filtered, node];
+      });
+    }
   });
 
   const reset = useConstantCallback(() => {
-    setState([]);
+    if (lifecycle.current) {
+      setState([]);
+    }
   });
 
   return [state, schedule, reset];
