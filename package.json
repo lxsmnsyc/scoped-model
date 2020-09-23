@@ -14,6 +14,9 @@
     "lerna": "lerna"
   },
   "devDependencies": {
+    "@typescript-eslint/parser": "^4.1.1",
+    "eslint": "^7.9.0",
+    "eslint-config-lxsmnsyc": "^0.1.17",
     "lerna": "^3.22.1"
   },
   "version": "0.1.0",
