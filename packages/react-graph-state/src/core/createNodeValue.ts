@@ -44,5 +44,10 @@ export default function createNodeValue<T>(
   getNode: GraphNodeGetValue,
   setNode: GraphNodeGetYield<T>,
 ): T {
-  return isNodeValueFunc(node.get) ? node.get(getNode, setNode) : node.get;
+  return isNodeValueFunc(node.get)
+    ? node.get({
+      get: getNode,
+      set: setNode,
+    })
+    : node.get;
 }

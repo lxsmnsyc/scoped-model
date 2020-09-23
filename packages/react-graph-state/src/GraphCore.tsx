@@ -103,19 +103,21 @@ function GraphCoreProcess(): JSX.Element {
 
           // Run the node setter for further effects
           target.set(
-            // Getter doesn't need dependency building.
-            <R, >(dependency: GraphNode<R>): R => (
-              getNodeState(nodes, state, dependency, scheduleUpdate)
-            ),
-            // Setter
-            <R, >(dependency: GraphNode<R>, newAction: GraphNodeDraftState<R>): void => {
-              // Schedule a node update
-              setNodeState(
-                state,
-                dependency,
-                getDraftState(newAction, getNodeState(nodes, state, dependency, scheduleUpdate)),
-                scheduleUpdate,
-              );
+            {
+              // Getter doesn't need dependency building.
+              get: <R, >(dependency: GraphNode<R>): R => (
+                getNodeState(nodes, state, dependency, scheduleUpdate)
+              ),
+              // Setter
+              set: <R, >(dependency: GraphNode<R>, newAction: GraphNodeDraftState<R>): void => {
+                // Schedule a node update
+                setNodeState(
+                  state,
+                  dependency,
+                  getDraftState(newAction, getNodeState(nodes, state, dependency, scheduleUpdate)),
+                  scheduleUpdate,
+                );
+              },
             },
             // Send the draft state
             draftState,

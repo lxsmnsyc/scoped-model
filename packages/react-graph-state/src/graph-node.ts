@@ -27,14 +27,27 @@
  */
 import generateKey from './utils/generate-key';
 
+export type GraphNodeKey = string | number;
+
 export type GraphNodeDraftStateAction<T> = (old: T) => T;
 export type GraphNodeDraftState<T> = T | GraphNodeDraftStateAction<T>;
 
 export type GraphNodeGetYield<T> = (value: T) => void;
-export type GraphNodeGetSupplier<T> = (get: GraphNodeGetValue, set: GraphNodeGetYield<T>) => T;
+
+export interface GraphNodeGetInterface<T> {
+  get: GraphNodeGetValue;
+  set: GraphNodeGetYield<T>;
+}
+
+export type GraphNodeGetSupplier<T> = (facing: GraphNodeGetInterface<T>) => T;
 export type GraphNodeGet<T> = T | GraphNodeGetSupplier<T>;
-export type GraphNodeKey = string | number;
-export type GraphNodeSet<T> = (get: GraphNodeGetValue, set: GraphNodeSetValue, newValue: T) => void;
+
+export interface GraphNodeSetInterface {
+  get: GraphNodeGetValue;
+  set: GraphNodeSetValue;
+}
+
+export type GraphNodeSet<T> = (facing: GraphNodeSetInterface, newValue: T) => void;
 
 export interface GraphNode<T> {
   get: GraphNodeGet<T>;
@@ -88,7 +101,7 @@ export function createGraphNodeResource<T>(
   graphNode: GraphNode<Promise<T>>,
 ): GraphNodeResource<T> {
   return createGraphNode({
-    get: (get, set) => {
+    get: ({ get, set }) => {
       const promise = get(graphNode);
 
       promise.then(
