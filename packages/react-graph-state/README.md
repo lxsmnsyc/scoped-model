@@ -23,13 +23,15 @@ A `Graph State` is a kind of a state management structure that aims to build a c
 ### Creating a Graph Node
 
 To create a graph node, you must invoke the `createGraphNode` function. This function an object with 1 required field and 2 optional fields.
-* `get`: acts as a default value. If a function is supplied, the function is lazily evaluated as it enters the `GraphDomain` to provide the default value. This function may also be invoked again if the dependencies update. The function receives two parameters:
-  * `get(dependencyNode)`: Registers the `dependencyNode` as a dependency and returns the dependency's current state. If the `dependencyNode` updates its state at some point, the created graph node reacts to the state and
-  invokes the `get` function to recompute and produce the new state.
-  * `set(newValue)`: Sets the new state for the graph node.
-* `set`: Optional. Registers a state mutation side-effect. This function is invoked when the graph node is scheduled for state update. The function receives three parameters:
-  * `get(node)`: Reads the node's value. Unlike `get`, the node is not treated as a dependency and therefore `set` won't be invoked when dependencies update.
-  * `set(node, action)`: Mutates the node's state. `action` may be a value or a function that receives the current state of the node and returns the new state, similar to `useState`'s `setState`.
+* `get`: acts as a default value. If a function is supplied, the function is lazily evaluated as it enters the `GraphDomain` to provide the default value. This function may also be invoked again if the dependencies update. The function an object with 2 fields:
+  * `{ get, set }`: An interface for controlling graph nodes.
+    * `get(dependencyNode)`: Registers the `dependencyNode` as a dependency and returns the dependency's current state. If the `dependencyNode` updates its state at some point, the created graph node reacts to the state and
+    invokes the `get` function to recompute and produce the new state.
+    * `set(newValue)`: Sets the new state for the graph node.
+* `set`: Optional. Registers a state mutation side-effect. This function is invoked when the graph node is scheduled for state update. The function receives two parameters:
+  * `{ get, set }`: An interface for controlling graph nodes.
+    * `get(node)`: Reads the node's value. Unlike `get`, the node is not treated as a dependency and therefore `set` won't be invoked when dependencies update.
+    * `set(node, action)`: Mutates the node's state. `action` may be a value or a function that receives the current state of the node and returns the new state, similar to `useState`'s `setState`.
   * `newValue`: The new state for the graph node.
 * `key`: Optional. Uses the provided key instead of a generated key. Provided key may be shared, although `get` and `set` functions may be different depending on the node instance passed. Use with caution.
 
@@ -43,7 +45,7 @@ const basicNode = createGraphNode({
 
 // A dependent node
 const dependentNode = createGraphNode({
-  get: (get) => {
+  get: ({ get }) => {
     const basic = get(basicNode);
 
     return `${basic}, World!`;
@@ -52,7 +54,7 @@ const dependentNode = createGraphNode({
 
 // A self-updating node
 const timer = createGraphNode({
-  get: (_, set) => {
+  get: ({ set }) => {
     let count = 0;
     setInterval(() => {
       count += 1;
@@ -67,12 +69,12 @@ const temperatureF = createGraphNode({
 });
 
 const temperatureC = createGraphNode({
-  get: (get) => {
+  get: ({ get }) => {
     const fahrenheit = get(temperatureF);
 
     return (fahrenheit - 32) * 5 / 9;
   },
-  set: (_, set, newValue) => {
+  set: ({ set }, newValue) => {
     set(temperatureF, (newValue * 9) / 5 + 32);
   },
 });
@@ -158,7 +160,7 @@ Graph nodes can have synchronous or asynchronous states, but having raw asynchro
  * tedious task.
  */
 const asyncUserNode = createGraphNode(
-  get: async (get) => {
+  get: async ({ get }) => {
     // Get current user id
     const id = get(userIdNode);
 
@@ -225,17 +227,7 @@ function UserProfile() {
 
 ### Recoil
 
-* `createGraphNode` is a conjuction of `atom` and `selector`.
-* `createGraphNode` has an optional `key` field.
-* `selector` with no `set` fields in Recoil are not writeable. Since graph nodes are a conjuction of `atom` and `selector`, they are both readable and writeable.
-* `get` field in `createGraphNode` can receive a second parameter which allows self-updating state.
-* `set` field in `createGraphNode` does not have a `reset` function.
-* Asynchronous graph nodes, in contrast to Promise-providing `atom`, does not suspend when accessed with `useGraphNodeValue`.
-* Using `useRecoilValue` may suspend the component if the `atom` returns a Promise, or using `useRecoilValueLoadable` returns a Promise result (aka `Lodable`). Graph nodes can achieve similar feature by using `createGraphNodeResource` to turn the graph node into both a `Loadable` and a valid React resource, as well as using `useGraphNodeResource` to suspend the component.
-* `react-graph-state` does not have higher-order graph nodes, in contrast with `atomFamily` and `selectorFamily`.
-* `react-graph-state` does not have public access to snapshots.
-
-### jotai
+### Jotai
 
 ## License
 
