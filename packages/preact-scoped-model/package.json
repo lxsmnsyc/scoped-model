@@ -27,7 +27,7 @@
     "@types/jest": "^26.0.13",
     "@types/node": "^14.10.1",
     "eslint": "^7.9.0",
-    "eslint-config-lxsmnsyc": "^0.1.16",
+    "eslint-config-lxsmnsyc": "^0.1.17",
     "preact": "^10.4.8",
     "pridepack": "^0.0.31",
     "tslib": "^2.0.1",
