@@ -36,8 +36,8 @@ jobs:
         env:
           CI: true
 
-      - name: Begin type check
-        run: yarn type-check
+      - name: Begin Tests
+        run: yarn test:coverage
         env:
           CI: true
 

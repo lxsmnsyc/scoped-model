@@ -11,6 +11,7 @@
     "build": "lerna run build",
     "type-check": "lerna run type-check",
     "test": "lerna run test",
+    "test:coverage": "lerna run test -- --coverage",
     "lerna": "lerna"
   },
   "devDependencies": {
