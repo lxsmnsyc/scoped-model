@@ -45,6 +45,7 @@ var CounterModel = ScopedModel$ReScopedModel.Make({
 
 function useCount(param) {
   return ScopedModel$ReScopedModel.createSelector(CounterModel.reference, (function (state) {
+                console.log(state);
                 return state.count;
               }), undefined, param);
 }
@@ -61,6 +62,7 @@ var Count = {
 
 function useIncrement(param) {
   return ScopedModel$ReScopedModel.createSelector(CounterModel.reference, (function (state) {
+                console.log(state);
                 return state.increment;
               }), undefined, param);
 }
@@ -81,6 +83,7 @@ var Increment = {
 
 function useDecrement(param) {
   return ScopedModel$ReScopedModel.createSelector(CounterModel.reference, (function (state) {
+                console.log(state);
                 return state.decrement;
               }), undefined, param);
 }

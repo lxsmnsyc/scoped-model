@@ -36,9 +36,10 @@ module Counter = {
 module CounterModel = ScopedModel.Make(Counter);
 
 module Count = {
-  let useCount = ScopedModel.createSelector(CounterModel.reference, (state) => (
-    state.count
-  ), None);
+  let useCount = ScopedModel.createSelector(CounterModel.reference, (state) => {
+    Js.log(state);
+    state.count;
+  }, None);
 
   [@react.component]
   let make = () => {
@@ -51,9 +52,10 @@ module Count = {
 };
 
 module Increment = {
-  let useIncrement = ScopedModel.createSelector(CounterModel.reference, (state) => (
-    state.increment
-  ), None);
+  let useIncrement = ScopedModel.createSelector(CounterModel.reference, (state) => {
+    Js.log(state);
+    state.increment;
+  }, None);
 
   [@react.component]
   let make = () => {
@@ -67,9 +69,10 @@ module Increment = {
 
 
 module Decrement = {
-  let useDecrement = ScopedModel.createSelector(CounterModel.reference, (state) => (
-    state.decrement
-  ), None);
+  let useDecrement = ScopedModel.createSelector(CounterModel.reference, (state) => {
+    Js.log(state);
+    state.decrement;
+  }, None);
 
   [@react.component]
   let make = () => {
