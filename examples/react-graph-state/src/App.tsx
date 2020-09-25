@@ -105,7 +105,7 @@ function AsyncTemperature(): JSX.Element {
 }
 
 const timer = createGraphNode<number>({
-  get: (_, set) => {
+  get: ({ set }) => {
     let count = 0;
     setInterval(() => {
       count += 1;
