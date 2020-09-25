@@ -29,7 +29,7 @@
     "eslint": "^7.9.0",
     "eslint-config-lxsmnsyc": "^0.1.17",
     "preact": "^10.4.8",
-    "pridepack": "^0.0.31",
+    "pridepack": "^0.0.33",
     "tslib": "^2.0.1",
     "typescript": "^4.0.2"
   },

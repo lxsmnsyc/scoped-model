@@ -29,7 +29,7 @@
     "@types/react": "^16.9.49",
     "eslint": "^7.9.0",
     "eslint-config-lxsmnsyc": "^0.1.17",
-    "pridepack": "^0.0.31",
+    "pridepack": "^0.0.33",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-test-renderer": "^16.13.1",

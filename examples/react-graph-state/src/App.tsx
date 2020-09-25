@@ -13,12 +13,12 @@ const temperatureF = createGraphNode({
 });
 
 const temperatureC = createGraphNode<number>({
-  get: (get) => {
+  get: ({ get }) => {
     const fahrenheit = get(temperatureF);
 
-    return (fahrenheit - 32) * 5 / 9;
+    return ((fahrenheit - 32) * 5) / 9;
   },
-  set: (_, set, newValue) => {
+  set: ({ set }, newValue) => {
     set(temperatureF, (newValue * 9) / 5 + 32);
   },
 });
@@ -27,8 +27,8 @@ const sleep = (time: number) => new Promise((resolve) => {
   setTimeout(resolve, time, true);
 });
 
-const temperature = createGraphNode({
-  get: async (get) => {
+const temperature = createGraphNode<Promise<string>>({
+  get: async ({ get }) => {
     const fahrenheit = get(temperatureF);
     const celsius = get(temperatureC);
 
@@ -46,7 +46,7 @@ function Celsius(): JSX.Element {
 
   const onChange = useCallback((e: React.FormEvent<HTMLInputElement>) => {
     setCelsius(Number.parseFloat(e.currentTarget.value));
-  }, []);
+  }, [setCelsius]);
 
   return (
     <input
@@ -63,7 +63,7 @@ function Fahrenheit(): JSX.Element {
 
   const onChange = useCallback((e: React.FormEvent<HTMLInputElement>) => {
     setFahrenheit(Number.parseFloat(e.currentTarget.value));
-  }, []);
+  }, [setFahrenheit]);
 
   return (
     <input
@@ -80,16 +80,16 @@ function Temperature(): JSX.Element {
 
   return (
     <>
-      <h1>{`Celsius: ${ celsius }`}</h1>
-      <h1>{`Fahrenheit: ${ fahrenheit }`}</h1>
+      <h1>{`Celsius: ${celsius}`}</h1>
+      <h1>{`Fahrenheit: ${fahrenheit}`}</h1>
     </>
   );
 }
 
 function DelayedTemperature(): JSX.Element {
   const value = useGraphNodeResource(asyncTemperature);
-  
-  return <h1>{ value }</h1>
+
+  return <h1>{ value }</h1>;
 }
 
 function AsyncTemperature(): JSX.Element {

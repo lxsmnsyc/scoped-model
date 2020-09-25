@@ -1,6 +1,6 @@
 module.exports = {
   "extends": [
-    'lxsmnsyc/typescript/preact',
+    'lxsmnsyc/typescript/react',
   ],
   "parserOptions": {
     "project": "./tsconfig.json",
