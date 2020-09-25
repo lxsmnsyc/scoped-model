@@ -25,11 +25,11 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { useState } from 'react';
 import { ScopedModel, ScopedModelModelType } from '../create-model';
 import { defaultCompare, Compare } from '../utils/comparer';
 import useScopedModelContext from './useScopedModelContext';
 import useIsomorphicEffect from './useIsomorphicEffect';
+import useFreshState from './useFreshState';
 
 /**
  * Subscribes to the given model's state
@@ -44,7 +44,10 @@ export default function useValue<T extends ScopedModel<any, any>>(
 ): ScopedModelModelType<T> {
   const notifier = useScopedModelContext(model);
 
-  const [state, setState] = useState(() => notifier.value);
+  const [state, setState] = useFreshState(
+    () => notifier.value,
+    [model],
+  );
 
   useIsomorphicEffect(() => {
     const callback = (next: ScopedModelModelType<T>): void => {

@@ -25,11 +25,11 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { useState } from 'react';
 import { ScopedModel, ScopedModelModelType } from '../create-model';
 import { defaultCompare, Compare } from '../utils/comparer';
 import useScopedModelContext from './useScopedModelContext';
 import useIsomorphicEffect from './useIsomorphicEffect';
+import useFreshState from './useFreshState';
 
 export type SelectorFn<T extends ScopedModel<any, any>, R> =
   (model: Readonly<ScopedModelModelType<T>>) => R;
@@ -58,7 +58,10 @@ export default function useSelector<T extends ScopedModel<any, any>, R>(
    */
   const notifier = useScopedModelContext(model);
 
-  const [state, setState] = useState(() => selector(notifier.value));
+  const [state, setState] = useFreshState(
+    () => selector(notifier.value),
+    [model],
+  );
 
   useIsomorphicEffect(() => {
     const callback = (next: ScopedModelModelType<T>): void => {
