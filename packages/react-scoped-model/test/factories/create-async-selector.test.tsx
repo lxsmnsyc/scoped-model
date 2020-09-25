@@ -18,6 +18,8 @@ const sleep = (count: number) => new Promise((resolve) => {
   setTimeout(resolve, count * 1000, true);
 });
 
+jest.useFakeTimers();
+
 const step = () => {
   act(() => {
     jest.advanceTimersByTime(1000);
