@@ -46,7 +46,7 @@ export default function useValue<T extends ScopedModel<any, any>>(
 
   const [state, setState] = useFreshState(
     () => notifier.value,
-    [model],
+    [notifier],
   );
 
   useIsomorphicEffect(() => {

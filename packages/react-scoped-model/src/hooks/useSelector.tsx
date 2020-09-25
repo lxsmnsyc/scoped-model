@@ -60,7 +60,7 @@ export default function useSelector<T extends ScopedModel<any, any>, R>(
 
   const [state, setState] = useFreshState(
     () => selector(notifier.value),
-    [model],
+    [notifier, selector],
   );
 
   useIsomorphicEffect(() => {
@@ -77,7 +77,7 @@ export default function useSelector<T extends ScopedModel<any, any>, R>(
     notifier.on(callback);
 
     return (): void => notifier.off(callback);
-  }, [notifier, selector, shouldUpdate]);
+  }, [notifier, selector, setState, shouldUpdate]);
 
   /**
    * Return the current state value
