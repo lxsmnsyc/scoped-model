@@ -1,9 +1,8 @@
+'use strict';
 
-
-import * as Curry from "bs-platform/lib/es6/curry.js";
-import * as React from "react";
-import * as Caml_obj from "bs-platform/lib/es6/caml_obj.js";
-import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
+var Curry = require("bs-platform/lib/js/curry.js");
+var React = require("react");
+var Caml_option = require("bs-platform/lib/js/caml_option.js");
 
 function get(value, err) {
   if (value !== undefined) {
@@ -32,9 +31,9 @@ var Constant = {
 };
 
 function use$1(cb) {
-  return use(function (param) {
-              return cb;
-            });
+  return use((function (param) {
+                return cb;
+              }));
 }
 
 var ConstantCallback = {
@@ -42,28 +41,28 @@ var ConstantCallback = {
 };
 
 function use$2(param) {
-  var match = React.useState(function () {
-        return false;
-      });
+  var match = React.useState((function () {
+          return false;
+        }));
   var setState = match[1];
   var cb = function (param) {
     return Curry._1(setState, (function (current) {
                   return !current;
                 }));
   };
-  return use(function (param) {
-              return cb;
-            });
+  return use((function (param) {
+                return cb;
+              }));
 }
 
 var ForceUpdate = {
   use: use$2
 };
 
-function use$3(supplier, dependency) {
+function use$3(supplier, dependency, compare) {
   var deps = React.useRef(dependency);
   var result = React.useRef(undefined);
-  if (Caml_obj.caml_notequal(deps.current, dependency)) {
+  if (Curry._2(compare, deps.current, dependency)) {
     result.current = Caml_option.some(Curry._1(supplier, undefined));
     deps.current = dependency;
   }
@@ -80,18 +79,18 @@ var NativeMemo = {
   use: use$3
 };
 
-var Action = {};
+var Action = { };
 
 var Dispatch = {
   Action: Action
 };
 
-function use$4(initial, dependencies) {
+function use$4(initial, dependencies, compare) {
   var state = use$3((function (param) {
           return {
                   current: Curry._1(initial, undefined)
                 };
-        }), dependencies);
+        }), dependencies, compare);
   var alive = React.useRef(false);
   React.useEffect((function () {
           alive.current = true;
@@ -99,18 +98,18 @@ function use$4(initial, dependencies) {
                     alive.current = false;
                     
                   });
-        }), []);
+        }), ([]));
   var forceUpdate = use$2(undefined);
   var setState = React.useCallback((function (action) {
           var oldState = state.current;
           var newState = Curry._1(action, oldState);
-          if (Caml_obj.caml_notequal(oldState, newState)) {
+          if (oldState !== newState) {
             state.current = newState;
             return Curry._1(forceUpdate, undefined);
           }
           
         }), [state]);
-  return [
+  return /* tuple */[
           state.current,
           setState
         ];
@@ -126,12 +125,12 @@ var Hooks = {
   ConstantCallback: ConstantCallback,
   ForceUpdate: ForceUpdate,
   NativeMemo: NativeMemo,
-  FreshState: FreshState
+  FreshState: FreshState,
+  useConstant: use,
+  useForceUpdate: use$2,
+  useFreshState: use$4
 };
 
-export {
-  Result ,
-  Hooks ,
-  
-}
+exports.Result = Result;
+exports.Hooks = Hooks;
 /* react Not a pure module */

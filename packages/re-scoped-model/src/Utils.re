@@ -42,11 +42,11 @@ module Hooks = {
   };
 
   module NativeMemo = {
-    let use = (supplier: unit => 'a, dependency: 'b) => {
+    let use = (supplier: unit => 'a, dependency: 'b, compare: ('b, 'b) => bool) => {
       let deps = React.useRef(dependency);
       let result = React.useRef(None)
 
-      if (deps.current != dependency) {
+      if (compare(deps.current, dependency)) {
         result.current = Some(supplier());
         deps.current = dependency;
       }
@@ -75,10 +75,10 @@ module Hooks = {
       type t('a) = Action.t('a) => unit;
     };
 
-    let use = (initial: unit => 'a, dependencies: 'b): ('a, Dispatch.t('a)) => {
+    let use = (initial: unit => 'a, dependencies: 'b, compare: ('b, 'b) => bool): ('a, Dispatch.t('a)) => {
       let state = NativeMemo.use(() => {
         current: initial(),
-      }, dependencies);
+      }, dependencies, compare);
 
       let alive = React.useRef(false);
 
@@ -96,7 +96,7 @@ module Hooks = {
           let oldState = state.current;
           let newState = action(oldState);
 
-          if (oldState != newState) {
+          if (oldState !== newState) {
             state.current = newState;
             forceUpdate();
           }
@@ -107,4 +107,8 @@ module Hooks = {
       (state.current, setState);
     };
   };
+
+  let useConstant = Constant.use;
+  let useForceUpdate = ForceUpdate.use;
+  let useFreshState = FreshState.use;
 };

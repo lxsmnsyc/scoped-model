@@ -187,6 +187,9 @@ let useValue = (reference: t('a), shouldUpdate: option(ShouldUpdate.t('a))) => {
       );
     },
     reference,
+    (oldRef, newRef) => {
+      oldRef !== newRef;
+    },
   );
 
   React.useEffect3(() => {
@@ -244,6 +247,11 @@ let useSelector = (
       ));
     },
     (reference, selector),
+    (prev, next) => {
+      let (oldRef, oldSelector) = prev;
+      let (newRef, newSelector) = next;
+      oldRef !== newRef && oldSelector !== newSelector;
+    },
   );
 
   React.useEffect4(() => {

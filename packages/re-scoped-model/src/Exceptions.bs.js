@@ -1,14 +1,11 @@
+'use strict';
 
-
-import * as Caml_exceptions from "bs-platform/lib/es6/caml_exceptions.js";
+var Caml_exceptions = require("bs-platform/lib/js/caml_exceptions.js");
 
 var MissingScopedModel = Caml_exceptions.create("Exceptions-ReScopedModel.MissingScopedModel");
 
 var DesyncScopedModel = Caml_exceptions.create("Exceptions-ReScopedModel.DesyncScopedModel");
 
-export {
-  MissingScopedModel ,
-  DesyncScopedModel ,
-  
-}
+exports.MissingScopedModel = MissingScopedModel;
+exports.DesyncScopedModel = DesyncScopedModel;
 /* No side effect */
