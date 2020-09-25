@@ -189,7 +189,7 @@ let useValue = (reference: t('a), shouldUpdate: option(ShouldUpdate.t('a))) => {
     reference,
   );
 
-  React.useEffect2(() => {
+  React.useEffect3(() => {
     let cb: Notifier.Listener.t('a) = (value) => {
       setState((prev) => {
         if (memo(prev, value)) {
@@ -205,7 +205,7 @@ let useValue = (reference: t('a), shouldUpdate: option(ShouldUpdate.t('a))) => {
     Some(() => {
       Notifier.off(notifier, cb);
     });
-  }, (notifier, memo));
+  }, (notifier, setState, memo));
 
   state;
 };
@@ -246,7 +246,7 @@ let useSelector = (
     (reference, selector),
   );
 
-  React.useEffect2(() => {
+  React.useEffect4(() => {
     let cb: Notifier.Listener.t('a) = (value) => {
       setState((prev) => {
         let next = selector(value);
@@ -263,7 +263,7 @@ let useSelector = (
     Some(() => {
       Notifier.off(notifier, cb);
     });
-  }, (notifier, memo));
+  }, (notifier, selector, setState, memo));
 
   state;
 };

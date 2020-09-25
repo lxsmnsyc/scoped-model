@@ -140,6 +140,7 @@ function useValue(reference, shouldUpdate) {
                   });
         }), [
         notifier,
+        setState,
         memo
       ]);
   return match[0];
@@ -181,6 +182,8 @@ function useSelector(reference, selector, shouldUpdate) {
                   });
         }), [
         notifier,
+        selector,
+        setState,
         memo
       ]);
   return match[0];
