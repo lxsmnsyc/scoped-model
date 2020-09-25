@@ -25,14 +25,14 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import React from 'react';
+import { useState } from 'react';
 import useConstantCallback from './useConstantCallback';
 
 /**
  * Force render a component manually
  */
 export default function useForceUpdate(): () => void {
-  const [, set] = React.useState({});
+  const [, set] = useState({});
 
   return useConstantCallback(() => set({}));
 }

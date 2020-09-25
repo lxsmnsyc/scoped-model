@@ -25,7 +25,7 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import React from 'react';
+import { useEffect, useLayoutEffect } from 'react';
 
 // https://github.com/reduxjs/react-redux/blob/v7-beta/src/components/connectAdvanced.js#L35
 // React currently throws a warning when using useLayoutEffect on the server.
@@ -34,7 +34,7 @@ import React from 'react';
 // `connect` to perform sync updates to a ref to save the latest props after
 // a render is actually committed to the DOM.
 const useIsomorphicEffect = typeof window === 'undefined'
-  ? React.useEffect
-  : React.useLayoutEffect;
+  ? useEffect
+  : useLayoutEffect;
 
 export default useIsomorphicEffect;
