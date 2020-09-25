@@ -40,17 +40,17 @@ import generateId from './utils/id';
 import MissingScopedModelError from './utils/MissingScopedModelError';
 import useIsomorphicEffect from './hooks/useIsomorphicEffect';
 
-export type ScopedModelHook<Model, Props> = (props: Props) => Model;
+export type ScopedModelHook<Model, Props = unknown> = (props: Props) => Model;
 
-export type ScopedModelMemo<Props> = (prev: Props, next: Props) => boolean;
+export type ScopedModelMemo<Props = unknown> = (prev: Props, next: Props) => boolean;
 
-export interface ScopedModelOptions<Props> {
+export interface ScopedModelOptions<Props = unknown> {
   displayName?: string;
   defaultProps?: Partial<Props>;
   shouldUpdate?: ScopedModelMemo<Props>;
 }
 
-export interface ScopedModel<Model, Props> {
+export interface ScopedModel<Model, Props = unknown> {
   context: Context<Notifier<Model> | null>;
   Provider: FunctionComponent<Props>;
   displayName: string;
@@ -81,7 +81,6 @@ export default function createModel<Model, Props>(
 
   const ProcessorInner: FunctionComponent<Props> = (props) => {
     const emitter = useContext(context);
-
     if (!emitter) {
       throw new MissingScopedModelError(displayName);
     }
@@ -97,13 +96,10 @@ export default function createModel<Model, Props>(
     return null;
   };
 
-  const Processor = memo(
-    ProcessorInner,
-    options.shouldUpdate,
-  );
+  const Processor = memo(ProcessorInner, options.shouldUpdate);
 
-  ProcessorInner.displayName = `${displayName}.Processor`;
-  Processor.displayName = `${displayName}.Processor`;
+  ProcessorInner.displayName = `ScopedModelProcessor(${displayName}.Processor)`;
+  Processor.displayName = `ScopedModelProcessor(${displayName}.Processor)`;
 
   const Provider: FunctionComponent<Props> = ({ children, ...props }) => {
     const emitter = useConstant(() => new Notifier<Model>());
@@ -124,7 +120,7 @@ export default function createModel<Model, Props>(
   /**
    * Display name for the Provider
    */
-  Provider.displayName = displayName;
+  Provider.displayName = `ScopedModel(${displayName})`;
   context.Provider.displayName = `${displayName}.Provider`;
 
   return {
