@@ -57,9 +57,9 @@ function Make(Facing) {
   var ScopedModel$Make$Provider = function (Props) {
     var props = Props.props;
     var children = Props.children;
-    var notifier = Utils$ReScopedModel.Hooks.useConstant(function (param) {
-          return Notifier$ReScopedModel.make(undefined);
-        });
+    var notifier = Curry._1(Utils$ReScopedModel.Hooks.Constant.use, (function (param) {
+            return Notifier$ReScopedModel.make(undefined);
+          }));
     return React.createElement(make, makeProps(notifier, null, undefined), React.createElement(make$1, {
                     props: props
                   }), children);
@@ -118,11 +118,11 @@ function useValueOnce(reference) {
 function useValue(reference, shouldUpdate) {
   var memo = shouldUpdate !== undefined ? shouldUpdate : $$default;
   var notifier = useScopedModelContext(reference);
-  var match = React.useState(function () {
-        return Utils$ReScopedModel.Result.get(notifier.currentValue, {
-                    RE_EXN_ID: Exceptions$ReScopedModel.DesyncScopedModel
-                  });
-      });
+  var match = Curry._2(Utils$ReScopedModel.Hooks.FreshState.use, (function (param) {
+          return Utils$ReScopedModel.Result.get(notifier.currentValue, {
+                      RE_EXN_ID: Exceptions$ReScopedModel.DesyncScopedModel
+                    });
+        }), reference);
   var setState = match[1];
   React.useEffect((function () {
           var cb = function (value) {
@@ -155,11 +155,14 @@ function useSelectorOnce(reference, selector) {
 function useSelector(reference, selector, shouldUpdate) {
   var memo = shouldUpdate !== undefined ? shouldUpdate : $$default;
   var notifier = useScopedModelContext(reference);
-  var match = React.useState(function () {
-        return Curry._1(selector, Utils$ReScopedModel.Result.get(notifier.currentValue, {
-                        RE_EXN_ID: Exceptions$ReScopedModel.DesyncScopedModel
-                      }));
-      });
+  var match = Curry._2(Utils$ReScopedModel.Hooks.FreshState.use, (function (param) {
+          return Curry._1(selector, Utils$ReScopedModel.Result.get(notifier.currentValue, {
+                          RE_EXN_ID: Exceptions$ReScopedModel.DesyncScopedModel
+                        }));
+        }), [
+        reference,
+        selector
+      ]);
   var setState = match[1];
   React.useEffect((function () {
           var cb = function (value) {
@@ -253,9 +256,9 @@ function MakeNullary(Facing) {
   var ScopedModel$Make$Provider = function (Props) {
     var props = Props.props;
     var children = Props.children;
-    var notifier = Utils$ReScopedModel.Hooks.useConstant(function (param) {
-          return Notifier$ReScopedModel.make(undefined);
-        });
+    var notifier = Curry._1(Utils$ReScopedModel.Hooks.Constant.use, (function (param) {
+            return Notifier$ReScopedModel.make(undefined);
+          }));
     return React.createElement(make, makeProps(notifier, null, undefined), React.createElement(make$1, {
                     props: props
                   }), children);
@@ -333,9 +336,9 @@ function MakeState(Facing) {
   var ScopedModel$Make$Provider = function (Props) {
     var props = Props.props;
     var children = Props.children;
-    var notifier = Utils$ReScopedModel.Hooks.useConstant(function (param) {
-          return Notifier$ReScopedModel.make(undefined);
-        });
+    var notifier = Curry._1(Utils$ReScopedModel.Hooks.Constant.use, (function (param) {
+            return Notifier$ReScopedModel.make(undefined);
+          }));
     return React.createElement(make, makeProps(notifier, null, undefined), React.createElement(make$1, {
                     props: props
                   }), children);
@@ -416,9 +419,9 @@ function MakeReducer(Facing) {
   var ScopedModel$Make$Provider = function (Props) {
     var props = Props.props;
     var children = Props.children;
-    var notifier = Utils$ReScopedModel.Hooks.useConstant(function (param) {
-          return Notifier$ReScopedModel.make(undefined);
-        });
+    var notifier = Curry._1(Utils$ReScopedModel.Hooks.Constant.use, (function (param) {
+            return Notifier$ReScopedModel.make(undefined);
+          }));
     return React.createElement(make, makeProps(notifier, null, undefined), React.createElement(make$1, {
                     props: props
                   }), children);
@@ -492,9 +495,9 @@ function MakePropSelector(Facing) {
   var ScopedModel$Make$Provider = function (Props) {
     var props = Props.props;
     var children = Props.children;
-    var notifier = Utils$ReScopedModel.Hooks.useConstant(function (param) {
-          return Notifier$ReScopedModel.make(undefined);
-        });
+    var notifier = Curry._1(Utils$ReScopedModel.Hooks.Constant.use, (function (param) {
+            return Notifier$ReScopedModel.make(undefined);
+          }));
     return React.createElement(make, makeProps(notifier, null, undefined), React.createElement(make$1, {
                     props: props
                   }), children);
