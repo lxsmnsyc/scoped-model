@@ -96,10 +96,10 @@ export default function createModel<Model, Props = unknown>(
 
     return null;
   };
-
   ProcessorInner.displayName = `ScopedModelProcessor(${displayName}.Processor)`;
 
   const Processor = memo(ProcessorInner, options.shouldUpdate);
+  Processor.displayName = `ScopedModelProcessor(${displayName}.Processor)`;
 
   const Provider: FC<Props> = ({ children, ...props }) => {
     const emitter = useConstant(() => new Notifier<Model>());
