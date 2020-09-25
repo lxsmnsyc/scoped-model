@@ -1,4 +1,4 @@
-/* @jsx h */
+/** @jsx h */
 import "preact/debug";
 import { Fragment, h, VNode } from 'preact';
 import { Suspense } from 'preact/compat';

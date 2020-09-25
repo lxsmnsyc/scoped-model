@@ -1783,6 +1783,11 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.11.1.tgz#56af902ad157e763f9ba63d671c39cda3193c835"
   integrity sha512-oTQgnd0hblfLsJ6BvJzzSL+Inogp3lq9fGgqRkMB/ziKMgEUaFl801OncOzUmalfzt14N0oPHMK47ipl+wbTIw==
 
+"@types/node@^14.11.2":
+  version "14.11.2"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.11.2.tgz#2de1ed6670439387da1c9f549a2ade2b0a799256"
+  integrity sha512-jiE3QIxJ8JLNcb1Ps6rDbysDhN4xa8DJJvuC9prr6w+1tIh+QAbYyNF3tyiZNLDBIuBCf4KEcV2UvQm/V60xfA==
+
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/@types/normalize-package-data/-/normalize-package-data-2.4.0.tgz#e486d0d97396d79beedd0a6e33f4534ff6b4973e"
@@ -7623,6 +7628,11 @@ preact@^10.4.8:
   resolved "https://registry.yarnpkg.com/preact/-/preact-10.4.8.tgz#8517b106cc5591eb675237c93da99ac052cf4756"
   integrity sha512-uVLeEAyRsCkUEFhVHlOu17OxcrwC7+hTGZ08kBoLBiGHiZooUZuibQnphgMKftw/rqYntNMyhVCPqQhcyAGHag==
 
+preact@^10.5.2:
+  version "10.5.2"
+  resolved "https://registry.yarnpkg.com/preact/-/preact-10.5.2.tgz#4c07c27f4239666840e0d637ec7c110cfcae181d"
+  integrity sha512-4y2Q6kMiJtMONMJR7z+o8P5tGkMzVItyy77AXGrUdusv+dk4jwoS3KrpCBkFloY2xsScRJYwZQZrx89tTjDkOw==
+
 prelude-ls@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/prelude-ls/-/prelude-ls-1.2.1.tgz#debc6489d7a6e6b0e7611888cec880337d316396"
@@ -7657,6 +7667,25 @@ pridepack@^0.0.31:
   version "0.0.31"
   resolved "https://registry.yarnpkg.com/pridepack/-/pridepack-0.0.31.tgz#0c7a414d4f1ad446816d8551d882451431d483a5"
   integrity sha512-JBxh7xoe2Hqr2UY2z67uOWpQ/Wk2/N19GE+uGrfv8/JqIQnT3z0VcbghIetW4xOtU7VeH52/OfNrl2Ger7RHPg==
+  dependencies:
+    "@jest/types" "^26.3.0"
+    dotenv "^8.2.0"
+    esbuild "^0.7.1"
+    eslint "^7.8.1"
+    execa "^4.0.3"
+    fs-extra "^9.0.1"
+    jest "^26.4.2"
+    listr2 "^3.0.1"
+    package-json-type "^1.0.3"
+    ts-jest "^26.3.0"
+    tslib "^2.0.1"
+    typescript "^4.0.2"
+    yargs "^15.4.1"
+
+pridepack@^0.0.32:
+  version "0.0.32"
+  resolved "https://registry.yarnpkg.com/pridepack/-/pridepack-0.0.32.tgz#b651a3ca26519042c5f86ebeda89feee0a45c2b0"
+  integrity sha512-NfZCoVuy/c+cfEGxXvL5L8l29aaXWZCKbO0igQYxrvs8Be93PnvkKs2+fVcE6j0LmCmMy1+TV8pIfu+pNGBQ8A==
   dependencies:
     "@jest/types" "^26.3.0"
     dotenv "^8.2.0"
@@ -9306,7 +9335,7 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typescript@^4.0.2:
+typescript@^4.0.2, typescript@^4.0.3:
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.0.3.tgz#153bbd468ef07725c1df9c77e8b453f8d36abba5"
   integrity sha512-tEu6DGxGgRJPb/mVPIZ48e69xCn2yRmCgYmDugAVwmJ6o+0u1RI18eO7E7WBTLYLaEVVOhwQmcdhQHweux/WPg==

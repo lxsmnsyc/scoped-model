@@ -1,4 +1,4 @@
-/* @jsx h */
+/** @jsx h */
 import { h } from 'preact';
 import { cleanup, render } from '@testing-library/preact';
 import createModel from '../src/create-model';

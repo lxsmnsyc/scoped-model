@@ -1,4 +1,4 @@
-/* @jsx h */
+/** @jsx h */
 import { Fragment, h } from 'preact';
 import { useEffect, useState, useRef } from 'preact/hooks';
 import { cleanup, render, screen } from '@testing-library/preact';

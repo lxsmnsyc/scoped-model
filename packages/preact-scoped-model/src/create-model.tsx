@@ -25,7 +25,7 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-/* @jsx h */
+/** @jsx h */
 import {
   h,
   createContext,
