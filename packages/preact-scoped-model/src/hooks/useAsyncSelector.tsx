@@ -25,12 +25,11 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-
-import { useState } from 'preact/hooks';
 import { ScopedModel, ScopedModelModelType } from '../create-model';
 import { AsyncState } from '../types';
 import useScopedModelContext from './useScopedModelContext';
 import useIsomorphicEffect from './useIsomorphicEffect';
+import useFreshState from './useFreshState';
 import { SelectorFn } from './useSelector';
 
 export type AsyncSelectorFn<T extends ScopedModel<any, any>, R> = SelectorFn<T, Promise<R>>;
@@ -47,7 +46,10 @@ export default function useAsyncSelector<T extends ScopedModel<any, any>, R>(
 ): AsyncState<R> {
   const notifier = useScopedModelContext(model);
 
-  const [state, setState] = useState<AsyncState<R>>({ status: 'pending' });
+  const [state, setState] = useFreshState<AsyncState<R>>(
+    { status: 'pending' },
+    [model],
+  );
 
   useIsomorphicEffect(() => {
     let mounted = true;
