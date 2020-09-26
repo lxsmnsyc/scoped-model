@@ -1,8 +1,8 @@
-'use strict';
 
-var Curry = require("bs-platform/lib/js/curry.js");
-var React = require("react");
-var Caml_option = require("bs-platform/lib/js/caml_option.js");
+
+import * as Curry from "bs-platform/lib/es6/curry.js";
+import * as React from "react";
+import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 
 function get(value, err) {
   if (value !== undefined) {
@@ -31,9 +31,9 @@ var Constant = {
 };
 
 function use$1(cb) {
-  return use((function (param) {
-                return cb;
-              }));
+  return use(function (param) {
+              return cb;
+            });
 }
 
 var ConstantCallback = {
@@ -41,18 +41,18 @@ var ConstantCallback = {
 };
 
 function use$2(param) {
-  var match = React.useState((function () {
-          return false;
-        }));
+  var match = React.useState(function () {
+        return false;
+      });
   var setState = match[1];
   var cb = function (param) {
     return Curry._1(setState, (function (current) {
                   return !current;
                 }));
   };
-  return use((function (param) {
-                return cb;
-              }));
+  return use(function (param) {
+              return cb;
+            });
 }
 
 var ForceUpdate = {
@@ -79,7 +79,7 @@ var NativeMemo = {
   use: use$3
 };
 
-var Action = { };
+var Action = {};
 
 var Dispatch = {
   Action: Action
@@ -98,7 +98,7 @@ function use$4(initial, dependencies, compare) {
                     alive.current = false;
                     
                   });
-        }), ([]));
+        }), []);
   var forceUpdate = use$2(undefined);
   var setState = React.useCallback((function (action) {
           var oldState = state.current;
@@ -109,7 +109,7 @@ function use$4(initial, dependencies, compare) {
           }
           
         }), [state]);
-  return /* tuple */[
+  return [
           state.current,
           setState
         ];
@@ -131,6 +131,9 @@ var Hooks = {
   useFreshState: use$4
 };
 
-exports.Result = Result;
-exports.Hooks = Hooks;
+export {
+  Result ,
+  Hooks ,
+  
+}
 /* react Not a pure module */
