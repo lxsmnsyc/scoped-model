@@ -1,7 +1,7 @@
 {
   "name": "@lxsmnsyc/re-scoped-model",
   "description": "Scoped Model pattern in ReasonReact (but with Hooks)",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "scripts": {
     "prepublish": "yarn build",
     "build": "bsb -make-world",
