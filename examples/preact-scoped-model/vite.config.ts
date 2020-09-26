@@ -7,6 +7,11 @@ const config: UserConfig = {
     fragment: 'Fragment'
   },
   plugins: [preactRefresh()],
+  optimizeDeps: {
+    exclude: [
+      '@lxsmnsyc/preact-scoped-model',
+    ],
+  },
 };
 
 export default config;

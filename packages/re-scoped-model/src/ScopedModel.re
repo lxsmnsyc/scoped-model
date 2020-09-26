@@ -114,7 +114,7 @@ module Make = (Facing: Interface) => {
       /**
        * Create a notifier instance
        */
-      let notifier = Hooks.useConstant(() => Some(Notifier.make()));
+      let notifier = Hooks.Constant.use(() => Some(Notifier.make()));
 
       <ContextProvider value=notifier>
         <Processor props=props />
@@ -179,14 +179,20 @@ let useValueOnce = (reference: t('a)) => {
 let useValue = (reference: t('a), shouldUpdate: option(ShouldUpdate.t('a))) => {
   let memo = ShouldUpdate.useDefault(shouldUpdate);
   let notifier = Internals.useScopedModelContext(reference);
-  let (state, setState) = React.useState(() => {
-    Result.get(
-      notifier.currentValue,
-      Exceptions.DesyncScopedModel,
-    );
-  });
+  let (state, setState) = Hooks.FreshState.use(
+    () => {
+      Result.get(
+        notifier.currentValue,
+        Exceptions.DesyncScopedModel,
+      );
+    },
+    reference,
+    (oldRef, newRef) => {
+      oldRef !== newRef;
+    },
+  );
 
-  React.useEffect2(() => {
+  React.useEffect3(() => {
     let cb: Notifier.Listener.t('a) = (value) => {
       setState((prev) => {
         if (memo(prev, value)) {
@@ -202,7 +208,7 @@ let useValue = (reference: t('a), shouldUpdate: option(ShouldUpdate.t('a))) => {
     Some(() => {
       Notifier.off(notifier, cb);
     });
-  }, (notifier, memo));
+  }, (notifier, setState, memo));
 
   state;
 };
@@ -226,17 +232,29 @@ let useSelectorOnce = (reference: t('a), selector: 'a => 'b) => {
  * the new state and conditionally re-renders the component if
  * the transformed value changes by comparison.
  */
-let useSelector = (reference: t('a), selector: 'a => 'b, shouldUpdate: option(ShouldUpdate.t('b))) => {
+let useSelector = (
+  reference: t('a),
+  selector: 'a => 'b,
+  shouldUpdate: option(ShouldUpdate.t('b))
+) => {
   let memo = ShouldUpdate.useDefault(shouldUpdate);
   let notifier = Internals.useScopedModelContext(reference);
-  let (state, setState) = React.useState(() => {
-    selector(Result.get(
-      notifier.currentValue,
-      Exceptions.DesyncScopedModel,
-    ));
-  });
+  let (state, setState) = Hooks.FreshState.use(
+    () => {
+      selector(Result.get(
+        notifier.currentValue,
+        Exceptions.DesyncScopedModel,
+      ));
+    },
+    (reference, selector),
+    (prev, next) => {
+      let (oldRef, oldSelector) = prev;
+      let (newRef, newSelector) = next;
+      oldRef !== newRef && oldSelector !== newSelector;
+    },
+  );
 
-  React.useEffect2(() => {
+  React.useEffect4(() => {
     let cb: Notifier.Listener.t('a) = (value) => {
       setState((prev) => {
         let next = selector(value);
@@ -253,7 +271,7 @@ let useSelector = (reference: t('a), selector: 'a => 'b, shouldUpdate: option(Sh
     Some(() => {
       Notifier.off(notifier, cb);
     });
-  }, (notifier, memo));
+  }, (notifier, selector, setState, memo));
 
   state;
 };
@@ -270,7 +288,10 @@ let createValueOnce = (reference: t('a)) => {
 /**
  * Creates a useValue hook.
  */
-let createValue = (reference: t('a), shouldUpdate: option(ShouldUpdate.t('a))) => {
+let createValue = (
+  reference: t('a), 
+  shouldUpdate: option(ShouldUpdate.t('a))
+) => {
   (): 'a => {
     useValue(reference, shouldUpdate);
   };
@@ -279,7 +300,10 @@ let createValue = (reference: t('a), shouldUpdate: option(ShouldUpdate.t('a))) =
 /**
  * Creates a useSelectorOnce hook.
  */
-let createSelectorOnce = (reference: t('a), selector: 'a => 'b) => {
+let createSelectorOnce = (
+  reference: t('a),
+  selector: 'a => 'b
+) => {
   (): 'b => {
     useSelectorOnce(reference, selector);
   };
@@ -288,7 +312,11 @@ let createSelectorOnce = (reference: t('a), selector: 'a => 'b) => {
 /**
  * Creates a useSelector hook.
  */
-let createSelector = (reference: t('a), selector: 'a => 'b, shouldUpdate: option(ShouldUpdate.t('b))) => {
+let createSelector = (
+  reference: t('a),
+  selector: 'a => 'b,
+  shouldUpdate: option(ShouldUpdate.t('b))
+) => {
   (): 'b => {
     useSelector(reference, selector, shouldUpdate);
   };

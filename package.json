@@ -10,9 +10,14 @@
     "bootstrap": "lerna bootstrap",
     "build": "lerna run build",
     "type-check": "lerna run type-check",
+    "test": "lerna run test",
+    "test:coverage": "lerna run test -- --coverage",
     "lerna": "lerna"
   },
   "devDependencies": {
+    "@typescript-eslint/parser": "^4.2.0",
+    "eslint": "^7.9.0",
+    "eslint-config-lxsmnsyc": "^0.1.18",
     "lerna": "^3.22.1"
   },
   "version": "0.1.0",

@@ -1,15 +1,21 @@
 module.exports = {
   "extends": [
-    "../../.eslintrc.js"
+    'lxsmnsyc/typescript/preact',
   ],
   "parserOptions": {
-    "project": './tsconfig.json',
-    "ecmaVersion": 2018,
-    "sourceType": 'module',
+    "project": "./tsconfig.eslint.json",
     "tsconfigRootDir": __dirname,
   },
   "rules": {
-    "react/prop-types": "off",
-    // "react/react-in-jsx-scope": ""
-  }
+    "import/no-extraneous-dependencies": [
+      "error", {
+        "devDependencies": ["**/*.test.tsx"]
+      }
+    ],
+    "react/jsx-props-no-spreading": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-unsafe-assignment": "off",
+    "@typescript-eslint/no-unsafe-return": "off",
+  },
 };
+

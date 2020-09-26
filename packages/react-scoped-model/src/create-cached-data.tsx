@@ -27,28 +27,41 @@
  */
 import { AsyncState } from './types';
 
-export function createCachedData<T>(
-  promise: Promise<T>,
+function isCacheValid<T>(
+  cache: Map<string, AsyncState<unknown>>,
   key: string,
-  cache: Map<string, AsyncState<any>>,
+  promise: Promise<T>,
+): boolean {
+  const currentCache = cache.get(key);
+  return !currentCache || (currentCache.status === 'pending' && currentCache.data === promise);
+}
+
+export function createCachedData<T>(
+  cache: Map<string, AsyncState<unknown>>,
+  key: string,
+  promise: Promise<T>,
 ): AsyncState<T> {
-  const fullPromise = promise.then(
+  promise.then(
     (data) => {
-      cache.set(key, {
-        status: 'success',
-        data,
-      });
+      if (isCacheValid(cache, key, promise)) {
+        cache.set(key, {
+          status: 'success',
+          data,
+        });
+      }
     },
     (data) => {
-      cache.set(key, {
-        status: 'failure',
-        data,
-      });
+      if (isCacheValid(cache, key, promise)) {
+        cache.set(key, {
+          status: 'failure',
+          data,
+        });
+      }
     },
   );
 
   const cachedData: AsyncState<T> = {
-    data: fullPromise,
+    data: promise,
     status: 'pending',
   };
 
@@ -57,9 +70,20 @@ export function createCachedData<T>(
   return cachedData;
 }
 
-export function suspendCacheData<T>(
+export function mutateCacheData<T>(
+  cache: Map<string, AsyncState<unknown>>,
   key: string,
-  cache: Map<string, AsyncState<any>>,
+  value: T,
+): void {
+  cache.set(key, {
+    data: value,
+    status: 'success',
+  });
+}
+
+export function suspendCacheData<T>(
+  cache: Map<string, AsyncState<unknown>>,
+  key: string,
   supplier: () => AsyncState<T>,
 ): T {
   /**

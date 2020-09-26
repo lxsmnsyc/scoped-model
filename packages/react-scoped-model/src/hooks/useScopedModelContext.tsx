@@ -39,5 +39,5 @@ export default function useScopedModelContext<T extends ScopedModel<any, any>>(
     throw new MissingScopedModelError(model.displayName);
   }
 
-  return context;
+  return context as Notifier<ScopedModelModelType<T>>;
 }

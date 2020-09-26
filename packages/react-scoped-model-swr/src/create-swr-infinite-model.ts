@@ -27,7 +27,6 @@
  */
 import createModel, {
   ScopedModel,
-  AccessibleObject,
   ScopedModelOptions,
 } from '@lxsmnsyc/react-scoped-model';
 import {
@@ -49,7 +48,7 @@ export type SWRInfiniteModelBaseKey<D> =
  * A React-based hook that receives the SWR Model
  * props and produces the SWR key.
  */
-export type SWRInfiniteModelKey<D, P extends AccessibleObject> =
+export type SWRInfiniteModelKey<D, P > =
   (props: P) => SWRInfiniteModelBaseKey<D>;
 
 /**
@@ -64,7 +63,7 @@ export type SWRInfiniteModelBaseFetcher<D> =
  * A React-based hook that receives the SWR Model props
  * and returns a fetcher callback.
  */
-export type SWRInfiniteModelFetcher<D, P extends AccessibleObject> =
+export type SWRInfiniteModelFetcher<D, P > =
   (props: P) => SWRInfiniteModelBaseFetcher<D>;
 
 /**
@@ -73,9 +72,9 @@ export type SWRInfiniteModelFetcher<D, P extends AccessibleObject> =
  *
  * Config is merged to the global config.
  */
-export type SWRInfiniteModelConfigHook<D, E, P extends AccessibleObject> =
+export type SWRInfiniteModelConfigHook<D, E, P > =
   (props: P) => SWRInfiniteConfigInterface<D, E>;
-export type SWRInfiniteModelConfig<D, E, P extends AccessibleObject> =
+export type SWRInfiniteModelConfig<D, E, P > =
   SWRInfiniteConfigInterface<D, E> | SWRInfiniteModelConfigHook<D, E, P>;
 
 /**
@@ -86,10 +85,10 @@ export type SWRInfiniteModelState<D, E> = SWRInfiniteResponseInterface<D, E>;
 /**
  * Alias to the SWR Model's Scoped Model interface.
  */
-export type SWRInfiniteModel<D, E, P extends AccessibleObject = AccessibleObject> =
+export type SWRInfiniteModel<D, E, P > =
   ScopedModel<SWRInfiniteModelState<D, E>, P>;
 
-function createConfigHook<D, E, P extends AccessibleObject>(
+function createConfigHook<D, E, P >(
   config: SWRInfiniteModelConfig<D, E, P>,
 ): SWRInfiniteModelConfigHook<D, E, P> {
   if (typeof config === 'function') {
@@ -106,7 +105,7 @@ function createConfigHook<D, E, P extends AccessibleObject>(
  * @param options
  */
 export default function createSWRInfiniteModel
-<D, E, P extends AccessibleObject = AccessibleObject>(
+<D, E, P >(
   key: SWRInfiniteModelKey<D, P>,
   fetcher: SWRInfiniteModelFetcher<D, P>,
   config: SWRInfiniteModelConfig<D, E, P> = {},

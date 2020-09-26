@@ -25,12 +25,12 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { useState } from 'react';
 import { ScopedModel, ScopedModelModelType } from '../create-model';
 import { AsyncState } from '../types';
 import useScopedModelContext from './useScopedModelContext';
 import useIsomorphicEffect from './useIsomorphicEffect';
 import { SelectorFn } from './useSelector';
+import useFreshState from './useFreshState';
 
 export type AsyncSelectorFn<T extends ScopedModel<any, any>, R> = SelectorFn<T, Promise<R>>;
 
@@ -42,11 +42,14 @@ export type AsyncSelectorFn<T extends ScopedModel<any, any>, R> = SelectorFn<T, 
  */
 export default function useAsyncSelector<T extends ScopedModel<any, any>, R>(
   model: T,
-  selector: (model: ScopedModelModelType<T>) => Promise<R>,
+  selector: AsyncSelectorFn<T, R>,
 ): AsyncState<R> {
   const notifier = useScopedModelContext(model);
 
-  const [state, setState] = useState<AsyncState<R>>({ status: 'pending' });
+  const [state, setState] = useFreshState<AsyncState<R>>(
+    { status: 'pending' },
+    [model],
+  );
 
   useIsomorphicEffect(() => {
     let mounted = true;
@@ -70,7 +73,7 @@ export default function useAsyncSelector<T extends ScopedModel<any, any>, R>(
       },
     );
 
-    return () => {
+    return (): void => {
       mounted = false;
     };
   }, [notifier, selector]);
@@ -78,7 +81,7 @@ export default function useAsyncSelector<T extends ScopedModel<any, any>, R>(
   useIsomorphicEffect(() => {
     let mounted = true;
 
-    const callback = (next: ScopedModelModelType<T>) => {
+    const callback = (next: ScopedModelModelType<T>): void => {
       setState({ status: 'pending' });
 
       selector(next).then(

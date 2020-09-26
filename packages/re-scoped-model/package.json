@@ -3,6 +3,7 @@
   "description": "Scoped Model pattern in ReasonReact (but with Hooks)",
   "version": "1.0.1",
   "scripts": {
+    "prepublish": "yarn build",
     "build": "bsb -make-world",
     "start": "bsb -make-world -w -ws _ ",
     "clean": "bsb -clean-world"
@@ -14,8 +15,8 @@
     "reason-react": "^0.9.1"
   },
   "devDependencies": {
-    "bs-platform": "^7.3.2",
-    "react": "^16.8.0",
+    "bs-platform": "^8.2.0",
+    "react": "^16.13.1",
     "reason-react": "^0.9.1"
   },
   "publishConfig": {
