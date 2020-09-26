@@ -197,7 +197,7 @@ export function waitForAll<T>(
 
 /**
  * Waits for any Resource graph node to resolve.
- * Similar behavior with Promise.any
+ * Similar behavior with Promise.race
  * @param resources
  */
 export function waitForAny<T>(
@@ -208,11 +208,9 @@ export function waitForAny<T>(
   return createGraphNode({
     get: ({ get, set }) => (
       promiseToResource(
-        new Promise((resolve, reject) => {
-          promises.forEach((promise) => {
-            get(promise).then(resolve, reject);
-          });
-        }),
+        Promise.race(
+          promises.map((promise) => get(promise)),
+        ),
         set,
       )
     ),
