@@ -1,24 +1,24 @@
-# @lxsmnsyc/react-graph-state
+# @lxsmnsyc/preact-graph-state
 
-> Digraph-based state management library for React
+> Digraph-based state management library for Preact
 
-[![NPM](https://img.shields.io/npm/v/@lxsmnsyc/react-graph-state.svg)](https://www.npmjs.com/package/@lxsmnsyc/react-graph-state) [![JavaScript Style Guide](https://badgen.net/badge/code%20style/airbnb/ff5a5f?icon=airbnb)](https://github.com/airbnb/javascript)
+[![NPM](https://img.shields.io/npm/v/@lxsmnsyc/preact-graph-state.svg)](https://www.npmjs.com/package/@lxsmnsyc/preact-graph-state) [![JavaScript Style Guide](https://badgen.net/badge/code%20style/airbnb/ff5a5f?icon=airbnb)](https://github.com/airbnb/javascript)
 
 ## Install
 
 ```bash
-yarn add @lxsmnsyc/react-graph-state
+yarn add @lxsmnsyc/preact-graph-state
 ```
 
 ```bash
-npm install @lxsmnsyc/react-graph-state
+npm install @lxsmnsyc/preact-graph-state
 ```
 
 ## Usage
 
 ### What is a Graph State?
 
-A `Graph State` is a kind of a state management structure that aims to build a container states that behaves like a dependency graph. The structure are made up of `graph nodes`, which represent an atomic state. Each `graph node` may depend from another `graph node` instance. When a `graph node` state updates, all of its dependents react immediately from their dependency's new state, and in turn, updates their own state, which can go on until there are no dependents left.
+A `Graph State` is a kind of a state management structure that aims to build a container states that behaves like a dependency graph. The structure are made up of `graph nodes`, which represent an atomic state. Each `graph node` may depend from another `graph node` instance. When a `graph node` state updates, all of its dependents preact immediately from their dependency's new state, and in turn, updates their own state, which can go on until there are no dependents left.
 
 ### Creating a Graph Node
 
@@ -36,7 +36,7 @@ To create a graph node, you must invoke the `createGraphNode` function. This fun
 * `key`: Optional. Uses the provided key instead of a generated key. Provided key may be shared, although `get` and `set` functions may be different depending on the node instance passed. Use with caution.
 
 ```tsx
-import { createGraphNode } from '@lxsmnsyc/react-graph-state`;
+import { createGraphNode } from '@lxsmnsyc/preact-graph-state`;
 
 // A basic node
 const basicNode = createGraphNode({
@@ -86,7 +86,7 @@ const temperatureC = createGraphNode({
 Graph nodes, by themselves, are meaningless. They needed a domain to begin computing. `<GraphDomain>` is a component that defines such domain where all graph nodes live.
 
 ```tsx
-import { GraphDomain } from '@lxsmnsyc/react-graph-state`;
+import { GraphDomain } from '@lxsmnsyc/preact-graph-state`;
 
 const messageNode = createGraphNode({
   get: 'Hello World',
@@ -104,7 +104,7 @@ function App() {
 There are also three hooks:
 - `useGraphNodeValue`: reads a graph node's value. Subscribes to the graph node's state updates.
 - `useGraphNodeSetValue`: provides a callback that allows graph node's state mutation.
-- `useGraphNodeResource`: treats the graph node as a valid React resource, suspending the component if the graph node's resource is pending.
+- `useGraphNodeResource`: treats the graph node as a valid Preact resource, suspending the component if the graph node's resource is pending.
 
 If one of these hooks are used to access a graph node, that graph node is registered within `<GraphDomain>` and creates a lifecycle.
 
@@ -112,7 +112,7 @@ If one of these hooks are used to access a graph node, that graph node is regist
 
 ##### `useGraphNodeValue`
 
-This is a React hook that reads the graph node's current state and subscribes to further state updates.
+This is a Preact hook that reads the graph node's current state and subscribes to further state updates.
 
 ```tsx
 function Message() {
@@ -124,7 +124,7 @@ function Message() {
 
 ##### `useGraphNodeSetValue`
 
-This is a React hook that returns a callback similar to `setState` that allows state mutation for the given graph node.
+This is a Preact hook that returns a callback similar to `setState` that allows state mutation for the given graph node.
 
 ```tsx
 function MessageInput() {
@@ -149,7 +149,7 @@ This is a hook that receives a valid graph node resource and suspends the compon
 
 ### Graph Node Resources
 
-Graph nodes can have synchronous or asynchronous states, but having raw asynchronous states in React (aka Promises) can be a bit tedious to handle specially for race conditions. `createGraphNodeResource` attempts to leverage this problem by turning asynchronous states into reactive Promise results.
+Graph nodes can have synchronous or asynchronous states, but having raw asynchronous states in Preact (aka Promises) can be a bit tedious to handle specially for race conditions. `createGraphNodeResource` attempts to leverage this problem by turning asynchronous states into reactive Promise results.
 
 ```tsx
 /**
@@ -173,10 +173,10 @@ const asyncUserNode = createGraphNode(
 
 /**
  * Let's transform asyncUserNode into
- * a valid React resource node!
+ * a valid Preact resource node!
  * 
  * This allows us to receive Promise results,
- * react-graph-state already handles race condition
+ * preact-graph-state already handles race condition
  * and state updates for us!
  */
 const userResourceNode = createGraphNodeResource(asyncUserNode);
