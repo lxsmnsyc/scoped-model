@@ -312,12 +312,6 @@ const values = waitForAny([
 
 Joins an array of graph node resources into a single graph node that emits an array of resource results.
 
-## Comparisons
-
-### Recoil
-
-### Jotai
-
 ## License
 
 MIT © [lxsmnsyc](https://github.com/lxsmnsyc)
