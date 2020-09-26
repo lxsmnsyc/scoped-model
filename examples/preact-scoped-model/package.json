@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@lxsmnsyc/preact-scoped-model": "0.1.3",
-    "preact": "^10.4.8"
+    "preact": "^10.5.2"
   },
   "devDependencies": {
     "@prefresh/vite": "^1.0.2",
