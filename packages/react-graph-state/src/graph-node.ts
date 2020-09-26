@@ -70,12 +70,26 @@ const EMPTY_SET = () => {
   // Empty
 };
 
-export function createGraphNode<T>({ get, set, key }: GraphNodeOptions<T>): GraphNode<T> {
+const NODES = new Map<string | number, GraphNode<any>>();
+
+function createRawGraphNode<T>({ get, set, key }: GraphNodeOptions<T>): GraphNode<T> {
   return {
     get,
     set: set ?? EMPTY_SET,
     key: key ?? generateKey(),
   };
+}
+
+export function createGraphNode<T>(options: GraphNodeOptions<T>): GraphNode<T> {
+  if (options.key != null) {
+    const currentNode = NODES.get(options.key);
+    if (currentNode) {
+      return currentNode;
+    }
+  }
+  const node = createRawGraphNode(options);
+  NODES.set(node.key, node);
+  return node;
 }
 
 export interface GraphNodeAsyncPending<T> {
@@ -95,31 +109,125 @@ export type GraphNodeAsyncResult<T> =
   | GraphNodeAsyncSuccess<T>
   | GraphNodeAsyncFailure;
 
+export type GraphNodePromise<T> = GraphNode<Promise<T>>;
 export type GraphNodeResource<T> = GraphNode<GraphNodeAsyncResult<T>>;
 
+function promiseToResource<T>(
+  promise: Promise<T>,
+  set: GraphNodeGetYield<GraphNodeAsyncResult<T>>,
+): GraphNodeAsyncResult<T> {
+  promise.then(
+    (data) => set({
+      data,
+      status: 'success',
+    }),
+    (data) => set({
+      data,
+      status: 'failure',
+    }),
+  );
+
+  return {
+    data: promise,
+    status: 'pending',
+  };
+}
+
+/**
+ * Converts a Promise-returning graph node into a Resource graph node
+ * @param graphNode
+ */
 export function createGraphNodeResource<T>(
-  graphNode: GraphNode<Promise<T>>,
+  graphNode: GraphNodePromise<T>,
 ): GraphNodeResource<T> {
   return createGraphNode({
-    get: ({ get, set }) => {
-      const promise = get(graphNode);
-
-      promise.then(
-        (data) => set({
-          data,
-          status: 'success',
-        }),
-        (data) => set({
-          data,
-          status: 'failure',
-        }),
-      );
-
-      return {
-        data: promise,
-        status: 'pending',
-      };
-    },
+    get: ({ get, set }) => promiseToResource(get(graphNode), set),
     key: `Resource(${graphNode.key})`,
+  });
+}
+
+/**
+ * Converts a Resource graph node to a Promise-returning graph node
+ * @param resource
+ */
+export function fromResource<T>(
+  resource: GraphNodeResource<T>,
+): GraphNodePromise<T> {
+  return createGraphNode({
+    get: async ({ get }) => {
+      const result = get(resource);
+
+      if (result.status === 'failure') {
+        throw result.data;
+      }
+      return result.data;
+    },
+    key: `Promise(${resource.key})`,
+  });
+}
+
+function joinResourceKeys<T>(
+  resources: GraphNodeResource<T>[],
+): string {
+  return resources.map((resource) => resource.key).join(', ');
+}
+
+/**
+ * Waits for all Resource graph node to resolve.
+ * Similar behavior with Promise.all
+ * @param resources
+ */
+export function waitForAll<T>(
+  resources: GraphNodeResource<T>[],
+): GraphNodeResource<T[]> {
+  const promises = resources.map((resource) => fromResource(resource));
+
+  return createGraphNode({
+    get: ({ get, set }) => (
+      promiseToResource(
+        Promise.all(
+          promises.map((promise) => get(promise)),
+        ),
+        set,
+      )
+    ),
+    key: `WaitForAll(${joinResourceKeys(resources)})`,
+  });
+}
+
+/**
+ * Waits for any Resource graph node to resolve.
+ * Similar behavior with Promise.race
+ * @param resources
+ */
+export function waitForAny<T>(
+  resources: GraphNodeResource<T>[],
+): GraphNodeResource<T> {
+  const promises = resources.map((resource) => fromResource(resource));
+
+  return createGraphNode({
+    get: ({ get, set }) => (
+      promiseToResource(
+        Promise.race(
+          promises.map((promise) => get(promise)),
+        ),
+        set,
+      )
+    ),
+    key: `WaitForAny(${joinResourceKeys(resources)})`,
+  });
+}
+
+/**
+ * Joins Resource graph nodes into a graph node that returns
+ * an array of resources
+ * @param resources
+ */
+export function joinResources<T>(
+  resources: GraphNodeResource<T>[],
+): GraphNode<GraphNodeAsyncResult<T>[]> {
+  return createGraphNode({
+    get: ({ get }) => resources.map((resource) => get(resource)),
+    key: `JoinedResource(${joinResourceKeys(resources)})`,
   });
 }
