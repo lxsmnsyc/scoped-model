@@ -1,13 +1,13 @@
 {
   "name": "react-graph-state-vite",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@lxsmnsyc/react-graph-state": "0.1.1",
+    "@lxsmnsyc/react-graph-state": "0.1.2",
     "@pika/react": "^16.13.1",
     "@pika/react-dom": "^16.13.1",
     "react": "npm:@pika/react",
