@@ -29,7 +29,8 @@ import { useRef, useState } from 'preact/hooks';
 import useConstantCallback from './useConstantCallback';
 import useIsomorphicEffect from './useIsomorphicEffect';
 
-export type Enqueue<T> = (node: T) => void;
+export type Compare<T> = (a: T, b: T) => boolean;
+export type Enqueue<T> = (node: T, compare?: Compare<T>) => void;
 export type QueueReset = () => void;
 
 export default function useWorkQueue<T>(): [T[], Enqueue<T>, QueueReset] {
@@ -44,12 +45,13 @@ export default function useWorkQueue<T>(): [T[], Enqueue<T>, QueueReset] {
     };
   }, []);
 
-  const schedule = useConstantCallback((node: T) => {
+  const schedule = useConstantCallback((node: T, compare?: Compare<T>) => {
     if (lifecycle.current) {
-      setState((current) => {
-        const filtered = current.filter((temp) => temp !== node);
-        return [...filtered, node];
-      });
+      setState((current) => (
+        compare
+          ? [...current.filter((value) => compare(node, value)), node]
+          : [...current, node]
+      ));
     }
   });
 

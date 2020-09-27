@@ -39,12 +39,33 @@ import { GraphNode, GraphNodeDraftState } from './graph-node';
 import useConstant from './hooks/useConstant';
 import useConstantCallback from './hooks/useConstantCallback';
 import useIsomorphicEffect from './hooks/useIsomorphicEffect';
-import useWorkQueue from './hooks/useWorkQueue';
 import { useGraphDomainContext } from './GraphDomainContext';
+import useWorkQueue from './hooks/useWorkQueue';
 
-interface GraphNodeTask<T> {
+interface StateUpdate<T> {
   action: GraphNodeDraftState<T>;
   target: GraphNode<T>;
+}
+
+interface StateWork<T> {
+  type: 'state';
+  value: StateUpdate<T>;
+}
+
+interface ComputeWork<T> {
+  type: 'compute';
+  value: GraphNode<T>;
+}
+
+interface UpdateWork<T> {
+  type: 'update';
+  value: GraphNode<T>;
+}
+
+type Work<T> = StateWork<T> | ComputeWork<T> | UpdateWork<T>;
+
+function isUniqueWork(a: Work<any>, b: Work<any>): boolean {
+  return a.type !== b.type && a.value !== b.value;
 }
 
 function GraphCoreProcess(): JSX.Element {
@@ -52,9 +73,32 @@ function GraphCoreProcess(): JSX.Element {
   const nodes = useConstant<GraphNodeInstanceMap>(() => new Map());
   const state = useConstant<GraphNodeStateMap>(() => new Map());
 
-  const [updateQueue, scheduleUpdate, resetUpdate] = useWorkQueue<GraphNode<any>>();
-  const [stateQueue, scheduleState, resetState] = useWorkQueue<GraphNodeTask<any>>();
-  const [computeQueue, scheduleCompute, resetCompute] = useWorkQueue<GraphNode<any>>();
+  const [workQueue, scheduleWork, resetWork] = useWorkQueue<Work<any>>();
+
+  const scheduleState = useConstantCallback(
+    <R, >(work: StateUpdate<R>): void => {
+      scheduleWork({
+        type: 'state',
+        value: work,
+      }, isUniqueWork);
+    },
+  );
+  const scheduleCompute = useConstantCallback(
+    <R, >(work: GraphNode<R>): void => {
+      scheduleWork({
+        type: 'compute',
+        value: work,
+      }, isUniqueWork);
+    },
+  );
+  const scheduleUpdate = useConstantCallback(
+    <R, >(work: GraphNode<R>): void => {
+      scheduleWork({
+        type: 'update',
+        value: work,
+      });
+    },
+  );
 
   const updateState = useConstantCallback(
     <R, >(dependency: GraphNode<R>, newAction: GraphNodeDraftState<R>): void => {
@@ -91,96 +135,82 @@ function GraphCoreProcess(): JSX.Element {
   };
 
   useIsomorphicEffect(() => {
-    if (stateQueue.length > 0) {
-      resetState();
+    if (workQueue.length > 0) {
+      resetWork();
+      workQueue.forEach((work: Work<any>) => {
+        switch (work.type) {
+          case 'state': {
+            const { action, target } = work.value;
+            // Get instance node
+            const currentState = getNodeState(nodes, state, target, scheduleUpdate);
+            // Extract draft state similar to useState
+            const draftState = getDraftState(action, currentState);
 
-      stateQueue.forEach(
-        ({ action, target }: GraphNodeTask<any>) => {
-          // Get instance node
-          const currentState = getNodeState(nodes, state, target, scheduleUpdate);
-          // Extract draft state similar to useState
-          const draftState = getDraftState(action, currentState);
-
-          // Run the node setter for further effects
-          target.set(
-            {
-              // Getter doesn't need dependency building.
-              get: <R, >(dependency: GraphNode<R>): R => (
-                getNodeState(nodes, state, dependency, scheduleUpdate)
-              ),
-              // Setter
-              set: <R, >(dependency: GraphNode<R>, newAction: GraphNodeDraftState<R>): void => {
-                // Schedule a node update
-                setNodeState(
-                  state,
-                  dependency,
-                  getDraftState(newAction, getNodeState(nodes, state, dependency, scheduleUpdate)),
-                  scheduleUpdate,
-                );
+            // Run the node setter for further effects
+            target.set(
+              {
+                // Getter doesn't need dependency building.
+                get: <R, >(dependency: GraphNode<R>): R => (
+                  getNodeState(nodes, state, dependency, scheduleUpdate)
+                ),
+                // Setter
+                set: <R, >(dependency: GraphNode<R>, newAction: GraphNodeDraftState<R>): void => {
+                  // Schedule a node update
+                  updateState(dependency, newAction);
+                },
               },
-            },
-            // Send the draft state
-            draftState,
-          );
+              // Send the draft state
+              draftState,
+            );
 
-          // Notify for new node value
-          setNodeState(
-            state,
-            target,
-            draftState,
-            scheduleUpdate,
-          );
-        },
-      );
+            // Notify for new node value
+            setNodeState(
+              state,
+              target,
+              draftState,
+              scheduleUpdate,
+            );
+          }
+            break;
+          case 'compute': {
+            const node = work.value;
+            // Access internal node or create a new one.
+            const actualNode = getNodeInstance(nodes, node);
+            /**
+             * Clean the previous version to prevent
+             * asynchronous dependency registration.
+             */
+            deprecateNodeVersion(nodes, node);
+            /**
+             * Set the new node value by recomputing the node.
+             * This may recursively compute.
+             */
+            setNodeState(
+              state,
+              node,
+              computeNode(nodes, state, node, scheduleUpdate, actualNode),
+              scheduleUpdate,
+            );
+          }
+            break;
+          case 'update': {
+            const node = work.value;
+            const currentNode = getNodeInstance(nodes, node);
+            const nodeValue = getNodeState(nodes, state, node, scheduleUpdate);
+            currentNode.dependents.forEach((dependent) => {
+              scheduleCompute(dependent);
+            });
+            currentNode.listeners.forEach((subscriber) => {
+              subscriber(nodeValue);
+            });
+          }
+            break;
+          default:
+            break;
+        }
+      });
     }
-  }, [stateQueue]);
-
-  useIsomorphicEffect(() => {
-    if (computeQueue.length > 0) {
-      resetCompute();
-
-      computeQueue.forEach(
-        (node: GraphNode<any>) => {
-          // Access internal node or create a new one.
-          const actualNode = getNodeInstance(nodes, node);
-          /**
-           * Clean the previous version to prevent
-           * asynchronous dependency registration.
-           */
-          deprecateNodeVersion(nodes, node);
-          /**
-           * Set the new node value by recomputing the node.
-           * This may recursively compute.
-           */
-          setNodeState(
-            state,
-            node,
-            computeNode(nodes, state, node, scheduleUpdate, actualNode),
-            scheduleUpdate,
-          );
-        },
-      );
-    }
-  }, [computeQueue]);
-
-  useIsomorphicEffect(() => {
-    if (updateQueue.length > 0) {
-      resetUpdate();
-
-      updateQueue.forEach(
-        (node: GraphNode<any>) => {
-          const currentNode = getNodeInstance(nodes, node);
-          const nodeValue = getNodeState(nodes, state, node, scheduleUpdate);
-          currentNode.dependents.forEach((dependent) => {
-            scheduleCompute(dependent);
-          });
-          currentNode.listeners.forEach((subscriber) => {
-            subscriber(nodeValue);
-          });
-        },
-      );
-    }
-  }, [updateQueue]);
+  }, [workQueue]);
 
   return <></>;
 }
