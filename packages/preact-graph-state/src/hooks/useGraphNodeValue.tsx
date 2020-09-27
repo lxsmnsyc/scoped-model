@@ -25,24 +25,26 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { useMemo } from 'preact/hooks';
 import { useGraphDomainInterface } from '../GraphDomainContext';
 import { GraphNode } from '../graph-node';
 import useIsomorphicEffect from './useIsomorphicEffect';
-import useForceUpdate from './useForceUpdate';
+import useFreshState from './useFreshState';
 
 export default function useGraphNodeValue<T>(node: GraphNode<T>): T {
   const logic = useGraphDomainInterface();
 
-  const forceUpdate = useForceUpdate();
+  const [state, setState] = useFreshState(
+    () => logic.getState(node),
+    [logic, node],
+  );
 
   useIsomorphicEffect(() => {
-    logic.addListener(node, forceUpdate);
+    logic.addListener(node, setState);
 
     return () => {
-      logic.removeListener(node, forceUpdate);
+      logic.removeListener(node, setState);
     };
-  }, [logic, node]);
+  }, [logic, node, setState]);
 
-  return useMemo(() => logic.getState(node), [logic, node]);
+  return state;
 }

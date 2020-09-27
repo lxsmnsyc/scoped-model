@@ -25,32 +25,33 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { useCallback, useMemo } from 'preact/hooks';
+import { useCallback } from 'preact/hooks';
 import { useGraphDomainInterface } from '../GraphDomainContext';
 import { GraphNode, GraphNodeDraftState } from '../graph-node';
 import useIsomorphicEffect from './useIsomorphicEffect';
-import useForceUpdate from './useForceUpdate';
+import useFreshState from './useFreshState';
 
 export default function useGraphNodeState<T>(
   node: GraphNode<T>,
 ): [T, (action: GraphNodeDraftState<T>) => void] {
   const logic = useGraphDomainInterface();
 
-  const forceUpdate = useForceUpdate();
+  const [state, setState] = useFreshState(
+    () => logic.getState(node),
+    [logic, node],
+  );
 
   useIsomorphicEffect(() => {
-    logic.addListener(node, forceUpdate);
+    logic.addListener(node, setState);
 
     return () => {
-      logic.removeListener(node, forceUpdate);
+      logic.removeListener(node, setState);
     };
-  }, [logic, node]);
+  }, [logic, node, setState]);
 
-  const state = useMemo(() => logic.getState(node), [logic, node]);
-
-  const setState = useCallback((action: GraphNodeDraftState<T>) => {
+  const dispatch = useCallback((action: GraphNodeDraftState<T>) => {
     logic.updateState(node, action);
   }, [logic, node]);
 
-  return [state, setState];
+  return [state, dispatch];
 }
