@@ -82,7 +82,7 @@ function GraphCoreProcess(): VNode {
       scheduleWork({
         type: 'state',
         value: work,
-      }, isUniqueWork);
+      });
     },
   );
   const scheduleCompute = useConstantCallback(
@@ -90,7 +90,7 @@ function GraphCoreProcess(): VNode {
       scheduleWork({
         type: 'compute',
         value: work,
-      }, isUniqueWork);
+      });
     },
   );
   const scheduleUpdate = useConstantCallback(
@@ -98,7 +98,7 @@ function GraphCoreProcess(): VNode {
       scheduleWork({
         type: 'update',
         value: work,
-      });
+      }, isUniqueWork);
     },
   );
 

@@ -80,7 +80,7 @@ function GraphCoreProcess(): JSX.Element {
       scheduleWork({
         type: 'state',
         value: work,
-      }, isUniqueWork);
+      });
     },
   );
   const scheduleCompute = useConstantCallback(
@@ -88,7 +88,7 @@ function GraphCoreProcess(): JSX.Element {
       scheduleWork({
         type: 'compute',
         value: work,
-      }, isUniqueWork);
+      });
     },
   );
   const scheduleUpdate = useConstantCallback(
@@ -96,7 +96,7 @@ function GraphCoreProcess(): JSX.Element {
       scheduleWork({
         type: 'update',
         value: work,
-      });
+      }, isUniqueWork);
     },
   );
 
