@@ -26,7 +26,7 @@
  * @copyright Alexis Munsayac 2020
  */
 export { default as useGraphNodeValue } from './hooks/useGraphNodeValue';
-export { default as useGraphNodeState } from './hooks/useGraphNodeValue';
+export { default as useGraphNodeState } from './hooks/useGraphNodeState';
 export { default as useGraphNodeSetValue } from './hooks/useGraphNodeSetValue';
 export { default as useGraphNodeResource } from './hooks/useGraphNodeResource';
 export { default as GraphDomain } from './GraphDomain';

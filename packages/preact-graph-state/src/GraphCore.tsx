@@ -147,6 +147,11 @@ function GraphCoreProcess(): VNode {
             const currentState = getNodeState(nodes, state, target, scheduleUpdate);
             // Extract draft state similar to useState
             const draftState = getDraftState(action, currentState);
+            /**
+             * Clean the previous version to prevent
+             * asynchronous dependency registration.
+             */
+            deprecateNodeVersion(nodes, target);
 
             // Run the node setter for further effects
             target.set(
