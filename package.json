@@ -1,58 +1,36 @@
 {
-  "name": "@lxsmnsyc/react-scoped-model",
-  "version": "0.16.1",
-  "description": "Scoped Model pattern in React (but with Hooks)",
-  "license": "MIT",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
-  "files": [
-    "dist",
-    "src"
+  "name": "scoped-model",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "examples/*"
   ],
-  "engines": {
-    "node": ">=10"
-  },
   "scripts": {
-    "start": "tsdx watch",
-    "build": "tsdx build",
-    "test": "tsdx test --passWithNoTests",
-    "lint": "eslint 'src/**/*.ts{,x}'",
-    "prepare": "tsdx build",
-    "example:start": "cd example && yarn start && cd .."
+    "lint": "lerna run lint",
+    "bootstrap": "lerna bootstrap",
+    "build": "lerna run build",
+    "type-check": "lerna run type-check",
+    "test": "lerna run test",
+    "test:coverage": "lerna run test -- --coverage",
+    "lerna": "lerna"
   },
-  "peerDependencies": {
-    "prop-types": "^15.7.2",
-    "react": ">=16"
-  },
-  "author": "Alexis Munsayac",
-  "module": "dist/react-scoped-model.esm.js",
   "devDependencies": {
-    "@types/prop-types": "^15.7.3",
-    "@types/react": "^16.9.35",
-    "@types/react-dom": "^16.9.8",
-    "@typescript-eslint/eslint-plugin": "^3.7.1",
-    "@typescript-eslint/parser": "^3.7.1",
-    "eslint": "^7.5.0",
-    "eslint-config-airbnb": "^18.1.0",
-    "eslint-import-resolver-node": "^0.3.2",
-    "eslint-import-resolver-typescript": "^2.0.0",
-    "eslint-plugin-import": "^2.20.2",
-    "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-react": "^7.20.0",
-    "eslint-plugin-react-hooks": "^2.5.1",
-    "prop-types": "^15.7.2",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "tsdx": "^0.13.2",
-    "tslib": "^2.0.0",
-    "typescript": "^3.9.2"
+    "@typescript-eslint/parser": "^4.2.0",
+    "eslint": "^7.9.0",
+    "eslint-config-lxsmnsyc": "^0.1.18",
+    "lerna": "^3.22.1"
   },
+  "version": "0.1.0",
+  "description": "Contextual State Management",
+  "main": "index.js",
+  "author": "Alexis Munsayac <alexis.munsayac@gmail.com>",
+  "license": "MIT",
   "repository": {
-    "url": "https://github.com/lxsmnsyc/react-scoped-model.git",
+    "url": "https://github.com/lxsmnsyc/scoped-model.git",
     "type": "git"
   },
-  "homepage": "https://github.com/lxsmnsyc/react-scoped-model",
+  "homepage": "https://github.com/lxsmnsyc/scoped-model",
   "bugs": {
-    "url": "https://github.com/lxsmnsyc/react-scoped-model/issues"
+    "url": "https://github.com/lxsmnsyc/scoped-model/issues"
   }
 }

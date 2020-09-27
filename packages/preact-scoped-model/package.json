@@ -1,0 +1,50 @@
+{
+  "version": "0.2.0",
+  "description": "Scoped Model pattern for Preact",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=10"
+  },
+  "scripts": {
+    "prepublish": "pridepack build",
+    "build": "pridepack build",
+    "type-check": "pridepack check",
+    "lint": "pridepack lint",
+    "test": "pridepack test --passWithNoTests"
+  },
+  "license": "MIT",
+  "name": "@lxsmnsyc/preact-scoped-model",
+  "module": "dist/preact-scoped-model.esm.js",
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/preact": "^2.0.0",
+    "@testing-library/preact-hooks": "^1.0.6",
+    "@types/jest": "^26.0.14",
+    "@types/node": "^14.11.2",
+    "eslint": "^7.9.0",
+    "eslint-config-lxsmnsyc": "^0.1.18",
+    "preact": "^10.5.2",
+    "pridepack": "^0.0.34",
+    "tslib": "^2.0.1",
+    "typescript": "^4.0.3"
+  },
+  "peerDependencies": {
+    "preact": "^10.5.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LXSMNSYC/scoped-model.git"
+  },
+  "bugs": {
+    "url": "https://github.com/LXSMNSYC/scoped-model/issues"
+  },
+  "homepage": "https://github.com/lxsmnsyc/scoped-model"
+}
