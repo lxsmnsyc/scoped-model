@@ -67,7 +67,7 @@ interface UpdateWork<T> {
 type Work<T> = StateWork<T> | ComputeWork<T> | UpdateWork<T>;
 
 function isUniqueWork(a: Work<any>, b: Work<any>): boolean {
-  return a.type !== b.type && a.value !== b.value;
+  return !(a.type === b.type && a.value === b.value);
 }
 
 function GraphCoreProcess(): VNode {
@@ -90,7 +90,7 @@ function GraphCoreProcess(): VNode {
       scheduleWork({
         type: 'compute',
         value: work,
-      });
+      }, isUniqueWork);
     },
   );
   const scheduleUpdate = useConstantCallback(
