@@ -4,8 +4,8 @@ import {
   createGraphNode,
   GraphDomain,
   useGraphNodeResource,
-  useGraphNodeSetValue,
   useGraphNodeValue,
+  useGraphNodeState,
 } from '@lxsmnsyc/react-graph-state';
 
 const temperatureF = createGraphNode({
@@ -41,8 +41,7 @@ const temperature = createGraphNode<Promise<string>>({
 const asyncTemperature = createGraphNodeResource(temperature);
 
 function Celsius(): JSX.Element {
-  const celsius = useGraphNodeValue(temperatureC);
-  const setCelsius = useGraphNodeSetValue(temperatureC);
+  const [celsius, setCelsius] = useGraphNodeState(temperatureC);
 
   const onChange = useCallback((e: React.FormEvent<HTMLInputElement>) => {
     setCelsius(Number.parseFloat(e.currentTarget.value));
@@ -58,8 +57,7 @@ function Celsius(): JSX.Element {
 }
 
 function Fahrenheit(): JSX.Element {
-  const fahrenheit = useGraphNodeValue(temperatureF);
-  const setFahrenheit = useGraphNodeSetValue(temperatureF);
+  const [fahrenheit, setFahrenheit] = useGraphNodeState(temperatureF);
 
   const onChange = useCallback((e: React.FormEvent<HTMLInputElement>) => {
     setFahrenheit(Number.parseFloat(e.currentTarget.value));
@@ -124,8 +122,8 @@ function Timer(): JSX.Element {
 export default function App(): JSX.Element {
   return (
     <GraphDomain>
-      <Fahrenheit />
       <Celsius />
+      <Fahrenheit />
       <Temperature />
       <Suspense fallback={<h1>Loading...</h1>}>
         <DelayedTemperature />
