@@ -1,5 +1,5 @@
 {
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Digraph-based state management library for React, inspired by Recoil.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
