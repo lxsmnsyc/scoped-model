@@ -15,7 +15,9 @@
     "build": "pridepack build",
     "type-check": "pridepack check",
     "lint": "pridepack lint",
-    "test": "pridepack test --passWithNoTests"
+    "test": "pridepack test --passWithNoTests",
+    "clean": "pridepack clean",
+    "watch": "pridepack watch"
   },
   "license": "MIT",
   "name": "@lxsmnsyc/react-scoped-model-swr",
@@ -24,18 +26,18 @@
     "@lxsmnsyc/react-scoped-model": "1.5.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.0.4",
-    "@testing-library/react-hooks": "^3.4.1",
+    "@testing-library/react-hooks": "^3.4.2",
     "@types/jest": "^26.0.13",
     "@types/node": "^14.11.2",
-    "@types/react": "^16.9.49",
-    "eslint": "^7.9.0",
+    "@types/react": "^16.9.50",
+    "eslint": "^7.10.0",
     "eslint-config-lxsmnsyc": "^0.1.18",
-    "pridepack": "^0.0.33",
+    "pridepack": "^0.1.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-test-renderer": "^16.13.1",
     "tslib": "^2.0.1",
-    "typescript": "^4.0.2"
+    "typescript": "^4.0.3"
   },
   "peerDependencies": {
     "@lxsmnsyc/react-scoped-model": "^1.4.0",
