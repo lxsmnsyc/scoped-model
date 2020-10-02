@@ -1,5 +1,5 @@
 {
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Digraph-based state management library for Preact, inspired by Recoil.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
