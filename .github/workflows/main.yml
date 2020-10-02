@@ -30,6 +30,11 @@ jobs:
         run: yarn bootstrap
         env:
           CI: true
+      
+      - name: Clean
+        run: yarn clean
+        env:
+          CI: true
 
       - name: Build
         run: yarn build
