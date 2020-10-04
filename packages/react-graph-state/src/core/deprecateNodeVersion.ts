@@ -31,9 +31,9 @@ import getNodeBaseInstance from './getNodeInstance';
 import { GraphNodeInstanceMap } from './types';
 import unregisterNodeDependency from './unregisterNodeDependency';
 
-export default function deprecateNodeVersion<T>(
+export default function deprecateNodeVersion<S, A>(
   nodes: GraphNodeInstanceMap,
-  node: GraphNode<T>,
+  node: GraphNode<S, A>,
   actualNode = getNodeBaseInstance(nodes, node),
 ): void {
   actualNode.version.dependencies.forEach((dependency) => {

@@ -26,13 +26,13 @@
  * @copyright Alexis Munsayac 2020
  */
 import { GraphNode } from '../graph-node';
-import { GraphNodeStateMap } from './types';
+import { GraphNodeStateMap, NodeScheduler } from './types';
 
-export default function setNodeState<T>(
+export default function setNodeState<S, A>(
   state: GraphNodeStateMap,
-  node: GraphNode<T>,
-  value: T,
-  schedule: (scheduledNode: GraphNode<T>) => void,
+  node: GraphNode<S, A>,
+  value: S,
+  schedule: NodeScheduler,
 ): void {
   const currentState = state.get(node.key);
 

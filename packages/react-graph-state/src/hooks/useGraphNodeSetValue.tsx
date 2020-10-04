@@ -26,15 +26,15 @@
  * @copyright Alexis Munsayac 2020
  */
 import { useCallback } from 'react';
-import { GraphNode, GraphNodeDraftState } from '../graph-node';
+import { GraphNode } from '../graph-node';
 import { useGraphDomainInterface } from '../GraphDomainContext';
 
-export default function useGraphNodeSetValue<T>(
-  node: GraphNode<T>,
-): (action: GraphNodeDraftState<T>) => void {
+export default function useGraphNodeSetValue<S, A>(
+  node: GraphNode<S, A>,
+): (action: A) => void {
   const logic = useGraphDomainInterface();
 
-  return useCallback((action: GraphNodeDraftState<T>) => {
+  return useCallback((action: A) => {
     logic.updateState(node, action);
   }, [logic, node]);
 }

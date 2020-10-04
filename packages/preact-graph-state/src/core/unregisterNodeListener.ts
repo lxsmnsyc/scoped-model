@@ -29,10 +29,10 @@ import { GraphNode } from '../graph-node';
 import getNodeInstance from './getNodeInstance';
 import { GraphNodeInstanceMap, GraphNodeListener } from './types';
 
-export default function unregisterNodeListener<T>(
+export default function unregisterNodeListener<S, A>(
   nodes: GraphNodeInstanceMap,
-  node: GraphNode<T>,
-  listener: GraphNodeListener<T>,
+  node: GraphNode<S, A>,
+  listener: GraphNodeListener<S>,
   actualNode = getNodeInstance(nodes, node),
 ): void {
   actualNode.listeners.delete(listener);

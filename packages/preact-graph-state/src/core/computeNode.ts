@@ -30,19 +30,19 @@ import createNodeValue from './createNodeValue';
 import getNodeInstance from './getNodeInstance';
 import registerNodeDependency from './registerNodeDependency';
 import setNodeState from './setNodeState';
-import { GraphNodeInstanceMap, GraphNodeStateMap } from './types';
+import { GraphNodeInstanceMap, GraphNodeStateMap, NodeScheduler } from './types';
 
 /**
  * Computes the node value.
  */
-export default function computeNode<T>(
+export default function computeNode<S, A>(
   nodes: GraphNodeInstanceMap,
   state: GraphNodeStateMap,
-  node: GraphNode<T>,
-  schedule: <R>(scheduledNode: GraphNode<R>) => void,
+  node: GraphNode<S, A>,
+  schedule: NodeScheduler,
   actualNode = getNodeInstance(nodes, node),
-): T {
-  function getDependencyState<R>(dependency: GraphNode<R>): R {
+): S {
+  function getDependencyState<R, T>(dependency: GraphNode<R, T>): R {
     const currentState = state.get(dependency.key);
 
     if (currentState) {

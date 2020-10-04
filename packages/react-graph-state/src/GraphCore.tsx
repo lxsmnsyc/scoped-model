@@ -35,36 +35,36 @@ import registerNodeListener from './core/registerNodeListener';
 import setNodeState from './core/setNodeState';
 import unregisterNodeListener from './core/unregisterNodeListener';
 import { GraphNodeInstanceMap, GraphNodeListener, GraphNodeStateMap } from './core/types';
-import { GraphNode, GraphNodeDraftState } from './graph-node';
+import { GraphNode } from './graph-node';
 import useConstant from './hooks/useConstant';
 import useConstantCallback from './hooks/useConstantCallback';
 import useIsomorphicEffect from './hooks/useIsomorphicEffect';
 import { useGraphDomainContext } from './GraphDomainContext';
 import useWorkQueue from './hooks/useWorkQueue';
 
-interface StateUpdate<T> {
-  action: GraphNodeDraftState<T>;
-  target: GraphNode<T>;
+interface StateUpdate<S, A> {
+  action: A;
+  target: GraphNode<S, A>;
 }
 
-interface StateWork<T> {
+interface StateWork<S, A> {
   type: 'state';
-  value: StateUpdate<T>;
+  value: StateUpdate<S, A>;
 }
 
-interface ComputeWork<T> {
+interface ComputeWork<S, A> {
   type: 'compute';
-  value: GraphNode<T>;
+  value: GraphNode<S, A>;
 }
 
-interface UpdateWork<T> {
+interface UpdateWork<S, A> {
   type: 'update';
-  value: GraphNode<T>;
+  value: GraphNode<S, A>;
 }
 
-type Work<T> = StateWork<T> | ComputeWork<T> | UpdateWork<T>;
+type Work<S, A> = StateWork<S, A> | ComputeWork<S, A> | UpdateWork<S, A>;
 
-function isUniqueWork(a: Work<any>, b: Work<any>): boolean {
+function isUniqueWork(a: Work<any, any>, b: Work<any, any>): boolean {
   return !(a.type === b.type && a.value === b.value);
 }
 
@@ -73,10 +73,10 @@ function GraphCoreProcess(): JSX.Element {
   const nodes = useConstant<GraphNodeInstanceMap>(() => new Map());
   const state = useConstant<GraphNodeStateMap>(() => new Map());
 
-  const [workQueue, scheduleWork, resetWork] = useWorkQueue<Work<any>>();
+  const [workQueue, scheduleWork, resetWork] = useWorkQueue<Work<any, any>>();
 
   const scheduleState = useConstantCallback(
-    <R, >(work: StateUpdate<R>): void => {
+    <S, A>(work: StateUpdate<S, A>): void => {
       scheduleWork({
         type: 'state',
         value: work,
@@ -84,7 +84,7 @@ function GraphCoreProcess(): JSX.Element {
     },
   );
   const scheduleCompute = useConstantCallback(
-    <R, >(work: GraphNode<R>): void => {
+    <S, A>(work: GraphNode<S, A>): void => {
       scheduleWork({
         type: 'compute',
         value: work,
@@ -92,7 +92,7 @@ function GraphCoreProcess(): JSX.Element {
     },
   );
   const scheduleUpdate = useConstantCallback(
-    <R, >(work: GraphNode<R>): void => {
+    <S, A>(work: GraphNode<S, A>): void => {
       scheduleWork({
         type: 'update',
         value: work,
@@ -101,28 +101,28 @@ function GraphCoreProcess(): JSX.Element {
   );
 
   const updateState = useConstantCallback(
-    <R, >(dependency: GraphNode<R>, newAction: GraphNodeDraftState<R>): void => {
+    <S, A>(dependency: GraphNode<S, A>, action: A): void => {
       scheduleState({
-        action: newAction,
+        action,
         target: dependency,
       });
     },
   );
 
   const addListener = useConstantCallback(
-    <R, >(node: GraphNode<R>, listener: GraphNodeListener<R>): void => {
+    <S, A>(node: GraphNode<S, A>, listener: GraphNodeListener<S>): void => {
       registerNodeListener(nodes, node, listener);
     },
   );
 
   const removeListener = useConstantCallback(
-    <R, >(node: GraphNode<R>, listener: GraphNodeListener<R>): void => {
+    <S, A>(node: GraphNode<S, A>, listener: GraphNodeListener<S>): void => {
       unregisterNodeListener(nodes, node, listener);
     },
   );
 
   const getState = useConstantCallback(
-    <R, >(node: GraphNode<R>): R => (
+    <S, A>(node: GraphNode<S, A>): S => (
       getNodeState(nodes, state, node, scheduleUpdate)
     ),
   );
@@ -137,44 +137,44 @@ function GraphCoreProcess(): JSX.Element {
   useIsomorphicEffect(() => {
     if (workQueue.length > 0) {
       resetWork();
-      workQueue.forEach((work: Work<any>) => {
+      workQueue.forEach((work: Work<any, any>) => {
         switch (work.type) {
           case 'state': {
             const { action, target } = work.value;
             // Get instance node
             const currentState = getNodeState(nodes, state, target, scheduleUpdate);
-            // Extract draft state similar to useState
-            const draftState = getDraftState(action, currentState);
-            /**
-             * Clean the previous version to prevent
-             * asynchronous dependency registration.
-             */
-            deprecateNodeVersion(nodes, target);
 
-            // Run the node setter for further effects
-            target.set(
-              {
-                // Getter doesn't need dependency building.
-                get: <R, >(dependency: GraphNode<R>): R => (
-                  getNodeState(nodes, state, dependency, scheduleUpdate)
-                ),
-                // Setter
-                set: <R, >(dependency: GraphNode<R>, newAction: GraphNodeDraftState<R>): void => {
-                  // Schedule a node update
-                  updateState(dependency, newAction);
+            if (target.set) {
+              // Run the node setter for further effects
+              target.set(
+                {
+                  // Getter doesn't need dependency building.
+                  get: <S, A>(dependency: GraphNode<S, A>): S => (
+                    getNodeState(nodes, state, dependency, scheduleUpdate)
+                  ),
+                  // Setter
+                  set: <S, A>(dependency: GraphNode<S, A>, newAction: A): void => {
+                    // Schedule a node update
+                    updateState(dependency, newAction);
+                  },
                 },
-              },
-              // Send the draft state
-              draftState,
-            );
-
-            // Notify for new node value
-            setNodeState(
-              state,
-              target,
-              draftState,
-              scheduleUpdate,
-            );
+                // Send the draft state
+                action,
+              );
+            } else {
+              /**
+               * Clean the previous version to prevent
+               * asynchronous dependency registration.
+               */
+              deprecateNodeVersion(nodes, target);
+              // Notify for new node value
+              setNodeState(
+                state,
+                target,
+                getDraftState(action, currentState),
+                scheduleUpdate,
+              );
+            }
           }
             break;
           case 'compute': {

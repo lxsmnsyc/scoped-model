@@ -29,12 +29,14 @@ import { GraphNode } from '../graph-node';
 import computeNode from './computeNode';
 import { GraphNodeInstanceMap, GraphNodeStateMap } from './types';
 
-export default function getNodeState<T>(
+type Schedule = <S, A>(scheduledNode: GraphNode<S, A>) => void
+
+export default function getNodeState<S, A>(
   nodes: GraphNodeInstanceMap,
   state: GraphNodeStateMap,
-  node: GraphNode<T>,
-  schedule: <R>(scheduledNode: GraphNode<R>) => void,
-): T {
+  node: GraphNode<S, A>,
+  schedule: Schedule,
+): S {
   const currentState = state.get(node.key);
 
   if (currentState) {

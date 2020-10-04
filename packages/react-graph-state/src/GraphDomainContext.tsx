@@ -26,16 +26,16 @@
  * @copyright Alexis Munsayac 2020
  */
 import { createContext, MutableRefObject, useContext } from 'react';
-import { GraphNode, GraphNodeDraftState } from './graph-node';
+import { GraphNode } from './graph-node';
 import { GraphNodeListener } from './core/types';
 import OutOfGraphDomainError from './utils/OutOfGraphDomainError';
 import IllegalGraphDomainInterfaceAccessError from './utils/IllegalGraphDomainInterfaceAccessError';
 
 export interface GraphCoreInterface {
-  updateState: <R>(dependency: GraphNode<R>, newAction: GraphNodeDraftState<R>) => void;
-  addListener: <R>(node: GraphNode<R>, listener: GraphNodeListener<R>) => void;
-  removeListener: <R>(node: GraphNode<R>, listener: GraphNodeListener<R>) => void;
-  getState: <R>(node: GraphNode<R>) => R;
+  updateState: <S, A>(dependency: GraphNode<S, A>, action: A) => void;
+  addListener: <S, A>(node: GraphNode<S, A>, listener: GraphNodeListener<S>) => void;
+  removeListener: <S, A>(node: GraphNode<S, A>, listener: GraphNodeListener<S>) => void;
+  getState: <S, A>(node: GraphNode<S, A>) => S;
 }
 
 export interface GraphCoreValue {

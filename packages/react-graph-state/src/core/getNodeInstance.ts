@@ -28,14 +28,14 @@
 import { GraphNode } from '../graph-node';
 import { GraphNodeInstance, GraphNodeInstanceMap } from './types';
 
-export default function getNodeInstance<T>(
+export default function getNodeInstance<S, A>(
   nodes: GraphNodeInstanceMap,
-  node: GraphNode<T>,
-): GraphNodeInstance<T> {
+  node: GraphNode<S, A>,
+): GraphNodeInstance<S> {
   const currentNode = nodes.get(node.key);
 
   if (!currentNode) {
-    const baseNode: GraphNodeInstance<T> = {
+    const baseNode: GraphNodeInstance<S> = {
       version: {
         alive: true,
         dependencies: new Set(),

@@ -30,7 +30,7 @@ import { GraphNode } from '../graph-node';
 import useIsomorphicEffect from './useIsomorphicEffect';
 import useFreshState from './useFreshState';
 
-export default function useGraphNodeValue<T>(node: GraphNode<T>): T {
+export default function useGraphNodeValue<S, A>(node: GraphNode<S, A>): S {
   const logic = useGraphDomainInterface();
 
   const [state, setState] = useFreshState(

@@ -27,13 +27,13 @@
  */
 import { useCallback } from 'preact/hooks';
 import { useGraphDomainInterface } from '../GraphDomainContext';
-import { GraphNode, GraphNodeDraftState } from '../graph-node';
+import { GraphNode } from '../graph-node';
 import useIsomorphicEffect from './useIsomorphicEffect';
 import useFreshState from './useFreshState';
 
-export default function useGraphNodeState<T>(
-  node: GraphNode<T>,
-): [T, (action: GraphNodeDraftState<T>) => void] {
+export default function useGraphNodeState<S, A>(
+  node: GraphNode<S, A>,
+): [S, (action: A) => void] {
   const logic = useGraphDomainInterface();
 
   const [state, setState] = useFreshState(
@@ -49,7 +49,7 @@ export default function useGraphNodeState<T>(
     };
   }, [logic, node, setState]);
 
-  const dispatch = useCallback((action: GraphNodeDraftState<T>) => {
+  const dispatch = useCallback((action: A) => {
     logic.updateState(node, action);
   }, [logic, node]);
 

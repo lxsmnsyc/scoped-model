@@ -39,11 +39,11 @@ function isNodeValueFunc<T>(
   return typeof nodeValue === 'function';
 }
 
-export default function createNodeValue<T>(
-  node: GraphNode<T>,
+export default function createNodeValue<S, A>(
+  node: GraphNode<S, A>,
   getNode: GraphNodeGetValue,
-  setNode: GraphNodeGetYield<T>,
-): T {
+  setNode: GraphNodeGetYield<S>,
+): S {
   return isNodeValueFunc(node.get)
     ? node.get({
       get: getNode,

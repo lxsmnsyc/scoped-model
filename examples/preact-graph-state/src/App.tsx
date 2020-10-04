@@ -15,7 +15,7 @@ const temperatureF = createGraphNode({
   get: 32,
 });
 
-const temperatureC = createGraphNode<number>({
+const temperatureC = createGraphNode<number, number>({
   get: ({ get }) => {
     const fahrenheit = get(temperatureF);
 

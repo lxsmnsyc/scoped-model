@@ -27,67 +27,95 @@
  */
 import generateKey from './utils/generate-key';
 
+// Keys for accessing graph node instances
 export type GraphNodeKey = string | number;
 
-export type GraphNodeDraftStateAction<T> = (old: T) => T;
-export type GraphNodeDraftState<T> = T | GraphNodeDraftStateAction<T>;
+// An action for receiving the old state and returning a new state
+export type GraphNodeDraftStateAction<S> = (old: S) => S;
 
-export type GraphNodeGetYield<T> = (value: T) => void;
+// An action which sets the new state
+export type GraphNodeDraftState<S> = S | GraphNodeDraftStateAction<S>;
 
-export interface GraphNodeGetInterface<T> {
+// Function received by the `get` function for yielding state
+export type GraphNodeGetYield<S> = (value: S) => void;
+
+export interface GraphNodeGetInterface<S> {
   get: GraphNodeGetValue;
-  set: GraphNodeGetYield<T>;
+  set: GraphNodeGetYield<S>;
 }
 
-export type GraphNodeGetSupplier<T> = (facing: GraphNodeGetInterface<T>) => T;
-export type GraphNodeGet<T> = T | GraphNodeGetSupplier<T>;
+export type GraphNodeGetSupplier<S> = (facing: GraphNodeGetInterface<S>) => S;
+export type GraphNodeGet<S> = S | GraphNodeGetSupplier<S>;
 
 export interface GraphNodeSetInterface {
   get: GraphNodeGetValue;
   set: GraphNodeSetValue;
 }
 
-export type GraphNodeSet<T> = (facing: GraphNodeSetInterface, newValue: T) => void;
+export type GraphNodeSet<A> = (facing: GraphNodeSetInterface, newValue: A) => void;
 
-export interface GraphNode<T> {
-  get: GraphNodeGet<T>;
-  set: GraphNodeSet<T>;
+export interface GraphNode<S, A> {
+  get: GraphNodeGet<S>;
   key: GraphNodeKey;
+  set?: GraphNodeSet<A>;
 }
 
-export interface GraphNodeOptions<T> {
-  get: GraphNodeGet<T>;
-  set?: GraphNodeSet<T>;
+export interface GraphNodeBasic<S> extends GraphNode<S, GraphNodeDraftState<S>> {
+  set: undefined;
+}
+export interface GraphNodeEffectful<S, A> extends GraphNode<S, A> {
+  set: GraphNodeSet<A>;
+}
+
+export interface GraphNodeBasicOptions<S> {
+  get: GraphNodeGet<S>;
   key?: GraphNodeKey;
+  set?: undefined;
 }
 
-export type GraphNodeValueType<T> = T extends GraphNode<infer U> ? U : never;
+export interface GraphNodeEffectfulOptions<S, A> {
+  get: GraphNodeGet<S>;
+  key?: GraphNodeKey;
+  set: GraphNodeSet<A>;
+}
 
-export type GraphNodeGetValue = <T>(node: GraphNode<T>) => T;
-export type GraphNodeSetValue = <T>(node: GraphNode<T>, newValue: GraphNodeDraftState<T>) => void;
+export type GraphNodeOptions<S, A> =
+  | GraphNodeBasicOptions<S>
+  | GraphNodeEffectfulOptions<S, A>;
 
-const EMPTY_SET = () => {
-  // Empty
-};
+export type GraphNodeGetValue =
+  <S, A>(node: GraphNode<S, A>) => S;
+export type GraphNodeSetValue =
+  <S, A>(node: GraphNode<S, A>, action: A) => void;
 
-const NODES = new Map<string | number, GraphNode<any>>();
+const NODES = new Map<GraphNodeKey, GraphNode<any, any>>();
 
-function createRawGraphNode<T>({ get, set, key }: GraphNodeOptions<T>): GraphNode<T> {
+function createRawGraphNode<S, A>(
+  { key, get, set }: GraphNodeOptions<S, A>,
+): GraphNode<S, A> {
   return {
     get,
-    set: set ?? EMPTY_SET,
+    set,
     key: key ?? generateKey(),
   };
 }
 
-export function createGraphNode<T>(options: GraphNodeOptions<T>): GraphNode<T> {
+export function createGraphNode<S>(
+  options: GraphNodeBasicOptions<S>,
+): GraphNodeBasic<S>;
+export function createGraphNode<S, A>(
+  options: GraphNodeEffectfulOptions<S, A>,
+): GraphNodeEffectful<S, A>;
+export function createGraphNode<S, A>(
+  options: GraphNodeOptions<S, A>,
+): GraphNode<S, A> {
   if (options.key != null) {
     const currentNode = NODES.get(options.key);
     if (currentNode) {
       return currentNode;
     }
   }
-  const node = createRawGraphNode(options);
+  const node = createRawGraphNode<S, A>(options);
   NODES.set(node.key, node);
   return node;
 }
@@ -109,8 +137,8 @@ export type GraphNodeAsyncResult<T> =
   | GraphNodeAsyncSuccess<T>
   | GraphNodeAsyncFailure;
 
-export type GraphNodePromise<T> = GraphNode<Promise<T>>;
-export type GraphNodeResource<T> = GraphNode<GraphNodeAsyncResult<T>>;
+export type GraphNodePromise<T> = GraphNodeBasic<Promise<T>>;
+export type GraphNodeResource<T> = GraphNodeBasic<GraphNodeAsyncResult<T>>;
 
 function promiseToResource<T>(
   promise: Promise<T>,
@@ -225,7 +253,7 @@ export function waitForAny<T>(
  */
 export function joinResources<T>(
   resources: GraphNodeResource<T>[],
-): GraphNode<GraphNodeAsyncResult<T>[]> {
+): GraphNodeBasic<GraphNodeAsyncResult<T>[]> {
   return createGraphNode({
     get: ({ get }) => resources.map((resource) => get(resource)),
     key: `JoinedResource(${joinResourceKeys(resources)})`,

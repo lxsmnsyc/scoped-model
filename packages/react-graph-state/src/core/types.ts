@@ -27,7 +27,7 @@
  */
 import { GraphNode, GraphNodeKey } from '../graph-node';
 
-export type GraphNodeDependencies = Set<GraphNode<any>>;
+export type GraphNodeDependencies = Set<GraphNode<any, any>>;
 
 export interface GraphNodeVersion {
   // Guards dependency registration
@@ -51,3 +51,5 @@ export interface GraphNodeState<T> {
 
 export type GraphNodeInstanceMap = Map<GraphNodeKey, GraphNodeInstance<any>>;
 export type GraphNodeStateMap = Map<GraphNodeKey, GraphNodeState<any>>;
+
+export type NodeScheduler = <S, A>(scheduledNode: GraphNode<S, A>) => void;

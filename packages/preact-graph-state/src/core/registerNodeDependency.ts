@@ -29,10 +29,10 @@ import { GraphNode } from '../graph-node';
 import getNodeInstance from './getNodeInstance';
 import { GraphNodeInstanceMap } from './types';
 
-export default function registerNodeDependency<T, R>(
+export default function registerNodeDependency<S, A, R, T>(
   nodes: GraphNodeInstanceMap,
-  node: GraphNode<T>,
-  dependency: GraphNode<R>,
+  node: GraphNode<S, A>,
+  dependency: GraphNode<R, T>,
   actualNode = getNodeInstance(nodes, node),
 ): void {
   actualNode.version.dependencies.add(dependency);
