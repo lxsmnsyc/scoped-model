@@ -312,6 +312,39 @@ const values = waitForAny([
 
 Joins an array of graph node resources into a single graph node that emits an array of resource results.
 
+### Factories
+
+Graph node factories allows you to dynamically generate graph nodes of similar logic based on parameters.
+
+Factories has similar option fields for basic graph node creation, but the difference is that these options are higher-order functions instead.
+- `key`: Optional. Function for generating graph node keys. If not provided, keys are generated from encoding the parameter array into valid JSON string.
+- `get`: Function for generating graph node values.
+- `set`: Optional. Function for generating graph node side-effects.
+
+```tsx
+import { createGraphNodeFactory } from '@lxsmnsyc/preact-graph-state';
+
+// Parameters for each factory field are shared.
+const userDataFactory = createGraphNodeFactory({
+  // Generate key based on parameter
+  key: (id) => id,
+  // Get user by id
+  get: (id) => () => getUserById(id),
+})
+
+// ...
+const userData = useGraphNodeValue(userDataFactory(myId));
+```
+
+Factories with Promise-returning graph nodes can be wrapped with `createGraphNodeResourceFactory`, which automatically converts the generated Promises into Resources.
+
+```tsx
+const userDataResourceFactory = createGraphNodeResourceFactory(userDataFactory);
+
+// ...
+const userData = useGraphNodeResource(userDataResourceFactory(myId));
+```
+
 ## License
 
 MIT © [lxsmnsyc](https://github.com/lxsmnsyc)

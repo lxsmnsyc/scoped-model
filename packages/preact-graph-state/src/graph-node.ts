@@ -137,8 +137,8 @@ export type GraphNodeAsyncResult<T> =
   | GraphNodeAsyncSuccess<T>
   | GraphNodeAsyncFailure;
 
-export type GraphNodePromise<T> = GraphNodeBasic<Promise<T>>;
-export type GraphNodeResource<T> = GraphNodeBasic<GraphNodeAsyncResult<T>>;
+export type GraphNodePromise<S> = GraphNodeBasic<Promise<S>>;
+export type GraphNodeResource<S> = GraphNodeBasic<GraphNodeAsyncResult<S>>;
 
 function promiseToResource<T>(
   promise: Promise<T>,
@@ -165,9 +165,9 @@ function promiseToResource<T>(
  * Converts a Promise-returning graph node into a Resource graph node
  * @param graphNode
  */
-export function createGraphNodeResource<T>(
-  graphNode: GraphNodePromise<T>,
-): GraphNodeResource<T> {
+export function createGraphNodeResource<S>(
+  graphNode: GraphNodePromise<S>,
+): GraphNodeResource<S> {
   return createGraphNode({
     get: ({ get, set }) => promiseToResource(get(graphNode), set),
     key: `Resource(${graphNode.key})`,
@@ -178,9 +178,9 @@ export function createGraphNodeResource<T>(
  * Converts a Resource graph node to a Promise-returning graph node
  * @param resource
  */
-export function fromResource<T>(
-  resource: GraphNodeResource<T>,
-): GraphNodePromise<T> {
+export function fromResource<S>(
+  resource: GraphNodeResource<S>,
+): GraphNodePromise<S> {
   return createGraphNode({
     get: async ({ get }) => {
       const result = get(resource);
@@ -194,8 +194,8 @@ export function fromResource<T>(
   });
 }
 
-function joinResourceKeys<T>(
-  resources: GraphNodeResource<T>[],
+function joinResourceKeys<S>(
+  resources: GraphNodeResource<S>[],
 ): string {
   return resources.map((resource) => resource.key).join(', ');
 }
@@ -205,9 +205,9 @@ function joinResourceKeys<T>(
  * Similar behavior with Promise.all
  * @param resources
  */
-export function waitForAll<T>(
-  resources: GraphNodeResource<T>[],
-): GraphNodeResource<T[]> {
+export function waitForAll<S>(
+  resources: GraphNodeResource<S>[],
+): GraphNodeResource<S[]> {
   const promises = resources.map((resource) => fromResource(resource));
 
   return createGraphNode({
@@ -228,9 +228,9 @@ export function waitForAll<T>(
  * Similar behavior with Promise.race
  * @param resources
  */
-export function waitForAny<T>(
-  resources: GraphNodeResource<T>[],
-): GraphNodeResource<T> {
+export function waitForAny<S>(
+  resources: GraphNodeResource<S>[],
+): GraphNodeResource<S> {
   const promises = resources.map((resource) => fromResource(resource));
 
   return createGraphNode({
@@ -258,4 +258,66 @@ export function joinResources<T>(
     get: ({ get }) => resources.map((resource) => get(resource)),
     key: `JoinedResource(${joinResourceKeys(resources)})`,
   });
+}
+
+export type GraphNodeFactoryKey<Params extends any[]> =
+  (...params: Params) => string;
+export type GraphNodeFactoryGet<Params extends any[], S> =
+  (...params: Params) => GraphNodeGet<S>;
+export type GraphNodeFactorySet<Params extends any[], A> =
+  (...params: Params) => GraphNodeSet<A>;
+
+export interface GraphNodeBasicFactoryOptions<Params extends any[], S> {
+  key?: GraphNodeFactoryKey<Params>;
+  get: GraphNodeFactoryGet<Params, S>;
+  set: undefined;
+}
+export interface GraphNodeEffectfulFactoryOptions<Params extends any[], S, A> {
+  key?: GraphNodeFactoryKey<Params>;
+  get: GraphNodeFactoryGet<Params, S>;
+  set: GraphNodeFactorySet<Params, A>;
+}
+
+export type GraphNodeFactoryOptions<Params extends any[], S, A> =
+  | GraphNodeBasicFactoryOptions<Params, S>
+  | GraphNodeEffectfulFactoryOptions<Params, S, A>;
+
+export type GraphNodeFactory<Params extends any[], S, A> =
+  (...params: Params) => GraphNode<S, A>;
+
+export type GraphNodeBasicFactory<Params extends any[], S> =
+  (...params: Params) => GraphNodeBasic<S>;
+
+function defaultKeygen<Params extends any[]>(...params: Params): string {
+  return JSON.stringify(params);
+}
+
+export function createGraphNodeFactory<Params extends any[], S>(
+  options: GraphNodeBasicFactoryOptions<Params, S>,
+): GraphNodeBasicFactory<Params, S>;
+export function createGraphNodeFactory<Params extends any[], S, A>(
+  { key, get, set }: GraphNodeFactoryOptions<Params, S, A>,
+): GraphNodeFactory<Params, S, A> {
+  if (set) {
+    return (...params: Params): GraphNode<S, A> => createGraphNode<S, A>({
+      key: key ? key(...params) : defaultKeygen(params),
+      get: get(...params),
+      set: set(...params),
+    });
+  }
+  return (...params: Params): GraphNode<S, A> => createGraphNode<S>({
+    key: key ? key(...params) : defaultKeygen(params),
+    get: get(...params),
+  });
+}
+
+export type GraphNodeResourceFactory<Params extends any[], S> =
+  GraphNodeBasicFactory<Params, GraphNodeAsyncResult<S>>;
+
+export function createGraphNodeResourceFactory<Params extends any[], S>(
+  factory: GraphNodeBasicFactory<Params, Promise<S>>,
+): GraphNodeResourceFactory<Params, S> {
+  return (...params: Params): GraphNodeResource<S> => createGraphNodeResource(
+    factory(...params),
+  );
 }
