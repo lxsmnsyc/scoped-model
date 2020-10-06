@@ -1,0 +1,10 @@
+{
+  "name": "react-scoped-model-concurrent",
+  "version": "0.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "@lxsmnsyc/react-scoped-model": "^1.5.2"
+  }
+}
