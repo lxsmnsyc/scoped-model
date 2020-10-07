@@ -1,5 +1,5 @@
 {
-  "name": "react-scoped-model-concurrent",
+  "name": "react-graph-state-concurrent",
   "version": "0.0.0",
   "main": "index.js",
   "license": "MIT",
@@ -9,7 +9,7 @@
     "build": "parcel build index.html"
   },
   "dependencies": {
-    "@lxsmnsyc/react-scoped-model": "1.5.2",
+    "@lxsmnsyc/react-graph-state": "0.3.0",
     "react": "^0.0.0-experimental-94c0244ba",
     "react-dom": "^0.0.0-experimental-94c0244ba"
   },
@@ -19,6 +19,7 @@
     "eslint": "^7.10.0",
     "eslint-config-lxsmnsyc": "^0.1.18",
     "parcel": "^1.12.4",
+    "tslib": "^2.0.1",
     "typescript": "^4.0.3"
   }
 }
