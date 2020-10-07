@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@lxsmnsyc/react-graph-state": "0.3.0",
-    "react": "^0.0.0-experimental-94c0244ba",
+    "react": "^16.13.1",
     "react-dom": "^0.0.0-experimental-94c0244ba"
   },
   "devDependencies": {
