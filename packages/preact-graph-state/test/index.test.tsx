@@ -255,7 +255,7 @@ describe('useGraphNodeSetValue', () => {
       get: 'Initial',
     });
 
-    const exampleNode2 = createGraphNode<string>({
+    const exampleNode2 = createGraphNode<string, string>({
       get: ({ get }) => get(exampleNode),
       set: ({ set }, newValue) => {
         set(exampleNode, newValue);
