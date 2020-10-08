@@ -26,7 +26,6 @@
  * @copyright Alexis Munsayac 2020
  */
 import generateKey from './generate-key';
-
 // Keys for accessing graph node instances
 export type GraphNodeKey = string | number;
 
