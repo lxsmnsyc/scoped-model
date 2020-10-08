@@ -27,20 +27,12 @@
  */
 import { createContext } from 'preact';
 import { Ref, useContext } from 'preact/hooks';
-import { GraphNode } from './graph-node';
-import { GraphNodeListener } from './core/types';
+import { GraphDomainInterface } from 'graph-state';
 import OutOfGraphDomainError from './utils/OutOfGraphDomainError';
 import IllegalGraphDomainInterfaceAccessError from './utils/IllegalGraphDomainInterfaceAccessError';
 
-export interface GraphCoreInterface {
-  updateState: <S, A>(dependency: GraphNode<S, A>, action: A) => void;
-  addListener: <S, A>(node: GraphNode<S, A>, listener: GraphNodeListener<S>) => void;
-  removeListener: <S, A>(node: GraphNode<S, A>, listener: GraphNodeListener<S>) => void;
-  getState: <S, A>(node: GraphNode<S, A>) => S;
-}
-
 export interface GraphCoreValue {
-  value?: GraphCoreInterface;
+  value?: GraphDomainInterface;
 }
 
 export const GraphDomainContext = (
@@ -57,7 +49,7 @@ export function useGraphDomainContext(): Ref<GraphCoreValue> {
   throw new OutOfGraphDomainError();
 }
 
-export function useGraphDomainInterface(): GraphCoreInterface {
+export function useGraphDomainInterface(): GraphDomainInterface {
   const { current } = useGraphDomainContext();
 
   if (current.value) {

@@ -25,8 +25,8 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
+import { GraphNode } from 'graph-state';
 import { useGraphDomainInterface } from '../GraphDomainContext';
-import { GraphNode } from '../graph-node';
 import useIsomorphicEffect from './useIsomorphicEffect';
 import useFreshState from './useFreshState';
 
