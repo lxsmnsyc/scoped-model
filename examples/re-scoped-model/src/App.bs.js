@@ -3,7 +3,7 @@
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as Caml_obj from "bs-platform/lib/es6/caml_obj.js";
-import * as ScopedModel$ReScopedModel from "@lxsmnsyc/re-scoped-model/src/ScopedModel.bs.js";
+import * as ScopedModel$ReScopedModel from "re-scoped-model/src/ScopedModel.bs.js";
 
 function call(props) {
   var match = React.useState(function () {

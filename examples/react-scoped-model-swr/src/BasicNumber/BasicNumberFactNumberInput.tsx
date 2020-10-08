@@ -1,4 +1,4 @@
-import { useValue } from '@lxsmnsyc/react-scoped-model';
+import { useValue } from 'react-scoped-model';
 import React, { useCallback, FormEventHandler } from 'react';
 import BasicNumberFactNumber from '../models/BasicNumberFactNumber';
 

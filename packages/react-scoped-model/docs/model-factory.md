@@ -9,7 +9,7 @@
 - `createStateModel`: creates a scoped model based on `useState` hook.
 
 ```tsx
-import { createStateModel } from '@lxsmnsyc/react-scoped-model';
+import { createStateModel } from 'react-scoped-model';
 
 const Counter = createStateModel(0);
 
@@ -25,7 +25,7 @@ const [state, setState] = useValue(Counter);
 - `createReducerModel`: creates a scoped model based on `useReducer` hook.
 
 ```tsx
-import { createReducerModel } from '@lxsmnsyc/react-scoped-model';
+import { createReducerModel } from 'react-scoped-model';
 
 const Counter = createReducerModel((state, action) => {
   switch (action.type) {
@@ -52,7 +52,7 @@ dispatch({ type: 'INCREMENT' });
 - `createPropsSelectorModel`: creates a scoped model whose state is its props.
 
 ```tsx
-import { createPropsSelectorModel } from '@lxsmnsyc/react-scoped-model';
+import { createPropsSelectorModel } from 'react-scoped-model';
 
 const UserDetails = createPropsSelectorModel();
 

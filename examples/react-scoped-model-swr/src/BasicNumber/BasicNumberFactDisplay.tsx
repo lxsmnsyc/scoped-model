@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector } from '@lxsmnsyc/react-scoped-model';
+import { useSelector } from 'react-scoped-model';
 import BasicNumberFact from '../models/BasicNumberFact';
 import BasicNumberFactNumber from '../models/BasicNumberFactNumber';
 import BasicNumberFactType from '../models/BasicNumberFactType';

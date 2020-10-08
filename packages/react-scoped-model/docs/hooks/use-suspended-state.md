@@ -12,7 +12,7 @@ The hook accepts the following parameters:
 Useful for suspending the component if the model has an initial state but the expected state is not yet ready.
 
 ```tsx
-import { useSuspendedState } from '@lxsmnsyc/react-scoped-model';
+import { useSuspendedState } from 'react-scoped-model';
 
 function SuspendedTimerValue() {
   // Suspend the component until the amount of seconds has passed 10.

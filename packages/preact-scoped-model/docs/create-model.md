@@ -11,7 +11,7 @@ In `preact-scoped-model`, `scoped model`'s business logic and state relies on th
 `createModel`, the function for creating scoped models, is exported as default from the package.
 
 ```ts
-import createModel from '@lxsmnsyc/preact-scoped-model';
+import createModel from 'preact-scoped-model';
 ```
 
 ### Creating a model

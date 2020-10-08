@@ -1889,11 +1889,6 @@
     npmlog "^4.1.2"
     write-file-atomic "^2.3.0"
 
-"@lxsmnsyc/re-scoped-model@1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@lxsmnsyc/re-scoped-model/-/re-scoped-model-1.1.1.tgz#9bcaff20bfba6a744ce70e2d1696ba0c7e0840a4"
-  integrity sha512-tbWY8Dxbuv6DIbMkR/cKpKmKjPZFyD0WJTf2jLXKRdIyEMiwfhqL9Xl3AjxJ+VXzCUvkLWWkv6MJ1P9CEnoQow==
-
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"

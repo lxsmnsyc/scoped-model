@@ -1,4 +1,4 @@
-import { createSWRModel } from '@lxsmnsyc/react-scoped-model-swr';
+import { createSWRModel } from 'react-scoped-model-swr';
 
 async function getNumberFact(url: string) {
   const response = await fetch(`http://numbersapi.com/${url}`);

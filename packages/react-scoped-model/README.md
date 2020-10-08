@@ -1,8 +1,8 @@
-# @lxsmnsyc/react-scoped-model
+# react-scoped-model
 
 > Scoped Model pattern in React (but with Hooks)
 
-[![NPM](https://img.shields.io/npm/v/@lxsmnsyc/react-scoped-model.svg)](https://www.npmjs.com/package/@lxsmnsyc/react-scoped-model) [![JavaScript Style Guide](https://badgen.net/badge/code%20style/airbnb/ff5a5f?icon=airbnb)](https://github.com/airbnb/javascript)
+[![NPM](https://img.shields.io/npm/v/react-scoped-model.svg)](https://www.npmjs.com/package/react-scoped-model) [![JavaScript Style Guide](https://badgen.net/badge/code%20style/airbnb/ff5a5f?icon=airbnb)](https://github.com/airbnb/javascript)
 
 ## Features
 
@@ -13,11 +13,11 @@
 ## Install
 
 ```bash
-npm install --save @lxsmnsyc/react-scoped-model
+npm install --save react-scoped-model
 ```
 
 ```bash
-yarn add @lxsmnsyc/react-scoped-model
+yarn add react-scoped-model
 ```
 
 ## Documentation

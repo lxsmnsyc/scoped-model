@@ -10,7 +10,7 @@ import createModel, {
   useSuspendedState,
   useAsyncSelector,
   useSelectors,
-} from '@lxsmnsyc/preact-scoped-model';
+} from 'preact-scoped-model';
 
 interface CounterProps {
   initialCount?: number;

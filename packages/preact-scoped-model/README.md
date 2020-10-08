@@ -1,8 +1,8 @@
-# @lxsmnsyc/preact-scoped-model
+# preact-scoped-model
 
 > Scoped Model pattern in Preact (but with Hooks)
 
-[![NPM](https://img.shields.io/npm/v/@lxsmnsyc/preact-scoped-model.svg)](https://www.npmjs.com/package/@lxsmnsyc/preact-scoped-model) [![JavaScript Style Guide](https://badgen.net/badge/code%20style/airbnb/ff5a5f?icon=airbnb)](https://github.com/airbnb/javascript)
+[![NPM](https://img.shields.io/npm/v/preact-scoped-model.svg)](https://www.npmjs.com/package/preact-scoped-model) [![JavaScript Style Guide](https://badgen.net/badge/code%20style/airbnb/ff5a5f?icon=airbnb)](https://github.com/airbnb/javascript)
 
 ## Features
 
@@ -13,11 +13,11 @@
 ## Install
 
 ```bash
-npm install --save @lxsmnsyc/preact-scoped-model
+npm install --save preact-scoped-model
 ```
 
 ```bash
-yarn add @lxsmnsyc/preact-scoped-model
+yarn add preact-scoped-model
 ```
 
 ## Documentation

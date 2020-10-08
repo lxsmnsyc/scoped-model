@@ -9,7 +9,7 @@ const config: UserConfig = {
   plugins: [preactRefresh()],
   optimizeDeps: {
     exclude: [
-      '@lxsmnsyc/preact-scoped-model',
+      'preact-scoped-model',
     ],
   },
 };

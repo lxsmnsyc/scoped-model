@@ -8,7 +8,7 @@ The hook accepts the following parameters:
 
 
 ```tsx
-import { useValue } from '@lxsmnsyc/react-scoped-model';
+import { useValue } from 'react-scoped-model';
 
 // A model that increments the state every second.
 const Timer = createModel(() => {
