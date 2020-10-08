@@ -29,7 +29,7 @@ import { useCallback } from 'preact/hooks';
 import { GraphNode } from 'graph-state';
 import { useGraphDomainInterface } from '../GraphDomainContext';
 
-export default function useGraphNodeSetValue<S, A>(
+export default function useGraphNodeDispatch<S, A>(
   node: GraphNode<S, A>,
 ): (action: A) => void {
   const logic = useGraphDomainInterface();
