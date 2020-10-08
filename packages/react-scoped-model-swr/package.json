@@ -20,10 +20,10 @@
     "watch": "pridepack watch"
   },
   "license": "MIT",
-  "name": "@lxsmnsyc/react-scoped-model-swr",
+  "name": "react-scoped-model-swr",
   "module": "dist/react-scoped-model-swr.esm.js",
   "devDependencies": {
-    "@lxsmnsyc/react-scoped-model": "1.5.2",
+    "react-scoped-model": "1.5.2",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.0.4",
     "@testing-library/react-hooks": "^3.4.2",
@@ -40,7 +40,7 @@
     "typescript": "^4.0.3"
   },
   "peerDependencies": {
-    "@lxsmnsyc/react-scoped-model": "^1.4.0",
+    "react-scoped-model": "^1.4.0",
     "react": "^16.13.1"
   },
   "homepage": "https://github.com/lxsmnsyc/scoped-model",
