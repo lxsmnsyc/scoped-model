@@ -1,17 +1,17 @@
-# @lxsmnsyc/react-graph-state
+# react-graph-state
 
-> Digraph-based state management library for React
+> React bindings for `graph-state`
 
-[![NPM](https://img.shields.io/npm/v/@lxsmnsyc/react-graph-state.svg)](https://www.npmjs.com/package/@lxsmnsyc/react-graph-state) [![JavaScript Style Guide](https://badgen.net/badge/code%20style/airbnb/ff5a5f?icon=airbnb)](https://github.com/airbnb/javascript)
+[![NPM](https://img.shields.io/npm/v/react-graph-state.svg)](https://www.npmjs.com/package/react-graph-state) [![JavaScript Style Guide](https://badgen.net/badge/code%20style/airbnb/ff5a5f?icon=airbnb)](https://github.com/airbnb/javascript)
 
 ## Install
 
 ```bash
-yarn add @lxsmnsyc/react-graph-state
+yarn add react-graph-state
 ```
 
 ```bash
-npm install @lxsmnsyc/react-graph-state
+npm install react-graph-state
 ```
 
 ## Usage
@@ -28,15 +28,15 @@ To create a graph node, you must invoke the `createGraphNode` function. This fun
     * `get(dependencyNode)`: Registers the `dependencyNode` as a dependency and returns the dependency's current state. If the `dependencyNode` updates its state at some point, the created graph node reacts to the state and
     invokes the `get` function to recompute and produce the new state.
     * `set(newValue)`: Sets the new state for the graph node.
-* `set`: Optional. Registers a state mutation side-effect. This function is invoked when the graph node is scheduled for state update. The function receives two parameters:
+* `set`: Optional. Registers a dispatch side-effect. When defined, prevents state mutation for the graph node and must rely on dependency recomputation. This function is invoked when the graph node is scheduled for state update. The function receives two parameters:
   * `{ get, set }`: An interface for controlling graph nodes.
     * `get(node)`: Reads the node's value. Unlike `get`, the node is not treated as a dependency and therefore `set` won't be invoked when dependencies update.
-    * `set(node, action)`: Mutates the node's state. `action` may be a value or a function that receives the current state of the node and returns the new state, similar to `useState`'s `setState`.
+    * `set(node, action)`: Dispatches a node.
   * `newValue`: The new state for the graph node.
 * `key`: Optional. Uses the provided key instead of a generated key. Provided key may be shared, although `get` and `set` functions may be different depending on the node instance passed. Use with caution.
 
 ```tsx
-import { createGraphNode } from '@lxsmnsyc/react-graph-state`;
+import { createGraphNode } from 'react-graph-state`;
 
 // A basic node
 const basicNode = createGraphNode({
@@ -86,7 +86,7 @@ const temperatureC = createGraphNode({
 Graph nodes, by themselves, are meaningless. They needed a domain to begin computing. `<GraphDomain>` is a component that defines such domain where all graph nodes live.
 
 ```tsx
-import { GraphDomain } from '@lxsmnsyc/react-graph-state`;
+import { GraphDomain } from 'react-graph-state`;
 
 const messageNode = createGraphNode({
   get: 'Hello World',
@@ -103,7 +103,7 @@ function App() {
 
 There are also three hooks:
 - `useGraphNodeValue`: reads a graph node's value. Subscribes to the graph node's state updates.
-- `useGraphNodeSetValue`: provides a callback that allows graph node's state mutation.
+- `useGraphNodeDispatch`: provides a callback that allows graph node's state mutation.
 - `useGraphNodeResource`: treats the graph node as a valid React resource, suspending the component if the graph node's resource is pending.
 
 If one of these hooks are used to access a graph node, that graph node is registered within `<GraphDomain>` and creates a lifecycle.
@@ -122,13 +122,13 @@ function Message() {
 }
 ```
 
-##### `useGraphNodeSetValue`
+##### `useGraphNodeDispatch`
 
 This is a React hook that returns a callback similar to `setState` that allows state mutation for the given graph node.
 
 ```tsx
 function MessageInput() {
-  const setMessage = useGraphNodeSetValue(messageNode);
+  const setMessage = useGraphNodeDispatch(messageNode);
 
   const onChange = useCallback((e) => {
     setFahrenheit(Number.parseFloat(e.currentTarget.value));
@@ -141,6 +141,34 @@ function MessageInput() {
     />
   );
 }
+```
+
+If a graph node has a defined `set` function, `useGraphNodeDispatch` will not overwrite the graph node's state and thus, can accept any kind of value for dispatch. `set` will receive this value, allowing for custom graph node logic:
+
+```tsx
+const countNode = createGraphNode({
+  get: 0,
+});
+
+const reducerNode = createGraphNode({
+  get: ({ get }) => get(countNode),
+  set: ({ set }, action) => {
+    switch (action) {
+      case 'INCREMENT':
+        set(countNode, get(countNode) + 1);
+        break;
+      case 'DECREMENT':
+        set(countNode, get(countNode) - 1);
+        break;
+    }
+  },
+});
+
+// ...
+const dispatch = useGraphNodeDispatch(reducerNode);
+
+// ...
+dispatch('INCREMENT');
 ```
 
 ##### `useGraphNodeResource`
@@ -322,7 +350,7 @@ Factories has similar option fields for basic graph node creation, but the diffe
 - `set`: Optional. Function for generating graph node side-effects.
 
 ```tsx
-import { createGraphNodeFactory } from '@lxsmnsyc/react-graph-state';
+import { createGraphNodeFactory } from 'react-graph-state';
 
 // Parameters for each factory field are shared.
 const userDataFactory = createGraphNodeFactory({
