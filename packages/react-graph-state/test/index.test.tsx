@@ -2,13 +2,15 @@ import React from 'react';
 import {
   act, cleanup, fireEvent, render, screen,
 } from '@testing-library/react';
-import { supressWarnings, restoreWarnings } from './suppress-warnings';
 import {
   createGraphNode,
+} from 'graph-state';
+import {
   GraphDomain,
-  useGraphNodeSetValue,
+  useGraphNodeDispatch,
   useGraphNodeValue,
 } from '../src';
+import { supressWarnings, restoreWarnings } from './suppress-warnings';
 
 import '@testing-library/jest-dom/extend-expect';
 import '@testing-library/jest-dom';
@@ -157,7 +159,7 @@ describe('useGraphNodeValue', () => {
   });
 });
 
-describe('useGraphNodeSetValue', () => {
+describe('useGraphNodeDispatch', () => {
   it('should re-render the consumer components of the node', () => {
     const expected = 'Changed';
     const finder = 'example';
@@ -175,7 +177,7 @@ describe('useGraphNodeSetValue', () => {
     }
 
     function Updater(): JSX.Element {
-      const update = useGraphNodeSetValue(exampleNode);
+      const update = useGraphNodeDispatch(exampleNode);
 
       return (
         <button
@@ -221,7 +223,7 @@ describe('useGraphNodeSetValue', () => {
     }
 
     function Updater(): JSX.Element {
-      const update = useGraphNodeSetValue(exampleNode);
+      const update = useGraphNodeDispatch(exampleNode);
 
       return (
         <button
@@ -270,7 +272,7 @@ describe('useGraphNodeSetValue', () => {
     }
 
     function Updater(): JSX.Element {
-      const update = useGraphNodeSetValue(exampleNode2);
+      const update = useGraphNodeDispatch(exampleNode2);
 
       return (
         <button
@@ -302,7 +304,7 @@ describe('useGraphNodeSetValue', () => {
     });
 
     function Consumer(): JSX.Element {
-      useGraphNodeSetValue(exampleNode);
+      useGraphNodeDispatch(exampleNode);
 
       return <>Test</>;
     }

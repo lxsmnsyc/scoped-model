@@ -5,10 +5,12 @@ import {
 import {
   createGraphNode,
   createGraphNodeResource,
+  waitForAny,
+} from 'graph-state';
+import {
   GraphDomain,
   useGraphNodeResource,
   useGraphNodeValue,
-  waitForAny,
 } from '../src';
 
 import '@testing-library/jest-dom/extend-expect';

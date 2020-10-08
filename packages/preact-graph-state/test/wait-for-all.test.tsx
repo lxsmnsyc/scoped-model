@@ -7,16 +7,18 @@ import {
 import {
   createGraphNode,
   createGraphNodeResource,
+  waitForAll,
+} from 'graph-state';
+import {
   GraphDomain,
   useGraphNodeResource,
   useGraphNodeValue,
-  waitForAll,
 } from '../src';
+import { restoreWarnings, supressWarnings } from './suppress-warnings';
+import ErrorBound from './error-boundary';
 
 import '@testing-library/jest-dom/extend-expect';
 import '@testing-library/jest-dom';
-import { restoreWarnings, supressWarnings } from './suppress-warnings';
-import ErrorBound from './error-boundary';
 
 jest.useFakeTimers();
 
