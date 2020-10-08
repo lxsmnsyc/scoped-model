@@ -26,7 +26,7 @@
  * @copyright Alexis Munsayac 2020
  */
 import { useCallback } from 'react';
-import { GraphNode } from '../graph-node';
+import { GraphNode } from 'graph-state';
 import { useGraphDomainInterface } from '../GraphDomainContext';
 
 export default function useGraphNodeSetValue<S, A>(
@@ -35,6 +35,6 @@ export default function useGraphNodeSetValue<S, A>(
   const logic = useGraphDomainInterface();
 
   return useCallback((action: A) => {
-    logic.updateState(node, action);
+    logic.setState(node, action);
   }, [logic, node]);
 }
