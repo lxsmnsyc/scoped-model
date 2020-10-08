@@ -44,7 +44,7 @@ import useWorkQueue from './hooks/useWorkQueue';
 function GraphCoreProcess(): JSX.Element {
   const { current } = useGraphDomainContext();
   const [workQueue, scheduleWork, resetWork] = useWorkQueue<Work<any, any>>();
-  
+
   const memory = useConstant<GraphDomainMemory>(
     () => createGraphDomainMemory(),
   );
