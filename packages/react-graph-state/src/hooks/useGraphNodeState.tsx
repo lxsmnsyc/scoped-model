@@ -26,8 +26,8 @@
  * @copyright Alexis Munsayac 2020
  */
 import { useCallback } from 'react';
+import { GraphNode } from 'graph-state';
 import { useGraphDomainInterface } from '../GraphDomainContext';
-import { GraphNode } from '../graph-node';
 import useIsomorphicEffect from './useIsomorphicEffect';
 import useFreshState from './useFreshState';
 
@@ -50,7 +50,7 @@ export default function useGraphNodeState<S, A>(
   }, [logic, node, setState]);
 
   const dispatch = useCallback((action: A) => {
-    logic.updateState(node, action);
+    logic.setState(node, action);
   }, [logic, node]);
 
   return [state, dispatch];
