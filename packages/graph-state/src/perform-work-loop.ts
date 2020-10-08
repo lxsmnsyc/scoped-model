@@ -25,7 +25,6 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { GraphNode } from './graph-node';
 import computeNode from './compute-node';
 import { GraphDomainInterface } from './create-domain-interface';
 import { GraphDomainMemory } from './create-domain-memory';
@@ -54,21 +53,10 @@ export default function performWorkLoop(
 
           if (target.set) {
             // Run the node setter for further effects
-            target.set(
-              {
-                // Getter doesn't need dependency building.
-                get: <S, A>(dependency: GraphNode<S, A>): S => (
-                  getNodeState(memory, scheduler, dependency)
-                ),
-                // Setter
-                set: <S, A>(dependency: GraphNode<S, A>, newAction: A): void => {
-                  // Schedule a node update
-                  methods.setState(dependency, newAction);
-                },
-              },
-              // Send the draft state
-              action,
-            );
+            target.set({
+              get: methods.getState,
+              set: methods.setState,
+            }, action);
           } else {
             /**
              * Clean the previous version to prevent
