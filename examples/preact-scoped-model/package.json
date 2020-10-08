@@ -7,7 +7,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@lxsmnsyc/preact-scoped-model": "0.2.2",
+    "preact-scoped-model": "0.2.2",
     "preact": "^10.5.2"
   },
   "devDependencies": {

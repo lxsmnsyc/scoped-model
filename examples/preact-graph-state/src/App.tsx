@@ -5,11 +5,13 @@ import { useCallback } from 'preact/hooks';
 import {
   createGraphNodeResource,
   createGraphNode,
+} from 'graph-state';
+import {
   GraphDomain,
   useGraphNodeResource,
   useGraphNodeValue,
   useGraphNodeState,
-} from '@lxsmnsyc/preact-graph-state';
+} from 'preact-graph-state';
 
 const temperatureF = createGraphNode({
   get: 32,
@@ -87,11 +89,11 @@ function Temperature(): VNode {
   );
 }
 
-function DelayedTemperature(): VNode {
-  const value = useGraphNodeResource(asyncTemperature);
+// function DelayedTemperature(): VNode {
+//   const value = useGraphNodeResource(asyncTemperature);
 
-  return <h1>{ value }</h1>;
-}
+//   return <h1>{ value }</h1>;
+// }
 
 function AsyncTemperature(): VNode {
   const value = useGraphNodeValue(asyncTemperature);
@@ -128,9 +130,9 @@ export default function App(): VNode {
       <Celsius />
       <Fahrenheit />
       <Temperature />
-      <Suspense fallback={<h1>Loading...</h1>}>
+      {/* <Suspense fallback={<h1>Loading...</h1>}>
         <DelayedTemperature />
-      </Suspense>
+      </Suspense> */}
       <AsyncTemperature />
       <Timer />
     </GraphDomain>
