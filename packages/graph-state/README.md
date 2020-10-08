@@ -36,7 +36,7 @@ To create a graph node, you must invoke the `createGraphNode` function. This fun
 * `key`: Optional. Uses the provided key instead of a generated key. Provided key may be shared, although `get` and `set` functions may be different depending on the node instance passed. Use with caution.
 
 ```tsx
-import { createGraphNode } from 'react-graph-state`;
+import { createGraphNode } from 'graph-state`;
 
 // A basic node
 const basicNode = createGraphNode({
@@ -228,7 +228,7 @@ Factories has similar option fields for basic graph node creation, but the diffe
 - `set`: Optional. Function for generating graph node side-effects.
 
 ```tsx
-import { createGraphNodeFactory } from 'react-graph-state';
+import { createGraphNodeFactory } from 'graph-state';
 
 // Parameters for each factory field are shared.
 const userDataFactory = createGraphNodeFactory({
