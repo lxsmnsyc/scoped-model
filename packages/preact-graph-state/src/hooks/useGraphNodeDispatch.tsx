@@ -25,16 +25,14 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { useCallback } from 'preact/hooks';
 import { GraphNode } from 'graph-state';
 import { useGraphDomainInterface } from '../GraphDomainContext';
+import useGraphNodeDispatchBase, { GraphNodeDispatch } from './useGraphNodeDispatchBase';
 
 export default function useGraphNodeDispatch<S, A>(
   node: GraphNode<S, A>,
-): (action: A) => void {
+): GraphNodeDispatch<A> {
   const logic = useGraphDomainInterface();
 
-  return useCallback((action: A) => {
-    logic.setState(node, action);
-  }, [logic, node]);
+  return useGraphNodeDispatchBase(logic, node);
 }
