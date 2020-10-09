@@ -29,12 +29,9 @@ import { ScopedModel } from '../create-model';
 import { AsyncState } from '../types';
 import useAsyncSelector, { AsyncSelectorFn } from '../hooks/useAsyncSelector';
 
-export default function createAsyncSelectorHook<
-  T extends ScopedModel<any, any>,
-  R,
->(
-  model: T,
-  selector: AsyncSelectorFn<T, R>,
+export default function createAsyncSelector<S, P, R>(
+  model: ScopedModel<S, P>,
+  selector: AsyncSelectorFn<S, R>,
 ): () => AsyncState<R> {
-  return () => useAsyncSelector(model, selector);
+  return (): AsyncState<R> => useAsyncSelector(model, selector);
 }

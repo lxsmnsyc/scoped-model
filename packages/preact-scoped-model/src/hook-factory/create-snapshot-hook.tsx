@@ -25,14 +25,15 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-
 import { ScopedModel } from '../create-model';
-import useSuspendedState, { SuspendSelectorFn } from '../hooks/useSuspendedState';
+import useSnapshot from '../hooks/useSnapshot';
+import { Listener } from '../notifier';
 
-export default function createSuspendedState<S, P, R>(
+export default function createSnapshot<S, P>(
   model: ScopedModel<S, P>,
-  selector: SuspendSelectorFn<S, R>,
-  key: string,
-): () => R {
-  return (): R => useSuspendedState(model, selector, key);
+  listener: Listener<S>,
+): () => void {
+  return (): void => {
+    useSnapshot(model, listener);
+  };
 }
