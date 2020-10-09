@@ -25,33 +25,26 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { useCallback } from 'preact/hooks';
 import { GraphNode } from 'graph-state';
 import { useGraphDomainInterface } from '../GraphDomainContext';
-import useIsomorphicEffect from './useIsomorphicEffect';
-import useFreshState from './useFreshState';
+// import useGraphNodeStateBase from './useGraphNodeStateBase';
+import useGraphNodeSubscribeBase from './useGraphNodeSubscribeBase';
+import useGraphNodeDispatchBase, { GraphNodeDispatch } from './useGraphNodeDispatchBase';
+import useForceUpdate from './useForceUpdate';
 
 export default function useGraphNodeState<S, A>(
   node: GraphNode<S, A>,
-): [S, (action: A) => void] {
+): [S, GraphNodeDispatch<A>] {
   const logic = useGraphDomainInterface();
 
-  const [state, setState] = useFreshState(
-    () => logic.getState(node),
-    [logic, node],
-  );
+  // FIXME: It seems that Preact does not clean hooks during Suspense.
+  // const [state, setState] = useGraphNodeStateBase(logic, node);
+  // useGraphNodeSubscribeBase(logic, node, setState);
 
-  useIsomorphicEffect(() => {
-    logic.addListener(node, setState);
+  const forceUpdate = useForceUpdate();
+  useGraphNodeSubscribeBase(logic, node, forceUpdate);
 
-    return () => {
-      logic.removeListener(node, setState);
-    };
-  }, [logic, node, setState]);
+  const dispatch = useGraphNodeDispatchBase(logic, node);
 
-  const dispatch = useCallback((action: A) => {
-    logic.setState(node, action);
-  }, [logic, node]);
-
-  return [state, dispatch];
+  return [logic.getState(node), dispatch];
 }

@@ -27,24 +27,19 @@
  */
 import { GraphNode } from 'graph-state';
 import { useGraphDomainInterface } from '../GraphDomainContext';
-import useIsomorphicEffect from './useIsomorphicEffect';
-import useFreshState from './useFreshState';
+import useForceUpdate from './useForceUpdate';
+// import useGraphNodeStateBase from './useGraphNodeStateBase';
+import useGraphNodeSubscribeBase from './useGraphNodeSubscribeBase';
 
 export default function useGraphNodeValue<S, A>(node: GraphNode<S, A>): S {
   const logic = useGraphDomainInterface();
 
-  const [state, setState] = useFreshState(
-    () => logic.getState(node),
-    [logic, node],
-  );
+  // const [state, setState] = useGraphNodeStateBase(logic, node);
 
-  useIsomorphicEffect(() => {
-    logic.addListener(node, setState);
+  // useGraphNodeSubscribeBase(logic, node, setState);
 
-    return () => {
-      logic.removeListener(node, setState);
-    };
-  }, [logic, node, setState]);
-
-  return state;
+  // return state;
+  const forceUpdate = useForceUpdate();
+  useGraphNodeSubscribeBase(logic, node, forceUpdate);
+  return logic.getState(node);
 }
