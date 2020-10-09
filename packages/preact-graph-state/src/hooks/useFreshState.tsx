@@ -25,13 +25,11 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import {
-  Ref, useRef,
-} from 'preact/hooks';
+import { useRef } from 'preact/hooks';
 import useCallbackCondition from './useCallbackCondition';
 import useForceUpdate from './useForceUpdate';
+import useFreshRefSupplier, { defaultCompare, MemoCompare } from './useFreshRefSupplier';
 import useIsomorphicEffect from './useIsomorphicEffect';
-import useMemoCondition, { defaultCompare, MemoCompare } from './useMemoCondition';
 
 export type RefreshStateInitialAction<T> = () => T;
 export type RefreshStateInitial<T> = T | RefreshStateInitialAction<T>;
@@ -57,14 +55,12 @@ export default function useFreshState<T, R>(
   dependencies: R,
   shouldUpdate: MemoCompare<R> = defaultCompare,
 ): [T, RefreshStateDispatch<T>] {
-  const stateRef = useMemoCondition<Ref<T>, R>(
-    () => ({
-      current: (
-        isRefreshStateInitialAction(initialState)
-          ? initialState()
-          : initialState
-      ),
-    }),
+  const stateRef = useFreshRefSupplier<T, R>(
+    () => (
+      isRefreshStateInitialAction(initialState)
+        ? initialState()
+        : initialState
+    ),
     dependencies,
     shouldUpdate,
   );
