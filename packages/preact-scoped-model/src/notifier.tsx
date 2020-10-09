@@ -28,7 +28,7 @@
 import { Ref } from 'preact/hooks';
 import { AsyncState } from './types';
 
-type Listener<T> = (value: T) => void;
+export type Listener<T> = (value: T) => void;
 
 export default class Notifier<T> {
   private ref?: Ref<T>;
