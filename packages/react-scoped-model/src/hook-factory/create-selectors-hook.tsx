@@ -29,7 +29,7 @@ import { ScopedModel } from '../create-model';
 import { defaultCompare, ListCompare } from '../utils/comparer';
 import useSelectors, { SelectorsFn } from '../hooks/useSelectors';
 
-export default function createSelectorsHook<S, P, R extends any[]>(
+export default function createSelectors<S, P, R extends any[]>(
   model: ScopedModel<S, P>,
   selector: SelectorsFn<S, R>,
   shouldUpdate: ListCompare<R> = defaultCompare,

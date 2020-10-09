@@ -28,7 +28,7 @@
 import { ScopedModel } from '../create-model';
 import useValueOnce from '../hooks/useValueOnce';
 
-export default function createValueOnceHook<S, P>(
+export default function createValueOnce<S, P>(
   model: ScopedModel<S, P>,
 ): () => S {
   return (): S => useValueOnce(model);

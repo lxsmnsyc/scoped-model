@@ -29,7 +29,7 @@ import { ScopedModel } from '../create-model';
 import useSuspenseSelector from '../hooks/useSuspenseSelector';
 import { AsyncSelectorFn } from '../hooks/useAsyncSelector';
 
-export default function createSuspenseSelectorHook<S, P, R>(
+export default function createSuspenseSelector<S, P, R>(
   model: ScopedModel<S, P>,
   selector: AsyncSelectorFn<S, R>,
   key: string,

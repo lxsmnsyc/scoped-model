@@ -29,7 +29,7 @@ import { ScopedModel } from '../create-model';
 import { defaultCompare, Compare } from '../utils/comparer';
 import useValue from '../hooks/useValue';
 
-export default function createValueHook<S, P>(
+export default function createValue<S, P>(
   model: ScopedModel<S, P>,
   shouldUpdate: Compare<S> = defaultCompare,
 ): () => S {

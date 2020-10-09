@@ -57,6 +57,7 @@ export { default as createSuspendedState } from './hook-factory/create-suspended
 export { default as createSuspenseSelector } from './hook-factory/create-suspense-selector-hook';
 export { default as createValue } from './hook-factory/create-value-hook';
 export { default as createValueOnce } from './hook-factory/create-value-once-hook';
+export { default as createSnapshot } from './hook-factory/create-snapshot-hook';
 export { default as createSelectorOnce } from './hook-factory/create-selector-once-hook';
 
 // Hooks
@@ -89,6 +90,9 @@ export {
 export {
   default as useSelectorOnce,
 } from './hooks/useSelectorOnce';
+export {
+  default as useSnapshot,
+} from './hooks/useSnapshot';
 
 export * from './types';
 export * from './create-model';
