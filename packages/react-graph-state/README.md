@@ -42,6 +42,7 @@ There are also three hooks:
 - `useGraphNodeValue`: reads a graph node's value. Subscribes to the graph node's state updates.
 - `useGraphNodeDispatch`: provides a callback that allows graph node's state mutation.
 - `useGraphNodeResource`: treats the graph node as a valid React resource, suspending the component if the graph node's resource is pending.
+- `useGraphNodeSnapshot`: attaches a listener to the node for state updates.
 
 If one of these hooks are used to access a graph node, that graph node is registered within `<GraphDomain>` and creates a lifecycle.
 
@@ -106,6 +107,16 @@ const dispatch = useGraphNodeDispatch(reducerNode);
 
 // ...
 dispatch('INCREMENT');
+```
+
+##### `useGraphNodeSnapshot`
+
+This is a hook that attaches a listener to a graph node and subscribes for state updates.
+
+```tsx
+useGraphNodeSnapshot(node, (state) => {
+  console.log('Received', state);
+});
 ```
 
 ##### `useGraphNodeResource`
