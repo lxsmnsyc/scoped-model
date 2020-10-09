@@ -26,21 +26,23 @@
  * @copyright Alexis Munsayac 2020
  */
 import useScopedModelContext from './useScopedModelContext';
-import { ScopedModel, ScopedModelModelType } from '../create-model';
+import { ScopedModel } from '../create-model';
 import useForceUpdate from './useForceUpdate';
 import { suspendCacheData, createCachedData, mutateCacheData } from '../create-cached-data';
 import Notifier from '../notifier';
-import useIsomorphicEffect from './useIsomorphicEffect';
 import { SelectorFn } from './useSelector';
 import { AsyncState } from '../types';
+import useCallbackCondition from './useCallbackCondition';
+import { compareArray } from '../utils/compareTuple';
+import useSnapshotBase from './useSnapshotBase';
 
 export interface SuspendSelector<T> {
   value: T;
   suspend: boolean;
 }
 
-export type SuspendSelectorFn<T extends ScopedModel<any, any>, R> =
-  SelectorFn<T, SuspendSelector<R>>;
+export type SuspendSelectorFn<S, R> =
+  SelectorFn<S, SuspendSelector<R>>;
 
 function captureSuspendedValue<Model, R>(
   notifier: Notifier<Model>,
@@ -79,17 +81,17 @@ function captureSuspendedValue<Model, R>(
  * @param selector selector function
  * @param key for caching purposes
  */
-export default function useSuspendedState<T extends ScopedModel<any, any>, R>(
-  model: T,
-  selector: SuspendSelectorFn<T, R>,
+export default function useSuspendedState<S, P, R>(
+  model: ScopedModel<S, P>,
+  selector: SuspendSelectorFn<S, R>,
   key: string,
 ): R {
   const notifier = useScopedModelContext(model);
 
   const forceUpdate = useForceUpdate();
 
-  useIsomorphicEffect(() => {
-    const callback = (next: ScopedModelModelType<T>): void => {
+  const onSnapshot = useCallbackCondition(
+    (next: S) => {
       captureSuspendedValue(
         notifier,
         next,
@@ -98,12 +100,12 @@ export default function useSuspendedState<T extends ScopedModel<any, any>, R>(
       );
 
       forceUpdate();
-    };
+    },
+    [notifier, key, selector],
+    compareArray,
+  );
 
-    notifier.on(callback);
-
-    return (): void => notifier.off(callback);
-  }, [notifier, selector, key, forceUpdate]);
+  useSnapshotBase(notifier, onSnapshot);
 
   return suspendCacheData(notifier.cache, key, () => captureSuspendedValue(
     notifier,

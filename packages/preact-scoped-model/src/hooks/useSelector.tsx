@@ -25,14 +25,17 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { ScopedModel, ScopedModelModelType } from '../create-model';
+import { ScopedModel } from '../create-model';
 import { defaultCompare, Compare } from '../utils/comparer';
 import useScopedModelContext from './useScopedModelContext';
-import useIsomorphicEffect from './useIsomorphicEffect';
 import useFreshState from './useFreshState';
+import useCallbackCondition from './useCallbackCondition';
+import { compareTuple } from '../utils/compareTuple';
+import Notifier, { Listener } from '../notifier';
+import useSnapshotBase from './useSnapshotBase';
 
-export type SelectorFn<T extends ScopedModel<any, any>, R> =
-  (model: Readonly<ScopedModelModelType<T>>) => R;
+export type SelectorFn<T, R> =
+  (model: Readonly<T>) => R;
 
 /**
  * Transforms the model's state and listens for the returned value change.
@@ -48,9 +51,9 @@ export type SelectorFn<T extends ScopedModel<any, any>, R> =
  * previously transformed value to the newly transformed value
  * and if it should replace the previous value and perform an update.
  */
-export default function useSelector<T extends ScopedModel<any, any>, R>(
-  model: T,
-  selector: SelectorFn<T, R>,
+export default function useSelector<S, P, R>(
+  model: ScopedModel<S, P>,
+  selector: SelectorFn<S, R>,
   shouldUpdate: Compare<R> = defaultCompare,
 ): R {
   /**
@@ -58,13 +61,14 @@ export default function useSelector<T extends ScopedModel<any, any>, R>(
    */
   const notifier = useScopedModelContext(model);
 
-  const [state, setState] = useFreshState(
+  const [state, setState] = useFreshState<R, [Notifier<S>, SelectorFn<S, R>]>(
     () => selector(notifier.value),
     [notifier, selector],
+    compareTuple,
   );
 
-  useIsomorphicEffect(() => {
-    const callback = (next: ScopedModelModelType<T>): void => {
+  const onSnapshot = useCallbackCondition<Listener<S>, [SelectorFn<S, R>, Compare<R>]>(
+    (next: S) => {
       setState((old) => {
         const newValue = selector(next);
         if (shouldUpdate(old, newValue)) {
@@ -72,12 +76,12 @@ export default function useSelector<T extends ScopedModel<any, any>, R>(
         }
         return old;
       });
-    };
+    },
+    [selector, shouldUpdate],
+    compareTuple,
+  );
 
-    notifier.on(callback);
-
-    return (): void => notifier.off(callback);
-  }, [notifier, selector, shouldUpdate]);
+  useSnapshotBase(notifier, onSnapshot);
 
   /**
    * Return the current state value

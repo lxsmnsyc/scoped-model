@@ -25,14 +25,14 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { ScopedModel, ScopedModelModelType } from '../create-model';
+import { ScopedModel } from '../create-model';
 import { AsyncState } from '../types';
 import useScopedModelContext from './useScopedModelContext';
 import useIsomorphicEffect from './useIsomorphicEffect';
-import useFreshState from './useFreshState';
 import { SelectorFn } from './useSelector';
+import useFreshState from './useFreshState';
 
-export type AsyncSelectorFn<T extends ScopedModel<any, any>, R> = SelectorFn<T, Promise<R>>;
+export type AsyncSelectorFn<S, R> = SelectorFn<S, Promise<R>>;
 
 /**
  * Listens to the model's properties for changes, and updates
@@ -40,16 +40,20 @@ export type AsyncSelectorFn<T extends ScopedModel<any, any>, R> = SelectorFn<T, 
  *
  * @param selector selector function
  */
-export default function useAsyncSelector<T extends ScopedModel<any, any>, R>(
-  model: T,
-  selector: AsyncSelectorFn<T, R>,
+export default function useAsyncSelector<S, P, R>(
+  model: ScopedModel<S, P>,
+  selector: AsyncSelectorFn<S, R>,
 ): AsyncState<R> {
   const notifier = useScopedModelContext(model);
 
-  const [state, setState] = useFreshState<AsyncState<R>>(
+  const [state, setState] = useFreshState<AsyncState<R>, ScopedModel<S, P>>(
     { status: 'pending' },
-    [model],
+    model,
   );
+
+  useIsomorphicEffect(() => {
+    setState({ status: 'pending' });
+  }, [notifier]);
 
   useIsomorphicEffect(() => {
     let mounted = true;
@@ -72,7 +76,6 @@ export default function useAsyncSelector<T extends ScopedModel<any, any>, R>(
         }
       },
     );
-
     return () => {
       mounted = false;
     };
@@ -81,36 +84,39 @@ export default function useAsyncSelector<T extends ScopedModel<any, any>, R>(
   useIsomorphicEffect(() => {
     let mounted = true;
 
-    const callback = (next: ScopedModelModelType<T>) => {
-      setState({ status: 'pending' });
+    const callback = (next: S) => {
+      if (mounted) {
+        setState({ status: 'pending' });
 
-      selector(next).then(
-        (data) => {
-          if (mounted) {
-            setState({
-              status: 'success',
-              data,
-            });
-          }
-        },
-        (data) => {
-          if (mounted) {
-            setState({
-              status: 'failure',
-              data,
-            });
-          }
-        },
-      );
+        selector(next).then(
+          (data) => {
+            if (mounted) {
+              setState({
+                status: 'success',
+                data,
+              });
+            }
+          },
+          (data) => {
+            if (mounted) {
+              setState({
+                status: 'failure',
+                data,
+              });
+            }
+          },
+        );
+      }
     };
 
     notifier.on(callback);
 
-    return (): void => {
+    return () => {
       mounted = false;
+
       notifier.off(callback);
     };
-  }, [selector, notifier]);
+  }, [notifier, selector]);
 
   return state;
 }

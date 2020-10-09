@@ -26,13 +26,13 @@
  * @copyright Alexis Munsayac 2020
  */
 import { useContext } from 'preact/hooks';
-import { ScopedModel, ScopedModelModelType } from '../create-model';
+import { ScopedModel } from '../create-model';
 import Notifier from '../notifier';
 import MissingScopedModelError from '../utils/MissingScopedModelError';
 
-export default function useScopedModelContext<T extends ScopedModel<any, any>>(
-  model: T,
-): Notifier<ScopedModelModelType<T>> {
+export default function useScopedModelContext<S, P>(
+  model: ScopedModel<S, P>,
+): Notifier<S> {
   const context = useContext(model.context);
 
   if (!context) {

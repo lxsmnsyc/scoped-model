@@ -25,12 +25,14 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { ScopedModel, ScopedModelModelType } from '../create-model';
+import { ScopedModel } from '../create-model';
 import useScopedModelContext from './useScopedModelContext';
 import useForceUpdate from './useForceUpdate';
 import { suspendCacheData, createCachedData } from '../create-cached-data';
-import useIsomorphicEffect from './useIsomorphicEffect';
 import { AsyncSelectorFn } from './useAsyncSelector';
+import useCallbackCondition from './useCallbackCondition';
+import useSnapshotBase from './useSnapshotBase';
+import { compareArray } from '../utils/compareTuple';
 
 /**
  * Listens to the model's properties for changes, and updates
@@ -41,26 +43,26 @@ import { AsyncSelectorFn } from './useAsyncSelector';
  * @param selector selector function
  * @param key for caching purposes
  */
-export default function useSuspenseSelector<T extends ScopedModel<any, any>, R>(
-  model: T,
-  selector: AsyncSelectorFn<T, R>,
+export default function useSuspenseSelector<S, P, R>(
+  model: ScopedModel<S, P>,
+  selector: AsyncSelectorFn<S, R>,
   key: string,
 ): R {
   const notifier = useScopedModelContext(model);
 
   const forceUpdate = useForceUpdate();
 
-  useIsomorphicEffect(() => {
-    const callback = (next: ScopedModelModelType<T>): void => {
+  const onSnapshot = useCallbackCondition(
+    (next: S) => {
       createCachedData(notifier.cache, key, selector(next));
 
       forceUpdate();
-    };
+    },
+    [notifier, key, selector],
+    compareArray,
+  );
 
-    notifier.on(callback);
-
-    return (): void => notifier.off(callback);
-  }, [notifier, selector, key, forceUpdate]);
+  useSnapshotBase(notifier, onSnapshot);
 
   return suspendCacheData(notifier.cache, key, () => createCachedData(
     notifier.cache,

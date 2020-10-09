@@ -25,11 +25,13 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { ScopedModel, ScopedModelModelType } from '../create-model';
+import { ScopedModel } from '../create-model';
 import { defaultCompare, Compare } from '../utils/comparer';
 import useScopedModelContext from './useScopedModelContext';
-import useIsomorphicEffect from './useIsomorphicEffect';
 import useFreshState from './useFreshState';
+import useCallbackCondition from './useCallbackCondition';
+import { Listener } from '../notifier';
+import useSnapshotBase from './useSnapshotBase';
 
 /**
  * Subscribes to the given model's state
@@ -38,31 +40,30 @@ import useFreshState from './useFreshState';
  * state and re-renders the component and updates the value being
  * consumed if the comparer function returns true.
  */
-export default function useValue<T extends ScopedModel<any, any>>(
-  model: T,
-  shouldUpdate: Compare<ScopedModelModelType<T>> = defaultCompare,
-): ScopedModelModelType<T> {
+export default function useValue<S, P>(
+  model: ScopedModel<S, P>,
+  shouldUpdate: Compare<S> = defaultCompare,
+): S {
   const notifier = useScopedModelContext(model);
 
   const [state, setState] = useFreshState(
     () => notifier.value,
-    [notifier],
+    notifier,
   );
 
-  useIsomorphicEffect(() => {
-    const callback = (next: ScopedModelModelType<T>): void => {
+  const onSnapshot = useCallbackCondition<Listener<S>, Compare<S>>(
+    (next: S) => {
       setState((old) => {
         if (shouldUpdate(old, next)) {
           return next;
         }
         return old;
       });
-    };
+    },
+    shouldUpdate,
+  );
 
-    notifier.on(callback);
-
-    return (): void => notifier.off(callback);
-  }, [notifier, shouldUpdate]);
+  useSnapshotBase(notifier, onSnapshot);
 
   /**
    * Return the current state value
