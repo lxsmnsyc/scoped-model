@@ -26,18 +26,18 @@
  * @copyright Alexis Munsayac 2020
  */
 import { useContext } from 'react';
-import { ScopedModel, ScopedModelModelType } from '../create-model';
+import { ScopedModel } from '../create-model';
 import Notifier from '../notifier';
 import MissingScopedModelError from '../utils/MissingScopedModelError';
 
-export default function useScopedModelContext<T extends ScopedModel<any, any>>(
-  model: T,
-): Notifier<ScopedModelModelType<T>> {
+export default function useScopedModelContext<S, P>(
+  model: ScopedModel<S, P>,
+): Notifier<S> {
   const context = useContext(model.context);
 
   if (!context) {
     throw new MissingScopedModelError(model.displayName);
   }
 
-  return context as Notifier<ScopedModelModelType<T>>;
+  return context;
 }

@@ -56,11 +56,6 @@ export interface ScopedModel<Model, Props = unknown> {
   displayName: string;
 }
 
-export type ScopedModelModelType<T> =
-  T extends ScopedModel<infer U, any> ? U : never;
-export type ScopedModelPropsType<T> =
-  T extends ScopedModel<any, infer U> ? U : never;
-
 /**
  * Creates a scoped model instance that generates a state from a given
  * React-based hook function which allows fine-grained control on injected

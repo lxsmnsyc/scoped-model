@@ -28,7 +28,7 @@
 import { MutableRefObject } from 'react';
 import { AsyncState } from './types';
 
-type Listener<T> = (value: T) => void;
+export type Listener<T> = (value: T) => void;
 
 export default class Notifier<T> {
   private ref?: MutableRefObject<T>;

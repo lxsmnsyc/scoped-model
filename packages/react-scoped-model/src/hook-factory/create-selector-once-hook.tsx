@@ -29,9 +29,9 @@ import { ScopedModel } from '../create-model';
 import useSelectorOnce from '../hooks/useSelectorOnce';
 import { SelectorFn } from '../hooks/useSelector';
 
-export default function createSelectorOnceHook<T extends ScopedModel<any, any>, R>(
-  model: T,
-  selector: SelectorFn<T, R>,
+export default function createSelectorOnceHook<S, P, R>(
+  model: ScopedModel<S, P>,
+  selector: SelectorFn<S, R>,
 ): () => R {
   return (): R => useSelectorOnce(model, selector);
 }

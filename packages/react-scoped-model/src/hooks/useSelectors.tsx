@@ -25,15 +25,15 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { useCallback } from 'react';
 import { ScopedModel } from '../create-model';
 import {
-  defaultCompare, compareList, Compare, ListCompare,
+  defaultCompare, compareList, ListCompare,
 } from '../utils/comparer';
+import useCallbackCondition from './useCallbackCondition';
 import useSelector, { SelectorFn } from './useSelector';
 
-export type SelectorsFn<T extends ScopedModel<any, any>, R extends any[]>
-  = SelectorFn<T, R>;
+export type SelectorsFn<S, R extends any[]>
+  = SelectorFn<S, R>;
 
 /**
  * Transforms the model's state into a list of values and
@@ -49,16 +49,16 @@ export type SelectorsFn<T extends ScopedModel<any, any>, R extends any[]>
  * previously transformed value to the newly transformed value
  * and if it should replace the previous value and perform an update.
  */
-export default function useSelectors<
-  T extends ScopedModel<any, any>,
-  R extends any[],
->(
-  model: T,
-  selector: SelectorsFn<T, R>,
+export default function useSelectors<S, P, R extends any[]>(
+  model: ScopedModel<S, P>,
+  selector: SelectorsFn<S, R>,
   shouldUpdate: ListCompare<R> = defaultCompare,
 ): R {
-  const compare = useCallback<Compare<R>>((a, b) => (
-    compareList(a, b, shouldUpdate)
-  ), [shouldUpdate]);
+  const compare = useCallbackCondition(
+    (a, b) => (
+      compareList(a, b, shouldUpdate)
+    ),
+    shouldUpdate,
+  );
   return useSelector(model, selector, compare);
 }

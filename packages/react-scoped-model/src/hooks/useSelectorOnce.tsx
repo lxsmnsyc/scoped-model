@@ -29,6 +29,8 @@
 import { ScopedModel } from '../create-model';
 import useValueOnce from './useValueOnce';
 import { SelectorFn } from './useSelector';
+import useMemoCondition from './useMemoCondition';
+import { compareTuple } from '../utils/compareTuple';
 
 /**
  * Receives and transforms the model's state. Unlike useSelector,
@@ -36,9 +38,15 @@ import { SelectorFn } from './useSelector';
  * @param model
  * @param selector
  */
-export default function useSelectorOnce<T extends ScopedModel<any, any>, R>(
-  model: T,
-  selector: SelectorFn<T, R>,
+export default function useSelectorOnce<S, P, R>(
+  model: ScopedModel<S, P>,
+  selector: SelectorFn<S, R>,
 ): R {
-  return selector(useValueOnce(model));
+  const baseValue = useValueOnce(model);
+
+  return useMemoCondition<R, [S, SelectorFn<S, R>]>(
+    () => selector(baseValue),
+    [baseValue, selector],
+    compareTuple,
+  );
 }

@@ -25,14 +25,16 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { ScopedModel } from '../create-model';
-import { defaultCompare, Compare } from '../utils/comparer';
-import useSelector, { SelectorFn } from '../hooks/useSelector';
+import useFreshRefSupplier, { defaultCompare, MemoCompare } from './useFreshRefSupplier';
 
-export default function createSelectorHook<S, P, R>(
-  model: ScopedModel<S, P>,
-  selector: SelectorFn<S, R>,
-  shouldUpdate: Compare<R> = defaultCompare,
-): () => R {
-  return (): R => useSelector(model, selector, shouldUpdate);
+export default function useMemoCondition<T, R>(
+  supplier: () => T,
+  dependency: R,
+  shouldUpdate: MemoCompare<R> = defaultCompare,
+): T {
+  return useFreshRefSupplier(
+    supplier,
+    dependency,
+    shouldUpdate,
+  ).current;
 }

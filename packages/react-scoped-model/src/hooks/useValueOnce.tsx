@@ -25,7 +25,7 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { ScopedModel, ScopedModelModelType } from '../create-model';
+import { ScopedModel } from '../create-model';
 import useScopedModelContext from './useScopedModelContext';
 
 /**
@@ -33,8 +33,8 @@ import useScopedModelContext from './useScopedModelContext';
  * not reactively update to the current model's state.
  * @param model
  */
-export default function useValueOnce<T extends ScopedModel<any, any>>(
-  model: T,
-): ScopedModelModelType<T> {
+export default function useValueOnce<S, P>(
+  model: ScopedModel<S, P>,
+): S {
   return useScopedModelContext(model).value;
 }

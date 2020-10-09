@@ -29,9 +29,9 @@ import { ScopedModel } from '../create-model';
 import useSuspenseSelector from '../hooks/useSuspenseSelector';
 import { AsyncSelectorFn } from '../hooks/useAsyncSelector';
 
-export default function createSuspenseSelectorHook<T extends ScopedModel<any, any>, R>(
-  model: T,
-  selector: AsyncSelectorFn<T, R>,
+export default function createSuspenseSelectorHook<S, P, R>(
+  model: ScopedModel<S, P>,
+  selector: AsyncSelectorFn<S, R>,
   key: string,
 ): () => R {
   return (): R => useSuspenseSelector(model, selector, key);

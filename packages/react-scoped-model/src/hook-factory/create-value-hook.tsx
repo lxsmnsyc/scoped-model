@@ -25,13 +25,13 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { ScopedModel, ScopedModelModelType } from '../create-model';
+import { ScopedModel } from '../create-model';
 import { defaultCompare, Compare } from '../utils/comparer';
 import useValue from '../hooks/useValue';
 
-export default function createValueHook<T extends ScopedModel<any, any>>(
-  model: T,
-  shouldUpdate: Compare<ScopedModelModelType<T>> = defaultCompare,
-): () => ScopedModelModelType<T> {
-  return (): ScopedModelModelType<T> => useValue(model, shouldUpdate);
+export default function createValueHook<S, P>(
+  model: ScopedModel<S, P>,
+  shouldUpdate: Compare<S> = defaultCompare,
+): () => S {
+  return (): S => useValue(model, shouldUpdate);
 }

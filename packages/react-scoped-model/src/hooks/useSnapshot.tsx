@@ -26,13 +26,15 @@
  * @copyright Alexis Munsayac 2020
  */
 import { ScopedModel } from '../create-model';
-import { defaultCompare, Compare } from '../utils/comparer';
-import useSelector, { SelectorFn } from '../hooks/useSelector';
+import { Listener } from '../notifier';
+import useScopedModelContext from './useScopedModelContext';
+import useSnapshotBase from './useSnapshotBase';
 
-export default function createSelectorHook<S, P, R>(
+export default function useSnapshot<S, P>(
   model: ScopedModel<S, P>,
-  selector: SelectorFn<S, R>,
-  shouldUpdate: Compare<R> = defaultCompare,
-): () => R {
-  return (): R => useSelector(model, selector, shouldUpdate);
+  listener: Listener<S>,
+): void {
+  const notifier = useScopedModelContext(model);
+
+  useSnapshotBase(notifier, listener);
 }

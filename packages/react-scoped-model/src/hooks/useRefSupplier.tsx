@@ -25,14 +25,16 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { ScopedModel } from '../create-model';
-import { defaultCompare, Compare } from '../utils/comparer';
-import useSelector, { SelectorFn } from '../hooks/useSelector';
+import { MutableRefObject, useRef } from 'react';
 
-export default function createSelectorHook<S, P, R>(
-  model: ScopedModel<S, P>,
-  selector: SelectorFn<S, R>,
-  shouldUpdate: Compare<R> = defaultCompare,
-): () => R {
-  return (): R => useSelector(model, selector, shouldUpdate);
+export default function useRefSupplier<T>(supplier: () => T): MutableRefObject<T> {
+  const ref = useRef<MutableRefObject<T> | null>();
+
+  if (!ref.current) {
+    ref.current = {
+      current: supplier(),
+    };
+  }
+
+  return ref.current;
 }
