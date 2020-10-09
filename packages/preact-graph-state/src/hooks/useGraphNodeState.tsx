@@ -28,7 +28,7 @@
 import { GraphNode } from 'graph-state';
 import { useGraphDomainInterface } from '../GraphDomainContext';
 // import useGraphNodeStateBase from './useGraphNodeStateBase';
-import useGraphNodeSubscribeBase from './useGraphNodeSubscribeBase';
+import useGraphNodeSnapshotBase from './useGraphNodeSnapshotBase';
 import useGraphNodeDispatchBase, { GraphNodeDispatch } from './useGraphNodeDispatchBase';
 import useForceUpdate from './useForceUpdate';
 
@@ -42,7 +42,7 @@ export default function useGraphNodeState<S, A>(
   // useGraphNodeSubscribeBase(logic, node, setState);
 
   const forceUpdate = useForceUpdate();
-  useGraphNodeSubscribeBase(logic, node, forceUpdate);
+  useGraphNodeSnapshotBase(logic, node, forceUpdate);
 
   const dispatch = useGraphNodeDispatchBase(logic, node);
 
