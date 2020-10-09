@@ -25,12 +25,26 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-export { default as useGraphNodeValue } from './hooks/useGraphNodeValue';
-export { default as useGraphNodeState } from './hooks/useGraphNodeState';
-export { default as useGraphNodeDispatch } from './hooks/useGraphNodeDispatch';
-export { default as useGraphNodeResource } from './hooks/useGraphNodeResource';
-export { default as useGraphNodeSnapshot } from './hooks/useGraphNodeSnapshot';
-export { default as GraphDomain } from './GraphDomain';
+import { GraphDomainInterface, GraphNode, GraphNodeListener } from 'graph-state';
+import useIsomorphicEffect from './useIsomorphicEffect';
 
-export { GraphNodeDispatch } from './hooks/useGraphNodeDispatchBase';
-export * from './GraphDomain';
+export default function useGraphNodeSnapshotBase<S, A>(
+  logic: GraphDomainInterface,
+  node: GraphNode<S, A>,
+  listener: GraphNodeListener<S>,
+): void {
+  useIsomorphicEffect(() => {
+    let mounted = true;
+    const internalListener = (value: S) => {
+      if (mounted) {
+        listener(value);
+      }
+    };
+
+    logic.addListener(node, internalListener);
+    return () => {
+      mounted = false;
+      logic.removeListener(node, internalListener);
+    };
+  }, [logic, node, listener]);
+}

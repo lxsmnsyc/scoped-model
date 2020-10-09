@@ -25,12 +25,15 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-export { default as useGraphNodeValue } from './hooks/useGraphNodeValue';
-export { default as useGraphNodeState } from './hooks/useGraphNodeState';
-export { default as useGraphNodeDispatch } from './hooks/useGraphNodeDispatch';
-export { default as useGraphNodeResource } from './hooks/useGraphNodeResource';
-export { default as useGraphNodeSnapshot } from './hooks/useGraphNodeSnapshot';
-export { default as GraphDomain } from './GraphDomain';
+import { GraphNode, GraphNodeListener } from 'graph-state';
+import { useGraphDomainInterface } from '../GraphDomainContext';
+import useGraphNodeSnapshotBase from './useGraphNodeSnapshotBase';
 
-export { GraphNodeDispatch } from './hooks/useGraphNodeDispatchBase';
-export * from './GraphDomain';
+export default function useGraphNodeSnapshot<S, A>(
+  node: GraphNode<S, A>,
+  listener: GraphNodeListener<S>,
+): void {
+  const logic = useGraphDomainInterface();
+
+  useGraphNodeSnapshotBase(logic, node, listener);
+}
