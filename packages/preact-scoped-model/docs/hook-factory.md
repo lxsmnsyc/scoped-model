@@ -31,6 +31,7 @@ const seconds = useTimerSeconds();
 - `createSuspendedState`: creates a hook based on [useSuspendedState](/packages/preact-scoped-model/docs/hooks/use-suspended-state.md)`.
 - `createValueOnce`: creates a hook based on [useValueOnce](/packages/preact-scoped-model/docs/hooks/use-value-once.md)`.
 - `createSelectorOnce`: creates a hook based on [useValueOnce](/packages/preact-scoped-model/docs/hooks/use-selector-once.md)`.
+- `createSnapshot`: creates a hook based on [useSnapshot](/packages/preact-scoped-model/docs/hooks/use-snapshot.md)`.
 
 ## See Also
 - [Create Model](/packages/preact-scoped-model/docs/create-model.md)

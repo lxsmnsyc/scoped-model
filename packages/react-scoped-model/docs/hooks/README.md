@@ -11,3 +11,4 @@
 - [useSuspendedState](/packages/react-scoped-model/docs/hooks/use-suspended-state.md)
 - [useValueOnce](/packages/react-scoped-model/docs/hooks/use-value-once.md)
 - [useSelectorOnce](/packages/react-scoped-model/docs/hooks/use-selector-once.md)
+- [useSnapshot](/packages/react-scoped-model/docs/hooks/use-snapshot.md)

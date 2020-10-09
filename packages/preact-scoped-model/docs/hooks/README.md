@@ -11,3 +11,4 @@
 - [useSuspendedState](/packages/preact-scoped-model/docs/hooks/use-suspended-state.md)
 - [useValueOnce](/packages/preact-scoped-model/docs/hooks/use-value-once.md)
 - [useSelectorOnce](/packages/preact-scoped-model/docs/hooks/use-selector-once.md)
+- [useSnapshot](/packages/preact-scoped-model/docs/hooks/use-snapshot.md)

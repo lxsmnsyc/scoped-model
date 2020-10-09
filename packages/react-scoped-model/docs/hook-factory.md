@@ -31,6 +31,7 @@ const seconds = useTimerSeconds();
 - `createSuspendedState`: creates a hook based on [useSuspendedState](/packages/react-scoped-model/docs/hooks/use-suspended-state.md)`.
 - `createValueOnce`: creates a hook based on [useValueOnce](/packages/react-scoped-model/docs/hooks/use-value-once.md)`.
 - `createSelectorOnce`: creates a hook based on [useValueOnce](/packages/react-scoped-model/docs/hooks/use-selector-once.md)`.
+- `createSnapshot`: creates a hook based on [useSnapshot](/packages/react-scoped-model/docs/hooks/use-snapshot.md)`.
 
 ## See Also
 - [Create Model](/packages/react-scoped-model/docs/create-model.md)
