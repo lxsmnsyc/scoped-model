@@ -29,9 +29,10 @@ To create a graph node, you must invoke the `createGraphNode` function. This fun
     invokes the `get` function to recompute and produce the new state.
     * `set(newValue)`: Sets the new state for the graph node.
 * `set`: Optional. Registers a dispatch side-effect. When defined, prevents state mutation for the graph node and must rely on dependency recomputation. This function is invoked when the graph node is scheduled for state update. The function receives two parameters:
-  * `{ get, set }`: An interface for controlling graph nodes.
+  * `{ get, set, reset }`: An interface for controlling graph nodes.
     * `get(node)`: Reads the node's value. Unlike `get`, the node is not treated as a dependency and therefore `set` won't be invoked when dependencies update.
     * `set(node, action)`: Dispatches a node.
+    * `reset(node)`: Resets a given node.
   * `newValue`: The new state for the graph node.
 * `key`: Optional. Uses the provided key instead of a generated key. Provided key may be shared, although `get` and `set` functions may be different depending on the node instance passed. Use with caution.
 
@@ -90,6 +91,10 @@ Once they are created, they can never be destroyed. Be mindful of your graph nod
 ##### Graph nodes of the same key share the same instance.
 
 When creating graph nodes of the same key, the first one is returned. This is to prevent polluting the graph domain for unnecessary creation of node instances.
+
+##### `set` and `reset` are asynchronous.
+
+`set` and `reset`, although synchronous functions, have asynchronous effects and thus, if `get` is called, `get` will most likely return an old version of the value.
 
 ### Graph Node Resources
 

@@ -40,7 +40,9 @@ function App() {
 
 There are also three hooks:
 - `useGraphNodeValue`: reads a graph node's value. Subscribes to the graph node's state updates.
-- `useGraphNodeDispatch`: provides a callback that allows graph node's state mutation.
+- `useGraphNodeDispatch`: provides a callback that allows graph node's state mutation or runs `set` field.
+- `useGraphNodeReset`: provides a callback for resetting (recomputing) a graph node's value.
+- `useGraphNodeState`: a combination of `useGraphNodeValue`, `useGraphNodeDispatch` and `useGraphNodeReset` in a form of a tuple.
 - `useGraphNodeResource`: treats the graph node as a valid React resource, suspending the component if the graph node's resource is pending.
 - `useGraphNodeSnapshot`: attaches a listener to the node for state updates.
 
@@ -107,6 +109,25 @@ const dispatch = useGraphNodeDispatch(reducerNode);
 
 // ...
 dispatch('INCREMENT');
+```
+
+##### `useGraphNodeReset`
+
+This is a hook that provides a callback for resetting a graph node.
+
+```tsx
+const reset = useGraphNodeReset(countNode);
+
+// ...
+reset(); // resets countNode back to 0
+```
+
+##### `useGraphNodeState`
+
+This is a hook that returns a tuple based on `useGraphNodeValue`, `useGraphNodeDispatch` and `useGraphNodeReset`.
+
+```tsx
+const [count, setCount, reset] = useGraphNodeState(countNode);
 ```
 
 ##### `useGraphNodeSnapshot`

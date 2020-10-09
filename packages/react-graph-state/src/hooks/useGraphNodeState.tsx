@@ -29,17 +29,19 @@ import { GraphNode } from 'graph-state';
 import { useGraphDomainInterface } from '../GraphDomainContext';
 import useGraphNodeStateBase from './useGraphNodeStateBase';
 import useGraphNodeSnapshotBase from './useGraphNodeSnapshotBase';
-import useGraphNodeDispatchBase from './useGraphNodeDispatchBase';
+import useGraphNodeDispatchBase, { GraphNodeDispatch } from './useGraphNodeDispatchBase';
+import useGraphNodeResetBase, { GraphNodeReset } from './useGraphNodeResetBase';
 
 export default function useGraphNodeState<S, A>(
   node: GraphNode<S, A>,
-): [S, (action: A) => void] {
+): [S, GraphNodeDispatch<A>, GraphNodeReset] {
   const logic = useGraphDomainInterface();
 
   const [state, setState] = useGraphNodeStateBase(logic, node);
   useGraphNodeSnapshotBase(logic, node, setState);
 
   const dispatch = useGraphNodeDispatchBase(logic, node);
+  const reset = useGraphNodeResetBase(logic, node);
 
-  return [state, dispatch];
+  return [state, dispatch, reset];
 }

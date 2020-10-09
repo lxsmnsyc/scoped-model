@@ -31,10 +31,11 @@ import { useGraphDomainInterface } from '../GraphDomainContext';
 import useGraphNodeSnapshotBase from './useGraphNodeSnapshotBase';
 import useGraphNodeDispatchBase, { GraphNodeDispatch } from './useGraphNodeDispatchBase';
 import useForceUpdate from './useForceUpdate';
+import useGraphNodeResetBase, { GraphNodeReset } from './useGraphNodeResetBase';
 
 export default function useGraphNodeState<S, A>(
   node: GraphNode<S, A>,
-): [S, GraphNodeDispatch<A>] {
+): [S, GraphNodeDispatch<A>, GraphNodeReset] {
   const logic = useGraphDomainInterface();
 
   // FIXME: It seems that Preact does not clean hooks during Suspense.
@@ -45,6 +46,7 @@ export default function useGraphNodeState<S, A>(
   useGraphNodeSnapshotBase(logic, node, forceUpdate);
 
   const dispatch = useGraphNodeDispatchBase(logic, node);
+  const reset = useGraphNodeResetBase(logic, node);
 
-  return [logic.getState(node), dispatch];
+  return [logic.getState(node), dispatch, reset];
 }

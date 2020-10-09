@@ -8,6 +8,7 @@ import {
   useGraphNodeResource,
   useGraphNodeValue,
   useGraphNodeState,
+  useGraphNodeReset,
 } from 'react-graph-state';
 
 const temperatureF = createGraphNode({
@@ -41,6 +42,16 @@ const temperature = createGraphNode<Promise<string>>({
 });
 
 const asyncTemperature = createGraphNodeResource(temperature);
+
+function ResetTemperature(): JSX.Element {
+  const resetTemperature = useGraphNodeReset(temperatureF);
+
+  return (
+    <button type="button" onClick={resetTemperature}>
+      Reset
+    </button>
+  );
+}
 
 function Celsius(): JSX.Element {
   const [celsius, setCelsius] = useGraphNodeState(temperatureC);
@@ -80,8 +91,8 @@ function Temperature(): JSX.Element {
 
   return (
     <>
-      <h1>{`Celsius: ${celsius}`}</h1>
       <h1>{`Fahrenheit: ${fahrenheit}`}</h1>
+      <h1>{`Celsius: ${celsius}`}</h1>
     </>
   );
 }
@@ -124,8 +135,9 @@ function Timer(): JSX.Element {
 export default function App(): JSX.Element {
   return (
     <GraphDomain>
-      <Celsius />
       <Fahrenheit />
+      <Celsius />
+      <ResetTemperature />
       <Temperature />
       <Suspense fallback={<h1>Loading...</h1>}>
         <DelayedTemperature />

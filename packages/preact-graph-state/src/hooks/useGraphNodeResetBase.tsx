@@ -25,14 +25,19 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-export { default as useGraphNodeValue } from './hooks/useGraphNodeValue';
-export { default as useGraphNodeState } from './hooks/useGraphNodeState';
-export { default as useGraphNodeReset } from './hooks/useGraphNodeReset';
-export { default as useGraphNodeDispatch } from './hooks/useGraphNodeDispatch';
-export { default as useGraphNodeResource } from './hooks/useGraphNodeResource';
-export { default as useGraphNodeSnapshot } from './hooks/useGraphNodeSnapshot';
-export { default as GraphDomain } from './GraphDomain';
+import { GraphDomainInterface, GraphNode } from 'graph-state';
+import useCallbackCondition from './useCallbackCondition';
+import { compare, Dependency } from './useGraphNodeStateBase';
 
-export { GraphNodeDispatch } from './hooks/useGraphNodeDispatchBase';
-export { GraphNodeReset } from './hooks/useGraphNodeResetBase';
-export * from './GraphDomain';
+export type GraphNodeReset = () => void;
+
+export default function useGraphNodeResetBase<S, A>(
+  logic: GraphDomainInterface,
+  node: GraphNode<S, A>,
+): GraphNodeReset {
+  return useCallbackCondition<GraphNodeReset, Dependency<S, A>>(
+    () => logic.resetState(node),
+    [logic, node],
+    compare,
+  );
+}

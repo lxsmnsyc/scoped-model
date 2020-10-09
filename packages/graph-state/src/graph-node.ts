@@ -49,9 +49,10 @@ export type GraphNodeGet<S> = S | GraphNodeGetSupplier<S>;
 export interface GraphNodeSetInterface {
   get: GraphNodeGetValue;
   set: GraphNodeSetValue;
+  reset: GraphNodeResetValue;
 }
 
-export type GraphNodeSet<A> = (facing: GraphNodeSetInterface, newValue: A) => void;
+export type GraphNodeSet<A> = (facing: GraphNodeSetInterface, action: A) => void;
 
 export interface GraphNode<S, A> {
   get: GraphNodeGet<S>;
@@ -86,6 +87,8 @@ export type GraphNodeGetValue =
   <S, A>(node: GraphNode<S, A>) => S;
 export type GraphNodeSetValue =
   <S, A>(node: GraphNode<S, A>, action: A) => void;
+export type GraphNodeResetValue =
+  <S, A>(node: GraphNode<S, A>) => void;
 
 const NODES = new Map<GraphNodeKey, GraphNode<any, any>>();
 

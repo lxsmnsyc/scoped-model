@@ -56,6 +56,7 @@ export default function performWorkLoop(
             target.set({
               get: methods.getState,
               set: methods.setState,
+              reset: methods.resetState,
             }, action);
           } else {
             /**

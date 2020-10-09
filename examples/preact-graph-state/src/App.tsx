@@ -11,6 +11,7 @@ import {
   useGraphNodeResource,
   useGraphNodeValue,
   useGraphNodeState,
+  useGraphNodeReset,
 } from 'preact-graph-state';
 
 const temperatureF = createGraphNode({
@@ -44,6 +45,16 @@ const temperature = createGraphNode<Promise<string>>({
 });
 
 const asyncTemperature = createGraphNodeResource(temperature);
+
+function ResetTemperature(): VNode {
+  const resetTemperature = useGraphNodeReset(temperatureF);
+
+  return (
+    <button type="button" onClick={resetTemperature}>
+      Reset
+    </button>
+  );
+}
 
 function Celsius(): VNode {
   const [celsius, setCelsius] = useGraphNodeState(temperatureC);
@@ -83,8 +94,8 @@ function Temperature(): VNode {
 
   return (
     <Fragment>
-      <h1>{`Celsius: ${celsius}`}</h1>
       <h1>{`Fahrenheit: ${fahrenheit}`}</h1>
+      <h1>{`Celsius: ${celsius}`}</h1>
     </Fragment>
   );
 }
@@ -127,8 +138,9 @@ function Timer(): VNode {
 export default function App(): VNode {
   return (
     <GraphDomain>
-      <Celsius />
       <Fahrenheit />
+      <Celsius />
+      <ResetTemperature />
       <Temperature />
       <Suspense fallback={<h1>Loading...</h1>}>
         <DelayedTemperature />

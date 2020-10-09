@@ -40,7 +40,9 @@ function App() {
 
 There are also three hooks:
 - `useGraphNodeValue`: reads a graph node's value. Subscribes to the graph node's state updates.
-- `useGraphNodeSetValue`: provides a callback that allows graph node's state mutation.
+- `useGraphNodeDispatch`: provides a callback that allows graph node's state mutation or runs `set` field.
+- `useGraphNodeReset`: provides a callback for resetting (recomputing) a graph node's value.
+- `useGraphNodeState`: a combination of `useGraphNodeValue`, `useGraphNodeDispatch` and `useGraphNodeReset` in a form of a tuple.
 - `useGraphNodeResource`: treats the graph node as a valid Preact resource, suspending the component if the graph node's resource is pending.
 - `useGraphNodeSnapshot`: attaches a listener to the node for state updates.
 
@@ -60,13 +62,13 @@ function Message() {
 }
 ```
 
-##### `useGraphNodeSetValue`
+##### `useGraphNodeDispatch`
 
 This is a Preact hook that returns a callback similar to `setState` that allows state mutation for the given graph node.
 
 ```tsx
 function MessageInput() {
-  const setMessage = useGraphNodeSetValue(messageNode);
+  const setMessage = useGraphNodeDispatch(messageNode);
 
   const onChange = useCallback((e) => {
     setFahrenheit(Number.parseFloat(e.currentTarget.value));
@@ -79,6 +81,53 @@ function MessageInput() {
     />
   );
 }
+```
+
+If a graph node has a defined `set` function, `useGraphNodeDispatch` will not overwrite the graph node's state and thus, can accept any kind of value for dispatch. `set` will receive this value, allowing for custom graph node logic:
+
+```tsx
+const countNode = createGraphNode({
+  get: 0,
+});
+
+const reducerNode = createGraphNode({
+  get: ({ get }) => get(countNode),
+  set: ({ set }, action) => {
+    switch (action) {
+      case 'INCREMENT':
+        set(countNode, get(countNode) + 1);
+        break;
+      case 'DECREMENT':
+        set(countNode, get(countNode) - 1);
+        break;
+    }
+  },
+});
+
+// ...
+const dispatch = useGraphNodeDispatch(reducerNode);
+
+// ...
+dispatch('INCREMENT');
+```
+
+##### `useGraphNodeReset`
+
+This is a hook that provides a callback for resetting a graph node.
+
+```tsx
+const reset = useGraphNodeReset(countNode);
+
+// ...
+reset(); // resets countNode back to 0
+```
+
+##### `useGraphNodeState`
+
+This is a hook that returns a tuple based on `useGraphNodeValue`, `useGraphNodeDispatch` and `useGraphNodeReset`.
+
+```tsx
+const [count, setCount, reset] = useGraphNodeState(countNode);
 ```
 
 ##### `useGraphNodeSnapshot`

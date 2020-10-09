@@ -27,10 +27,12 @@
  */
 export { default as useGraphNodeValue } from './hooks/useGraphNodeValue';
 export { default as useGraphNodeState } from './hooks/useGraphNodeState';
+export { default as useGraphNodeReset } from './hooks/useGraphNodeReset';
 export { default as useGraphNodeDispatch } from './hooks/useGraphNodeDispatch';
 export { default as useGraphNodeResource } from './hooks/useGraphNodeResource';
 export { default as useGraphNodeSnapshot } from './hooks/useGraphNodeSnapshot';
 export { default as GraphDomain } from './GraphDomain';
 
 export { GraphNodeDispatch } from './hooks/useGraphNodeDispatchBase';
+export { GraphNodeReset } from './hooks/useGraphNodeResetBase';
 export * from './GraphDomain';

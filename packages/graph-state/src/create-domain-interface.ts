@@ -34,16 +34,19 @@ import unregisterNodeListener from './unregister-node-listener';
 
 export type GraphDomainSetState =
   <S, A>(node: GraphNode<S, A>, action: A) => void;
+export type GraphDomainGetState =
+  <S, A>(node: GraphNode<S, A>) => S;
+export type GraphDomainResetState =
+  <S, A>(node: GraphNode<S, A>) => void;
 export type GraphDomainAddListener =
   <S, A>(node: GraphNode<S, A>, listener: GraphNodeListener<S>) => void;
 export type GraphDomainRemoveListener =
   <S, A>(node: GraphNode<S, A>, listener: GraphNodeListener<S>) => void;
-export type GraphDomainGetState =
-  <S, A>(node: GraphNode<S, A>) => S
 
 export interface GraphDomainInterface {
   setState: GraphDomainSetState;
   getState: GraphDomainGetState;
+  resetState: GraphDomainResetState;
   addListener: GraphDomainAddListener;
   removeListener: GraphDomainRemoveListener;
 }
@@ -64,6 +67,9 @@ export default function createGraphDomainInterface(
         action,
         target: node,
       });
+    },
+    resetState: <S, A>(node: GraphNode<S, A>): void => {
+      scheduler.scheduleCompute(node);
     },
     getState: <S, A>(node: GraphNode<S, A>): S => (
       getNodeState(memory, scheduler, node)
