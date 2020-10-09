@@ -25,26 +25,20 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
+import { GraphNode } from 'graph-state';
 import { useGraphDomainInterface } from '../GraphDomainContext';
-import { GraphNode } from '../graph-node';
-import useIsomorphicEffect from './useIsomorphicEffect';
-import useFreshState from './useFreshState';
+import useForceUpdate from './useForceUpdate';
+// import useGraphNodeStateBase from './useGraphNodeStateBase';
+import useGraphNodeSnapshotBase from './useGraphNodeSnapshotBase';
 
 export default function useGraphNodeValue<S, A>(node: GraphNode<S, A>): S {
   const logic = useGraphDomainInterface();
 
-  const [state, setState] = useFreshState(
-    () => logic.getState(node),
-    [logic, node],
-  );
+  // const [state, setState] = useGraphNodeStateBase(logic, node);
+  // useGraphNodeSnapshotBase(logic, node, setState);
 
-  useIsomorphicEffect(() => {
-    logic.addListener(node, setState);
-
-    return () => {
-      logic.removeListener(node, setState);
-    };
-  }, [logic, node, setState]);
-
-  return state;
+  // return state;
+  const forceUpdate = useForceUpdate();
+  useGraphNodeSnapshotBase(logic, node, forceUpdate);
+  return logic.getState(node);
 }

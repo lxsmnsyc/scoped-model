@@ -25,7 +25,7 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { GraphNodeResource } from '../graph-node';
+import { GraphNodeResource } from 'graph-state';
 import useGraphNodeValue from './useGraphNodeValue';
 
 export default function useGraphNodeResource<T>(node: GraphNodeResource<T>): T {

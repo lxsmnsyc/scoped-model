@@ -1,8 +1,8 @@
-# @lxsmnsyc/react-scoped-model-swr
+# react-scoped-model-swr
 
 > [react-scoped-model](https://github.com/lxsmnsyc/scoped-model) + [Vercel's SWR](https://swr.vercel.app/)
 
-[![NPM](https://img.shields.io/npm/v/@lxsmnsyc/react-scoped-model-swr.svg)](https://www.npmjs.com/package/@lxsmnsyc/react-scoped-model-swr) [![JavaScript Style Guide](https://badgen.net/badge/code%20style/airbnb/ff5a5f?icon=airbnb)](https://github.com/airbnb/javascript)
+[![NPM](https://img.shields.io/npm/v/react-scoped-model-swr.svg)](https://www.npmjs.com/package/react-scoped-model-swr) [![JavaScript Style Guide](https://badgen.net/badge/code%20style/airbnb/ff5a5f?icon=airbnb)](https://github.com/airbnb/javascript)
 
 ## Usage
 
@@ -11,7 +11,7 @@
 The package exports two model factories: `createSWRModel` and `createSWRInfiniteModel`.
 
 ```tsx
-import { createSWRModel } from '@lxsmnsyc/react-scoped-model';
+import { createSWRModel } from 'react-scoped-model';
 ```
 
 The simplest form of an SWR Model can be created using just a key value.
@@ -31,7 +31,7 @@ which can be mounted like a scoped model instance:
 And can be used with hooks:
 
 ```tsx
-import { useSelector } from '@lxsmnsyc/react-scoped-model';
+import { useSelector } from 'react-scoped-model';
 
 // ...
 const data = useSelector(TopItems, (state) => state.data);

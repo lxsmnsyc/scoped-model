@@ -28,7 +28,7 @@
 import createModel, {
   ScopedModel,
   ScopedModelOptions,
-} from '@lxsmnsyc/react-scoped-model';
+} from 'react-scoped-model';
 import useSWR, { responseInterface, ConfigInterface } from 'swr';
 
 /**

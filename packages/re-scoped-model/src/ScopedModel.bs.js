@@ -1,11 +1,11 @@
-'use strict';
 
-var Curry = require("bs-platform/lib/js/curry.js");
-var React = require("react");
-var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
-var Utils$ReScopedModel = require("./Utils.bs.js");
-var Notifier$ReScopedModel = require("./Notifier.bs.js");
-var Exceptions$ReScopedModel = require("./Exceptions.bs.js");
+
+import * as Curry from "bs-platform/lib/es6/curry.js";
+import * as React from "react";
+import * as Caml_obj from "bs-platform/lib/es6/caml_obj.js";
+import * as Utils$ReScopedModel from "./Utils.bs.js";
+import * as Notifier$ReScopedModel from "./Notifier.bs.js";
+import * as Exceptions$ReScopedModel from "./Exceptions.bs.js";
 
 function Make(Facing) {
   var context = React.createContext(undefined);
@@ -531,19 +531,22 @@ function MakePropSelector(Facing) {
         };
 }
 
-exports.Make = Make;
-exports.Internals = Internals;
-exports.ShouldUpdate = ShouldUpdate;
-exports.useValueOnce = useValueOnce;
-exports.useValue = useValue;
-exports.useSelectorOnce = useSelectorOnce;
-exports.useSelector = useSelector;
-exports.createValueOnce = createValueOnce;
-exports.createValue = createValue;
-exports.createSelectorOnce = createSelectorOnce;
-exports.createSelector = createSelector;
-exports.MakeNullary = MakeNullary;
-exports.MakeState = MakeState;
-exports.MakeReducer = MakeReducer;
-exports.MakePropSelector = MakePropSelector;
+export {
+  Make ,
+  Internals ,
+  ShouldUpdate ,
+  useValueOnce ,
+  useValue ,
+  useSelectorOnce ,
+  useSelector ,
+  createValueOnce ,
+  createValue ,
+  createSelectorOnce ,
+  createSelector ,
+  MakeNullary ,
+  MakeState ,
+  MakeReducer ,
+  MakePropSelector ,
+  
+}
 /* react Not a pure module */

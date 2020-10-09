@@ -10,7 +10,7 @@ The hook accepts the following parameters:
 Useful for fine-grained subscription of complex states, instead of re-rendering the component when the whole state updates, we can re-render the component reactively when the state it needs changes.
 
 ```tsx
-import { useSelector } from '@lxsmnsyc/preact-scoped-model';
+import { useSelector } from 'preact-scoped-model';
 
 // A model that increments the state every second.
 const Timer = createModel(() => {

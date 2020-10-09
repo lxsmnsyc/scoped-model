@@ -7,8 +7,9 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@lxsmnsyc/preact-graph-state": "0.3.0",
-    "preact": "^10.5.2"
+    "graph-state": "^0.0.0",
+    "preact": "^10.5.4",
+    "preact-graph-state": "0.3.0"
   },
   "devDependencies": {
     "@prefresh/vite": "^1.0.2",

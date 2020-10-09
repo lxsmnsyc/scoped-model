@@ -6,7 +6,7 @@
 
 - `createValue`: creates a hook based on [useValue](/packages/preact-scoped-model/docs/hooks/use-value.md).
 ```tsx
-import { createValue } from '@lxsmnsyc/preact-scoped-model';
+import { createValue } from 'preact-scoped-model';
 
 const useTimer = createValue(Timer);
 
@@ -17,7 +17,7 @@ const { seconds } = useTimer();
 - `createSelector`: creates a hook based on [useSelector](/packages/preact-scoped-model/docs/hooks/use-selector.md).
 
 ```tsx
-import { createSelector } from '@lxsmnsyc/preact-scoped-model';
+import { createSelector } from 'preact-scoped-model';
 
 const useTimerSeconds = createSelector(Timer, (state) => state.seconds);
 

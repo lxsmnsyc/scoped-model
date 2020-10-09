@@ -1,24 +1,24 @@
-# @lxsmnsyc/re-scoped-model
+# re-scoped-model
 
 > Scoped Model pattern in React (but with Hooks), a pure ReasonML implementation of [react-scoped-model](https://github.com/LXSMNSYC/react-scoped-model)
 
-[![NPM](https://img.shields.io/npm/v/@lxsmnsyc/re-scoped-model.svg)](https://www.npmjs.com/package/@lxsmnsyc/re-scoped-model) [![JavaScript Style Guide](https://badgen.net/badge/code%20style/airbnb/ff5a5f?icon=airbnb)](https://github.com/airbnb/javascript)
+[![NPM](https://img.shields.io/npm/v/re-scoped-model.svg)](https://www.npmjs.com/package/re-scoped-model) [![JavaScript Style Guide](https://badgen.net/badge/code%20style/airbnb/ff5a5f?icon=airbnb)](https://github.com/airbnb/javascript)
 
 ## Install
 
 ```bash
-npm install --save @lxsmnsyc/re-scoped-model
+npm install --save re-scoped-model
 ```
 
 ```bash
-yarn add @lxsmnsyc/re-scoped-model
+yarn add re-scoped-model
 ```
 
 ### bsconfig.json
 
 ```json
   "bs-dependencies": [
-    "@lxsmnsyc/re-scoped-model"
+    "re-scoped-model"
   ],
 ```
 

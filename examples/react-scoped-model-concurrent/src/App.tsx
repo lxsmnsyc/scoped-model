@@ -1,4 +1,4 @@
-import { createStateModel, createSelector } from '@lxsmnsyc/react-scoped-model';
+import { createStateModel, createSelector } from 'react-scoped-model';
 import React, { useCallback } from 'react';
 
 const Value = createStateModel(0);

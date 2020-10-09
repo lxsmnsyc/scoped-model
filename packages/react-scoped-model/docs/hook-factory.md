@@ -6,7 +6,7 @@
 
 - `createValue`: creates a hook based on [useValue](/packages/react-scoped-model/docs/hooks/use-value.md).
 ```tsx
-import { createValue } from '@lxsmnsyc/react-scoped-model';
+import { createValue } from 'react-scoped-model';
 
 const useTimer = createValue(Timer);
 
@@ -17,7 +17,7 @@ const { seconds } = useTimer();
 - `createSelector`: creates a hook based on [useSelector](/packages/react-scoped-model/docs/hooks/use-selector.md).
 
 ```tsx
-import { createSelector } from '@lxsmnsyc/react-scoped-model';
+import { createSelector } from 'react-scoped-model';
 
 const useTimerSeconds = createSelector(Timer, (state) => state.seconds);
 

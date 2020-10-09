@@ -1,7 +1,7 @@
-'use strict';
 
-var Curry = require("bs-platform/lib/js/curry.js");
-var Caml_option = require("bs-platform/lib/js/caml_option.js");
+
+import * as Curry from "bs-platform/lib/es6/curry.js";
+import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 
 var NativeSet = {};
 
@@ -34,11 +34,14 @@ function emit(source, value) {
             });
 }
 
-exports.NativeSet = NativeSet;
-exports.Listener = Listener;
-exports.make = make;
-exports.on = on;
-exports.off = off;
-exports.sync = sync;
-exports.emit = emit;
+export {
+  NativeSet ,
+  Listener ,
+  make ,
+  on ,
+  off ,
+  sync ,
+  emit ,
+  
+}
 /* No side effect */

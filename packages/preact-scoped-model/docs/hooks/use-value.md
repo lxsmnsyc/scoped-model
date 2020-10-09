@@ -8,7 +8,7 @@ The hook accepts the following parameters:
 
 
 ```tsx
-import { useValue } from '@lxsmnsyc/preact-scoped-model';
+import { useValue } from 'preact-scoped-model';
 
 // A model that increments the state every second.
 const Timer = createModel(() => {

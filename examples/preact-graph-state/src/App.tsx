@@ -5,11 +5,13 @@ import { useCallback } from 'preact/hooks';
 import {
   createGraphNodeResource,
   createGraphNode,
+} from 'graph-state';
+import {
   GraphDomain,
   useGraphNodeResource,
   useGraphNodeValue,
   useGraphNodeState,
-} from '@lxsmnsyc/preact-graph-state';
+} from 'preact-graph-state';
 
 const temperatureF = createGraphNode({
   get: 32,

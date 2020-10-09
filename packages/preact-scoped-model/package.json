@@ -20,7 +20,7 @@
     "watch": "pridepack watch"
   },
   "license": "MIT",
-  "name": "@lxsmnsyc/preact-scoped-model",
+  "name": "preact-scoped-model",
   "module": "dist/preact-scoped-model.esm.js",
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.4",
@@ -30,13 +30,13 @@
     "@types/node": "^14.11.2",
     "eslint": "^7.10.0",
     "eslint-config-lxsmnsyc": "^0.1.18",
-    "preact": "^10.5.3",
+    "preact": "^10.5.4",
     "pridepack": "^0.1.3",
     "tslib": "^2.0.1",
     "typescript": "^4.0.3"
   },
   "peerDependencies": {
-    "preact": "^10.5.3"
+    "preact": "^10.5.4"
   },
   "publishConfig": {
     "access": "public"

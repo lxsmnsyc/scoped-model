@@ -20,7 +20,7 @@
     "watch": "pridepack watch"
   },
   "license": "MIT",
-  "name": "@lxsmnsyc/react-scoped-model",
+  "name": "react-scoped-model",
   "module": "dist/react-scoped-model.esm.js",
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.4",

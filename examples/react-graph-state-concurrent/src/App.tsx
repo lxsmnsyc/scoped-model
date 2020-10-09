@@ -1,11 +1,13 @@
+import React, { Suspense, useCallback } from 'react';
 import {
   createGraphNode,
   createGraphNodeResource,
+} from 'graph-state';
+import {
   GraphDomain,
   useGraphNodeResource,
-  useGraphNodeSetValue,
-} from '@lxsmnsyc/react-graph-state';
-import React, { Suspense, useCallback } from 'react';
+  useGraphNodeDispatch,
+} from 'react-graph-state';
 
 const sleep = (time: number) => new Promise((resolve) => {
   setTimeout(resolve, time, true);
@@ -35,7 +37,7 @@ function PendingUnit(): JSX.Element {
   );
 }
 function Input(): JSX.Element {
-  const setValue = useGraphNodeSetValue(valueNode);
+  const setValue = useGraphNodeDispatch(valueNode);
 
   const onChange = useCallback((e: React.FormEvent<HTMLInputElement>) => {
     setValue(Number.parseFloat(e.currentTarget.value));

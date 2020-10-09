@@ -5,13 +5,14 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "parcel index.html",
+    "dev": "parcel index.html",
     "build": "parcel build index.html"
   },
   "dependencies": {
-    "@lxsmnsyc/react-graph-state": "0.3.0",
+    "graph-state": "^0.0.0",
     "react": "^0.0.0-experimental-94c0244ba",
-    "react-dom": "^0.0.0-experimental-94c0244ba"
+    "react-dom": "^0.0.0-experimental-94c0244ba",
+    "react-graph-state": "0.3.0"
   },
   "devDependencies": {
     "@types/react": "^16.9.51",

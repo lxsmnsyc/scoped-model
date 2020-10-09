@@ -14,7 +14,7 @@ The hook returns an object that represents the state of the Promise:
 - `data`: contains the resolved value (if status is `"success"`), an error (if status is `"failure"`) or undefined if the status is `"pending"`.
 
 ```tsx
-import { useAsyncSelector } from '@lxsmnsyc/react-scoped-model';
+import { useAsyncSelector } from 'react-scoped-model';
 
 function InfoTable() {
   const { status, data } = useAsyncSelector(TableNavigation, async (state) => {

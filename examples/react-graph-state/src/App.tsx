@@ -2,11 +2,13 @@ import React, { Suspense, useCallback } from 'react';
 import {
   createGraphNodeResource,
   createGraphNode,
+} from 'graph-state';
+import {
   GraphDomain,
   useGraphNodeResource,
   useGraphNodeValue,
   useGraphNodeState,
-} from '@lxsmnsyc/react-graph-state';
+} from 'react-graph-state';
 
 const temperatureF = createGraphNode({
   get: 32,

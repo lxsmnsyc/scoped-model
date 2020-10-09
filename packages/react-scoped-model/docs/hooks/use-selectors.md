@@ -9,7 +9,7 @@ The hook accepts the following parameters:
 
 
 ```tsx
-import { useSelectors } from '@lxsmnsyc/react-scoped-model';
+import { useSelectors } from 'react-scoped-model';
 
 const Counter = createModel(() => {
   const [count, setCount] = useState(0);

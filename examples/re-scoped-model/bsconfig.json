@@ -21,7 +21,7 @@
     "namespace": true,
     "bs-dependencies": [
         "reason-react",
-        "@lxsmnsyc/re-scoped-model"
+        "re-scoped-model"
     ],
     "refmt": 3
 }

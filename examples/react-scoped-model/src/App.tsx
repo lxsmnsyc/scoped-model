@@ -5,7 +5,7 @@ import createModel, {
   useSuspendedState,
   useAsyncSelector,
   useSelectors,
-} from '@lxsmnsyc/react-scoped-model';
+} from 'react-scoped-model';
 
 interface CounterProps {
   initialCount?: number;

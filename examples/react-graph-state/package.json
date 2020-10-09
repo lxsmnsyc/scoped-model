@@ -7,11 +7,12 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@lxsmnsyc/react-graph-state": "0.3.0",
     "@pika/react": "^16.13.1",
     "@pika/react-dom": "^16.13.1",
+    "graph-state": "^0.0.0",
     "react": "npm:@pika/react",
-    "react-dom": "npm:@pika/react-dom"
+    "react-dom": "npm:@pika/react-dom",
+    "react-graph-state": "0.3.0"
   },
   "devDependencies": {
     "@types/react": "^16.9.35",

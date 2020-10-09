@@ -8,7 +8,7 @@ The hook accepts the following parameters:
 - `key`: a key used to internally cache the promise as a Suspense resource. Components that uses the same key shares the same Suspense resource.
 
 ```tsx
-import { useSuspenseSelector } from '@lxsmnsyc/react-scoped-model';
+import { useSuspenseSelector } from 'react-scoped-model';
 
 function InfoTable() {
   const data = useSuspenseSelector(

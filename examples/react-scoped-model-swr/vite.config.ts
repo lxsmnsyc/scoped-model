@@ -6,8 +6,8 @@ const config: UserConfig = {
   plugins: [reactPlugin],
   optimizeDeps: {
     exclude: [
-      '@lxsmnsyc/react-scoped-model',
-      '@lxsmnsyc/react-scoped-model-swr',
+      'react-scoped-model',
+      'react-scoped-model-swr',
     ],
   },
 };

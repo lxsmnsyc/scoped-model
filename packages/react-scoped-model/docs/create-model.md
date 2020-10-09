@@ -11,7 +11,7 @@ In `react-scoped-model`, `scoped model`'s business logic and state relies on the
 `createModel`, the function for creating scoped models, is exported as default from the package.
 
 ```ts
-import createModel from '@lxsmnsyc/react-scoped-model';
+import createModel from 'react-scoped-model';
 ```
 
 ### Creating a model

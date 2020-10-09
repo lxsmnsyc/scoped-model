@@ -1,5 +1,5 @@
 {
-  "name": "@lxsmnsyc/re-scoped-model",
+  "name": "re-scoped-model",
   "description": "Scoped Model pattern in ReasonReact (but with Hooks)",
   "version": "1.1.1",
   "scripts": {

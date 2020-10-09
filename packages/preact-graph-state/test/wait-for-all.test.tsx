@@ -7,10 +7,12 @@ import {
 import {
   createGraphNode,
   createGraphNodeResource,
+  waitForAll,
+} from 'graph-state';
+import {
   GraphDomain,
   useGraphNodeResource,
   useGraphNodeValue,
-  waitForAll,
 } from '../src';
 
 import '@testing-library/jest-dom/extend-expect';
