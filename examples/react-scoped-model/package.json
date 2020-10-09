@@ -1,17 +1,17 @@
 {
   "name": "react-scoped-model-vite",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "react-scoped-model": "1.5.2",
     "@pika/react": "^16.13.1",
     "@pika/react-dom": "^16.13.1",
     "react": "npm:@pika/react",
-    "react-dom": "npm:@pika/react-dom"
+    "react-dom": "npm:@pika/react-dom",
+    "react-scoped-model": "1.6.0"
   },
   "devDependencies": {
     "@types/react": "^16.9.35",

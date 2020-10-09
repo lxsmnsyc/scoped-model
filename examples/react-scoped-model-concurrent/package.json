@@ -1,6 +1,6 @@
 {
   "name": "react-scoped-model-concurrent",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "main": "index.js",
   "license": "MIT",
   "private": true,
@@ -9,9 +9,9 @@
     "build": "parcel build index.html"
   },
   "dependencies": {
-    "react-scoped-model": "1.5.2",
     "react": "^0.0.0-experimental-94c0244ba",
-    "react-dom": "^0.0.0-experimental-94c0244ba"
+    "react-dom": "^0.0.0-experimental-94c0244ba",
+    "react-scoped-model": "1.6.0"
   },
   "devDependencies": {
     "@types/react": "^16.9.51",

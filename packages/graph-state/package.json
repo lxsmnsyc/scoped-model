@@ -1,5 +1,5 @@
 {
-  "version": "0.0.0",
+  "version": "0.1.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -29,6 +29,5 @@
     "pridepack": "^0.1.3",
     "tslib": "^2.0.2",
     "typescript": "^4.0.3"
-  },
-  "peerDependencies": {}
+  }
 }
