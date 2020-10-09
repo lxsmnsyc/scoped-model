@@ -46,7 +46,7 @@ import { useGraphDomainContext } from './GraphDomainContext';
 function GraphCoreProcess(): VNode {
   const { current } = useGraphDomainContext();
   const [workQueue, scheduleWork, resetWork] = useWorkQueue<Work<any, any>>();
-  
+
   const memory = useConstant<GraphDomainMemory>(
     () => createGraphDomainMemory(),
   );
