@@ -13,7 +13,9 @@
 
 ## Soon
 
-- `react-scoped-model-firebase`: Scoped Model + Firebase
+- `react-scoped-model-firebase`: Scoped Model + Firebase.
+- `swr-graph-node`: A graph node for SWR data fetching.
+- `react-provider`: Composable provider component.
 
 ## License
 
