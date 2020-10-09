@@ -26,7 +26,7 @@
  * @copyright Alexis Munsayac 2020
  */
 import { useRef } from 'react';
-import useCallbackCondition from './useCallbackCondition';
+import useConstantCallback from './useConstantCallback';
 import useForceUpdate from './useForceUpdate';
 import useFreshRefSupplier, { defaultCompare, MemoCompare } from './useFreshRefSupplier';
 import useIsomorphicEffect from './useIsomorphicEffect';
@@ -76,7 +76,7 @@ export default function useFreshState<T, R>(
     };
   }, []);
 
-  const setState: RefreshStateDispatch<T> = useCallbackCondition(
+  const setState: RefreshStateDispatch<T> = useConstantCallback(
     (action) => {
       if (alive.current) {
         const { current } = stateRef;
@@ -92,10 +92,6 @@ export default function useFreshState<T, R>(
         }
       }
     },
-    [forceUpdate, stateRef],
-    (prev, next) => (
-      !Object.is(prev[0], next[0]) || !Object.is(prev[1], next[1])
-    ),
   );
 
   return [stateRef.current, setState];

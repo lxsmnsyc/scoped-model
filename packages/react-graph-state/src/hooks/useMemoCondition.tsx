@@ -25,26 +25,16 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { useRef } from 'react';
-import useRefSupplier from './useRefSupplier';
-
-export function defaultCompare<R>(a: R, b: R): boolean {
-  return !Object.is(a, b);
-}
-
-export type MemoCompare<R> = (a: R, b: R) => boolean;
+import useFreshRefSupplier, { defaultCompare, MemoCompare } from './useFreshRefSupplier';
 
 export default function useMemoCondition<T, R>(
   supplier: () => T,
   dependency: R,
   shouldUpdate: MemoCompare<R> = defaultCompare,
 ): T {
-  const value = useRefSupplier(supplier);
-  const prevDeps = useRef(dependency);
-
-  if (shouldUpdate(prevDeps.current, dependency)) {
-    value.current = supplier();
-  }
-
-  return value.current;
+  return useFreshRefSupplier(
+    supplier,
+    dependency,
+    shouldUpdate,
+  ).current;
 }

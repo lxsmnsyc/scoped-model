@@ -26,7 +26,7 @@
  * @copyright Alexis Munsayac 2020
  */
 import { useRef } from 'react';
-import { defaultCompare, MemoCompare } from './useMemoCondition';
+import { defaultCompare, MemoCompare } from './useFreshRefSupplier';
 
 type AnyCallback = (...args: any[]) => any;
 
