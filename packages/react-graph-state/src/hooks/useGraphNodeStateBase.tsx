@@ -25,14 +25,27 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { GraphNode } from 'graph-state';
-import { useGraphDomainInterface } from '../GraphDomainContext';
-import useGraphNodeDispatchBase, { GraphNodeDispatch } from './useGraphNodeDispatchBase';
+import { GraphDomainInterface, GraphNode } from 'graph-state';
+import useFreshState, { RefreshStateDispatch } from './useFreshState';
 
-export default function useGraphNodeDispatch<S, A>(
+export type Dependency<S, A> = [GraphDomainInterface, GraphNode<S, A>];
+
+export function compare<S, A>(
+  prev: Dependency<S, A>,
+  next: Dependency<S, A>,
+): boolean {
+  return (
+    !Object.is(prev[0], next[0]) || !Object.is(prev[1], next[1])
+  );
+}
+
+export default function useGraphNodeStateBase<S, A>(
+  logic: GraphDomainInterface,
   node: GraphNode<S, A>,
-): GraphNodeDispatch<A> {
-  const logic = useGraphDomainInterface();
-
-  return useGraphNodeDispatchBase(logic, node);
+): [S, RefreshStateDispatch<S>] {
+  return useFreshState<S, Dependency<S, A>>(
+    () => logic.getState(node),
+    [logic, node],
+    compare,
+  );
 }

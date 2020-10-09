@@ -25,14 +25,19 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { GraphNode } from 'graph-state';
-import { useGraphDomainInterface } from '../GraphDomainContext';
-import useGraphNodeDispatchBase, { GraphNodeDispatch } from './useGraphNodeDispatchBase';
+import { GraphDomainInterface, GraphNode } from 'graph-state';
+import useCallbackCondition from './useCallbackCondition';
+import { compare, Dependency } from './useGraphNodeStateBase';
 
-export default function useGraphNodeDispatch<S, A>(
+export type GraphNodeDispatch<A> = (action: A) => void;
+
+export default function useGraphNodeDispatchBase<S, A>(
+  logic: GraphDomainInterface,
   node: GraphNode<S, A>,
 ): GraphNodeDispatch<A> {
-  const logic = useGraphDomainInterface();
-
-  return useGraphNodeDispatchBase(logic, node);
+  return useCallbackCondition<GraphNodeDispatch<A>, Dependency<S, A>>(
+    (action: A) => logic.setState(node, action),
+    [logic, node],
+    compare,
+  );
 }
