@@ -7,11 +7,6 @@ module.exports = {
     "tsconfigRootDir": __dirname,
   },
   "rules": {
-    "import/no-extraneous-dependencies": [
-      "error", {
-        "devDependencies": ["**/*.test.tsx"]
-      }
-    ],
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-unsafe-assignment": "off",
     "@typescript-eslint/no-unsafe-return": "off",

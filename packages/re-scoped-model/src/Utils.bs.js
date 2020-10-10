@@ -1,8 +1,8 @@
+'use strict';
 
-
-import * as Curry from "bs-platform/lib/es6/curry.js";
-import * as React from "react";
-import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
+var Curry = require("bs-platform/lib/js/curry.js");
+var React = require("react");
+var Caml_option = require("bs-platform/lib/js/caml_option.js");
 
 function get(value, err) {
   if (value !== undefined) {
@@ -131,9 +131,6 @@ var Hooks = {
   useFreshState: use$4
 };
 
-export {
-  Result ,
-  Hooks ,
-  
-}
+exports.Result = Result;
+exports.Hooks = Hooks;
 /* react Not a pure module */

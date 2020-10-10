@@ -1,6 +1,7 @@
 {
   "name": "re-scoped-model",
   "description": "Scoped Model pattern in ReasonReact (but with Hooks)",
+  "author": "Alexis Munsayac",
   "version": "1.2.0",
   "scripts": {
     "prepublish": "yarn build",
@@ -8,7 +9,6 @@
     "start": "bsb -make-world -w -ws _ ",
     "clean": "bsb -clean-world"
   },
-  "author": "lxsmnsyc",
   "license": "MIT",
   "peerDependencies": {
     "react": "^16.13.1",
