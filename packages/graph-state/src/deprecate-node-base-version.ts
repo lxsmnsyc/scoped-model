@@ -25,43 +25,16 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { GraphNode, GraphNodeKey } from './graph-node';
+import { GraphNode } from './graph-node';
+import getNodeBaseInstance from './get-node-instance';
+import { GraphDomainMemory } from './create-domain-memory';
+import createNodeBaseVersion from './create-node-base-version';
 
-export type GraphNodeDependencies = Set<GraphNode<any, any>>;
-
-export interface GraphNodeBaseVersion {
-  alive: boolean;
-}
-
-export interface GraphNodeVersion extends GraphNodeBaseVersion {
-  // Dependencies
-  dependencies: GraphNodeDependencies;
-}
-
-export type GraphNodeListener<T> = (value: T) => void;
-export type GraphNodeListeners<T> = Set<GraphNodeListener<T>>;
-
-export interface GraphNodeInstance<T> {
-  version: GraphNodeVersion;
-  setterVersion: GraphNodeBaseVersion;
-  listeners: GraphNodeListeners<T>;
-  dependents: GraphNodeDependencies;
-}
-
-export interface GraphNodeState<T> {
-  value: T;
-}
-export type GraphNodeInstanceMap = Map<GraphNodeKey, GraphNodeInstance<any>>;
-export type GraphNodeStateMap = Map<GraphNodeKey, GraphNodeState<any>>;
-
-export interface GraphDomainMemory {
-  nodes: GraphNodeInstanceMap;
-  state: GraphNodeStateMap;
-}
-
-export default function createGraphDomainMemory(): GraphDomainMemory {
-  return {
-    nodes: new Map(),
-    state: new Map(),
-  };
+export default function deprecateNodeBaseVersion<S, A>(
+  memory: GraphDomainMemory,
+  node: GraphNode<S, A>,
+  actualNode = getNodeBaseInstance(memory, node),
+): void {
+  actualNode.setterVersion.alive = false;
+  actualNode.setterVersion = createNodeBaseVersion();
 }

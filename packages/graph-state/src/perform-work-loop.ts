@@ -29,10 +29,12 @@ import computeNode from './compute-node';
 import { GraphDomainInterface } from './create-domain-interface';
 import { GraphDomainMemory } from './create-domain-memory';
 import { GraphDomainScheduler, Work, WorkQueue } from './create-domain-scheduler';
+import deprecateNodeBaseVersion from './deprecate-node-base-version';
 import deprecateNodeVersion from './deprecate-node-version';
 import getDraftState from './get-draft-state';
 import getNodeInstance from './get-node-instance';
 import getNodeState from './get-node-state';
+import { GraphNode } from './graph-node';
 import setNodeState from './set-node-state';
 
 export default function performWorkLoop(
@@ -52,11 +54,23 @@ export default function performWorkLoop(
           const currentState = getNodeState(memory, scheduler, target);
 
           if (target.set) {
+            // Deprecate setter version
+            deprecateNodeBaseVersion(memory, target);
+
+            const { setterVersion } = getNodeInstance(memory, target);
             // Run the node setter for further effects
             target.set({
               get: methods.getState,
-              set: methods.setState,
-              reset: methods.resetState,
+              set: <S, A>(node: GraphNode<S, A>, action: A) => {
+                if (setterVersion.alive) {
+                  methods.setState(node, action);
+                }
+              },
+              reset: <S, A>(node: GraphNode<S, A>) => {
+                if (setterVersion.alive) {
+                  methods.resetState(node);
+                }
+              },
             }, action);
           } else {
             /**
@@ -98,7 +112,7 @@ export default function performWorkLoop(
         case 'update': {
           const node = work.value;
           const currentNode = getNodeInstance(memory, node);
-          const nodeValue = getNodeState(memory, scheduler, node);
+          const nodeValue = methods.getState(node);
           currentNode.dependents.forEach((dependent) => {
             scheduler.scheduleCompute(dependent);
           });
