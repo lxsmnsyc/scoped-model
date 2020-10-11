@@ -40,6 +40,9 @@ export default function getNodeInstance<S, A>(
         alive: true,
         dependencies: new Set(),
       },
+      setterVersion: {
+        alive: true,
+      },
       listeners: new Set(),
       dependents: new Set(),
     };
