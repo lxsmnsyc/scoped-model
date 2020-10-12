@@ -35,13 +35,22 @@ import {
   GraphDomainMemory,
   Work,
   performWorkLoop,
+  GraphNode,
+  hydrateNode,
 } from 'graph-state';
 import useConstant from './hooks/useConstant';
 import useIsomorphicEffect from './hooks/useIsomorphicEffect';
 import { useGraphDomainContext } from './GraphDomainContext';
 import useWorkQueue from './hooks/useWorkQueue';
+import useMemoCondition from './hooks/useMemoCondition';
 
-function GraphCoreProcess(): JSX.Element {
+export type GraphNodeHydrate = <S, A>(node: GraphNode<S, A>, value: S) => void;
+
+export interface GraphCoreProcessProps {
+  onHydrate?: (hydrate: GraphNodeHydrate) => void;
+}
+
+function GraphCoreProcess({ onHydrate }: GraphCoreProcessProps): JSX.Element {
   const { current } = useGraphDomainContext();
   const [workQueue, scheduleWork, resetWork] = useWorkQueue<Work<any, any>>();
 
@@ -56,6 +65,16 @@ function GraphCoreProcess(): JSX.Element {
   );
 
   current.value = methods;
+
+  useMemoCondition(() => {
+    if (onHydrate) {
+      onHydrate(
+        <S, A>(node: GraphNode<S, A>, value: S) => {
+          hydrateNode(memory, node, value);
+        },
+      );
+    }
+  }, onHydrate);
 
   useIsomorphicEffect(() => {
     performWorkLoop(memory, scheduler, methods, workQueue, resetWork);

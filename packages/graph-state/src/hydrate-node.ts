@@ -25,15 +25,25 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-export * from './graph-node';
+import { GraphDomainMemory } from './create-domain-memory';
+import getNodeInstance from './get-node-instance';
+import { GraphNode } from './graph-node';
 
-export * from './create-domain-memory';
-export * from './create-domain-scheduler';
-export * from './create-domain-interface';
+export default function hydrateNode<S, A>(
+  memory: GraphDomainMemory,
+  node: GraphNode<S, A>,
+  value: S,
+): void {
+  // Attempt to precreate node
+  getNodeInstance(memory, node);
 
-export { default as createGraphDomainMemory } from './create-domain-memory';
-export { default as createGraphDomainScheduler } from './create-domain-scheduler';
-export { default as createGraphDomainInterface } from './create-domain-interface';
+  const currentState = memory.state.get(node.key);
 
-export { default as performWorkLoop } from './perform-work-loop';
-export { default as hydrateNode } from './hydrate-node';
+  if (currentState) {
+    currentState.value = value;
+  } else {
+    memory.state.set(node.key, {
+      value,
+    });
+  }
+}

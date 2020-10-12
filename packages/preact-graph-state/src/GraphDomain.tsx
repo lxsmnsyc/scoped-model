@@ -28,19 +28,21 @@
 /** @jsx h */
 import { ComponentChildren, h, VNode } from 'preact';
 import { useRef } from 'preact/hooks';
-import GraphCore from './GraphCore';
+import GraphCore, { GraphCoreProcessProps } from './GraphCore';
 import { GraphCoreValue, GraphDomainContext } from './GraphDomainContext';
 
-export interface GraphDomainProps {
+export interface GraphDomainProps extends GraphCoreProcessProps {
   children?: ComponentChildren;
 }
 
-export default function GraphDomain({ children }: GraphDomainProps): VNode {
+export default function GraphDomain(
+  { children, onHydrate }: GraphDomainProps,
+): VNode {
   const ref = useRef<GraphCoreValue>({});
 
   return (
     <GraphDomainContext.Provider value={ref}>
-      <GraphCore />
+      <GraphCore onHydrate={onHydrate} />
       { children }
     </GraphDomainContext.Provider>
   );
