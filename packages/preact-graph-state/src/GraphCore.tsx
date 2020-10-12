@@ -37,22 +37,13 @@ import {
   createGraphDomainInterface,
   performWorkLoop,
   Work,
-  GraphNode,
-  hydrateNode,
 } from 'graph-state';
 import useConstant from './hooks/useConstant';
 import useIsomorphicEffect from './hooks/useIsomorphicEffect';
 import useWorkQueue from './hooks/useWorkQueue';
 import { useGraphDomainContext } from './GraphDomainContext';
-import useMemoCondition from './hooks/useMemoCondition';
 
-export type GraphNodeHydrate = <S, A>(node: GraphNode<S, A>, value: S) => void;
-
-export interface GraphCoreProcessProps {
-  onHydrate?: (hydrate: GraphNodeHydrate) => void;
-}
-
-function GraphCoreProcess({ onHydrate }: GraphCoreProcessProps): VNode {
+function GraphCoreProcess(): VNode {
   const { current } = useGraphDomainContext();
   const [workQueue, scheduleWork, resetWork] = useWorkQueue<Work<any, any>>();
 
@@ -65,16 +56,6 @@ function GraphCoreProcess({ onHydrate }: GraphCoreProcessProps): VNode {
   const methods = useConstant<GraphDomainInterface>(
     () => createGraphDomainInterface(memory, scheduler),
   );
-
-  useMemoCondition(() => {
-    if (onHydrate) {
-      onHydrate(
-        <S, A>(node: GraphNode<S, A>, value: S) => {
-          hydrateNode(memory, node, value);
-        },
-      );
-    }
-  }, onHydrate);
 
   current.value = methods;
 

@@ -26,21 +26,19 @@
  * @copyright Alexis Munsayac 2020
  */
 import React, { ReactNode, useRef } from 'react';
-import GraphCore, { GraphCoreProcessProps } from './GraphCore';
+import GraphCore from './GraphCore';
 import { GraphCoreValue, GraphDomainContext } from './GraphDomainContext';
 
-export interface GraphDomainProps extends GraphCoreProcessProps {
+export interface GraphDomainProps {
   children?: ReactNode;
 }
 
-export default function GraphDomain(
-  { children, onHydrate }: GraphDomainProps,
-): JSX.Element {
+export default function GraphDomain({ children }: GraphDomainProps): JSX.Element {
   const ref = useRef<GraphCoreValue>({});
 
   return (
     <GraphDomainContext.Provider value={ref}>
-      <GraphCore onHydrate={onHydrate} />
+      <GraphCore />
       { children }
     </GraphDomainContext.Provider>
   );
