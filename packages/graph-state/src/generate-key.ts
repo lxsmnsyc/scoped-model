@@ -27,10 +27,9 @@
  */
 let ID = 0;
 
-const PREFIX = 'Node-';
 
-export default function generateKey(): string {
+export default function generateKey(): number {
   const newID = ID;
   ID += 1;
-  return `${PREFIX}${newID}`;
+  return newID;
 }
