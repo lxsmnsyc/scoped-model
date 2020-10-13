@@ -1,5 +1,5 @@
 {
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "SWR + react-scoped-model",
   "author": "Alexis Munsayac",
   "main": "dist/index.js",
@@ -35,7 +35,7 @@
     "pridepack": "^0.1.4",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scoped-model": "1.6.1",
+    "react-scoped-model": "1.6.2",
     "react-test-renderer": "^16.13.1",
     "tslib": "^2.0.3",
     "typescript": "^4.0.3"
