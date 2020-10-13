@@ -36,7 +36,7 @@ const sleep = (count: number) => new Promise((resolve) => {
 
 describe('waitForAll', () => {
   const resourceA = createGraphNodeResource(
-    createGraphNode({
+    createGraphNode<Promise<string>>({
       get: async () => {
         await sleep(1);
         return 'Message A';
@@ -44,7 +44,7 @@ describe('waitForAll', () => {
     }),
   );
   const resourceB = createGraphNodeResource(
-    createGraphNode({
+    createGraphNode<Promise<string>>({
       get: async () => {
         await sleep(2);
         return 'Message B';
@@ -52,7 +52,7 @@ describe('waitForAll', () => {
     }),
   );
   const resourceC = createGraphNodeResource(
-    createGraphNode({
+    createGraphNode<Promise<string>>({
       get: async () => {
         await sleep(3);
         return 'Message C';
