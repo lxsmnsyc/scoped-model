@@ -52,18 +52,19 @@ export interface GraphNodeSetInterface {
   reset: GraphNodeResetValue;
 }
 
-export type GraphNodeSet<A> = (facing: GraphNodeSetInterface, action: A) => void;
+export type GraphNodeSet<S, A = GraphNodeDraftState<S>> =
+  (facing: GraphNodeSetInterface, action: A) => void;
 
 export interface GraphNode<S, A = GraphNodeDraftState<S>> {
   get: GraphNodeGet<S>;
   key: GraphNodeKey;
-  set?: GraphNodeSet<A>;
+  set?: GraphNodeSet<S, A>;
 }
 
 export interface GraphNodeOptions<S, A = GraphNodeDraftState<S>> {
   get: GraphNodeGet<S>;
   key?: GraphNodeKey;
-  set?: GraphNodeSet<A>;
+  set?: GraphNodeSet<S, A>;
 }
 
 export type GraphNodeGetValue =
@@ -243,14 +244,14 @@ export type GraphNodeFactoryKey<Params extends any[]> =
   (...params: Params) => string;
 export type GraphNodeFactoryGet<Params extends any[], S> =
   (...params: Params) => GraphNodeGet<S>;
-export type GraphNodeFactorySet<Params extends any[], A> =
-  (...params: Params) => GraphNodeSet<A>;
+export type GraphNodeFactorySet<Params extends any[], S, A> =
+  (...params: Params) => GraphNodeSet<S, A>;
 
 export interface GraphNodeFactoryOptions<Params extends any[], S, A = GraphNodeDraftState<S>> {
   baseKey?: GraphNodeKey;
   key?: GraphNodeFactoryKey<Params>;
   get: GraphNodeFactoryGet<Params, S>;
-  set?: GraphNodeFactorySet<Params, A>;
+  set?: GraphNodeFactorySet<Params, S, A>;
 }
 
 export type GraphNodeFactory<Params extends any[], S, A = GraphNodeDraftState<S>> =
@@ -261,7 +262,9 @@ function defaultKeygen<Params extends any[]>(...params: Params): string {
 }
 
 export function createGraphNodeFactory<Params extends any[], S, A = GraphNodeDraftState<S>>(
-  { key, get, set, baseKey }: GraphNodeFactoryOptions<Params, S, A>,
+  {
+    key, get, set, baseKey,
+  }: GraphNodeFactoryOptions<Params, S, A>,
 ): GraphNodeFactory<Params, S, A> {
   const factoryKey = `Factory[${baseKey ?? generateKey()}]`;
   return (...params: Params): GraphNode<S, A> => createGraphNode<S, A>({
