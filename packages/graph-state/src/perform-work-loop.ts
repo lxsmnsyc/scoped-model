@@ -61,9 +61,9 @@ export default function performWorkLoop(
             // Run the node setter for further effects
             target.set({
               get: methods.getState,
-              set: <S, A>(node: GraphNode<S, A>, action: A) => {
+              set: <S, A>(node: GraphNode<S, A>, newAction: A) => {
                 if (setterVersion.alive) {
-                  methods.setState(node, action);
+                  methods.setState(node, newAction);
                 }
               },
               reset: <S, A>(node: GraphNode<S, A>) => {
@@ -73,11 +73,6 @@ export default function performWorkLoop(
               },
             }, action);
           } else {
-            /**
-             * Clean the previous version to prevent
-             * asynchronous dependency registration.
-             */
-            deprecateNodeVersion(memory, target);
             // Notify for new node value
             setNodeState(
               memory,

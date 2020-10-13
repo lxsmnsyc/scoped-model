@@ -76,20 +76,31 @@ export default function computeNode<S, A>(
 
   return createNodeValue(
     node,
-    (dependency) => {
-      // Read dependency state
-      const currentState = getDependencyState(dependency);
-      // If the version is still alive, register dependency
-      if (version.alive) {
-        registerNodeDependency(memory, node, dependency, actualNode);
-      }
-      return currentState;
-    },
-    (value) => {
-      // If the version is still alive, schedule a state update.
-      if (version.alive) {
-        setNodeState(memory, scheduler, node, value);
-      }
+    {
+      get: (dependency) => {
+        // Read dependency state
+        const currentState = getDependencyState(dependency);
+        // If the version is still alive, register dependency
+        if (version.alive) {
+          registerNodeDependency(memory, node, dependency, actualNode);
+        }
+        return currentState;
+      },
+      set: (value) => {
+        // If the version is still alive, schedule a state update.
+        if (version.alive) {
+          setNodeState(memory, scheduler, node, value);
+        }
+      },
+      subscription: (callback) => {
+        if (version.alive) {
+          const cleanup = callback();
+
+          if (cleanup) {
+            version.cleanups.push(cleanup);
+          }
+        }
+      },
     },
   );
 }

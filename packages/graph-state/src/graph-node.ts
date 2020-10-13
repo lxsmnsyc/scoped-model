@@ -38,9 +38,14 @@ export type GraphNodeDraftState<S> = S | GraphNodeDraftStateAction<S>;
 // Function received by the `get` function for yielding state
 export type GraphNodeGetYield<S> = (value: S) => void;
 
+export type GraphNodeSubscriptionCleanup = () => void;
+export type GraphNodeSubscriptionCallback = () => void | undefined | GraphNodeSubscriptionCleanup;
+export type GraphNodeSubscription = (callback: GraphNodeSubscriptionCallback) => void;
+
 export interface GraphNodeGetInterface<S> {
   get: GraphNodeGetValue;
   set: GraphNodeGetYield<S>;
+  subscription: GraphNodeSubscription;
 }
 
 export type GraphNodeGetSupplier<S> = (facing: GraphNodeGetInterface<S>) => S;

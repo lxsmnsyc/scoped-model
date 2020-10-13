@@ -31,5 +31,6 @@ export default function createNodeVersion(): GraphNodeVersion {
   return {
     alive: true,
     dependencies: new Set(),
+    cleanups: [],
   };
 }

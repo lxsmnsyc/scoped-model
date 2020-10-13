@@ -25,7 +25,7 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { GraphNode, GraphNodeKey } from './graph-node';
+import { GraphNode, GraphNodeKey, GraphNodeSubscriptionCleanup } from './graph-node';
 
 export type GraphNodeDependencies = Set<GraphNode<any, any>>;
 
@@ -36,6 +36,7 @@ export interface GraphNodeBaseVersion {
 export interface GraphNodeVersion extends GraphNodeBaseVersion {
   // Dependencies
   dependencies: GraphNodeDependencies;
+  cleanups: GraphNodeSubscriptionCleanup[];
 }
 
 export type GraphNodeListener<T> = (value: T) => void;

@@ -28,9 +28,8 @@
 import {
   GraphNode,
   GraphNodeGet,
+  GraphNodeGetInterface,
   GraphNodeGetSupplier,
-  GraphNodeGetValue,
-  GraphNodeGetYield,
 } from './graph-node';
 
 function isNodeValueFunc<T>(
@@ -41,13 +40,9 @@ function isNodeValueFunc<T>(
 
 export default function createNodeValue<S, A>(
   node: GraphNode<S, A>,
-  getNode: GraphNodeGetValue,
-  setNode: GraphNodeGetYield<S>,
+  methods: GraphNodeGetInterface<S>,
 ): S {
   return isNodeValueFunc(node.get)
-    ? node.get({
-      get: getNode,
-      set: setNode,
-    })
+    ? node.get(methods)
     : node.get;
 }

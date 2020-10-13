@@ -38,7 +38,7 @@ function App() {
 }
 ```
 
-There are also three hooks:
+There are also 6 hooks:
 - `useGraphNodeValue`: reads a graph node's value. Subscribes to the graph node's state updates.
 - `useGraphNodeDispatch`: provides a callback that allows graph node's state mutation or runs `set` field.
 - `useGraphNodeReset`: provides a callback for resetting (recomputing) a graph node's value.

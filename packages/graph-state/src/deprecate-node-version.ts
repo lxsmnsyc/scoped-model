@@ -39,6 +39,9 @@ export default function deprecateNodeVersion<S, A>(
   actualNode.version.dependencies.forEach((dependency) => {
     unregisterNodeDependency(memory, dependency, node);
   });
+  actualNode.version.cleanups.forEach((cleanup) => {
+    cleanup();
+  });
   actualNode.version.alive = false;
   actualNode.version = createNodeVersion();
 }
