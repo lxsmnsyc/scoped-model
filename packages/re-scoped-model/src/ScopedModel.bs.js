@@ -250,8 +250,6 @@ function MakeNullary(Facing) {
     make: ScopedModel$Make$ProcessorInner
   };
   var make$1 = React.memo(ScopedModel$Make$ProcessorInner, (function (prev, next) {
-          next.props;
-          prev.props;
           return true;
         }));
   var makeProps$1 = function (props, param) {
@@ -308,7 +306,6 @@ function MakeState(Facing) {
     makeProps: makeProps
   };
   var ScopedModel$Make$ProcessorInner = function (Props) {
-    Props.props;
     var notifier = Utils$ReScopedModel.Result.get(React.useContext(context), {
           RE_EXN_ID: Exceptions$ReScopedModel.MissingScopedModel
         });
@@ -330,8 +327,6 @@ function MakeState(Facing) {
     make: ScopedModel$Make$ProcessorInner
   };
   var make$1 = React.memo(ScopedModel$Make$ProcessorInner, (function (prev, next) {
-          next.props;
-          prev.props;
           return true;
         }));
   var makeProps$1 = function (props, param) {
@@ -413,8 +408,6 @@ function MakeReducer(Facing) {
     make: ScopedModel$Make$ProcessorInner
   };
   var make$1 = React.memo(ScopedModel$Make$ProcessorInner, (function (prev, next) {
-          next.props;
-          prev.props;
           return true;
         }));
   var makeProps$1 = function (props, param) {
