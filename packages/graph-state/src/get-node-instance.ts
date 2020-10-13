@@ -39,6 +39,7 @@ export default function getNodeInstance<S, A>(
       version: {
         alive: true,
         dependencies: new Set(),
+        cleanups: [],
       },
       setterVersion: {
         alive: true,
