@@ -27,7 +27,6 @@
  */
 let ID = 0;
 
-
 export default function generateKey(): number {
   const newID = ID;
   ID += 1;
