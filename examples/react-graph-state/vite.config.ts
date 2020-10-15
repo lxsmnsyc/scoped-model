@@ -6,6 +6,7 @@ const config: UserConfig = {
   plugins: [reactPlugin],
   optimizeDeps: {
     exclude: [
+      'graph-state',
       'react-graph-state',
     ],
   },

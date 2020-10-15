@@ -9,6 +9,7 @@ const config: UserConfig = {
   plugins: [preactRefresh()],
   optimizeDeps: {
     exclude: [
+      'graph-state',
       'preact-graph-state'
     ],
   },
