@@ -1,0 +1,28 @@
+{
+  "name": "react-swr-graph-state-vite",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@pika/react": "^16.13.1",
+    "@pika/react-dom": "^16.13.1",
+    "graph-state": "0.2.1",
+    "react": "npm:@pika/react",
+    "react-dom": "npm:@pika/react-dom",
+    "react-graph-state": "0.5.1",
+    "swr-graph-state": "^0.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^16.9.52",
+    "@types/react-dom": "^16.9.8",
+    "eslint": "^7.11.0",
+    "eslint-config-lxsmnsyc": "^0.1.19",
+    "typescript": "^4.0.3",
+    "vite": "^1.0.0-rc.4",
+    "vite-plugin-react": "^3.0.2"
+  },
+  "private": true
+}
