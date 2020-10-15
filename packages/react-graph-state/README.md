@@ -7,13 +7,11 @@
 ## Install
 
 ```bash
-yarn add graph-state
-yarn add react-graph-state
+yarn add graph-state react-graph-state
 ```
 
 ```bash
-npm install graph-state
-npm install react-graph-state
+npm install graph-state react-graph-state
 ```
 
 ## Usage

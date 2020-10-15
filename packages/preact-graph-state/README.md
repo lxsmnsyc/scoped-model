@@ -7,13 +7,11 @@
 ## Install
 
 ```bash
-yarn add graph-state
-yarn add preact-graph-state
+yarn add graph-state preact-graph-state
 ```
 
 ```bash
-npm install graph-state
-npm install preact-graph-state
+npm install graph-state preact-graph-state
 ```
 
 ## Usage
