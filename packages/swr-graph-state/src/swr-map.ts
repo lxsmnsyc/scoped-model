@@ -27,6 +27,7 @@
  */
 import {
   addSWRValueListener,
+  createSWRValue,
   setSWRValue,
   SWRValue,
   SWRValueListener,
@@ -36,6 +37,23 @@ export type SWRMap<T> = Map<string, SWRValue<T>>;
 
 export function createSWRMap<T>(): SWRMap<T> {
   return new Map<string, SWRValue<T>>();
+}
+
+export function getSWRMapRef<T>(
+  map: SWRMap<T>,
+  key: string,
+  value: T,
+): SWRValue<T> {
+  const ref = map.get(key);
+
+  if (ref) {
+    return ref;
+  }
+
+  const newRef = createSWRValue(value);
+  map.set(key, newRef);
+
+  return newRef;
 }
 
 export function addSWRMapListener<T>(
@@ -68,11 +86,9 @@ export function setSWRMap<T>(
   value: T,
   notify = true,
 ): void {
-  const ref = map.get(key);
+  const ref = getSWRMapRef(map, key, value);
 
-  if (ref) {
-    setSWRValue(ref, value, notify);
-  }
+  setSWRValue(ref, value, notify);
 }
 
 export function getSWRMap<T>(

@@ -35,11 +35,11 @@ import {
 import { SWRGraphNodeBaseOptions, SWRGraphNodeRawValue } from './create-swr-graph-node';
 import {
   createSWRMap,
+  getSWRMapRef,
   setSWRMap,
 } from './swr-map';
 import {
   addSWRValueListener,
-  createSWRValue,
   removeSWRValueListener,
 } from './swr-value';
 import IS_SERVER from './utils/is-server';
@@ -68,8 +68,7 @@ export default function createSWRGraphNodeFactory<T, P extends unknown[] = []>(
     get: (...args: P) => {
       const key = options.key(...args);
 
-      const ref = createSWRValue<boolean>(true);
-      revalidate.set(key, ref);
+      const ref = getSWRMapRef(revalidate, key, true);
 
       return ({ set, subscription }) => {
         subscription(() => {
@@ -129,8 +128,7 @@ export default function createSWRGraphNodeFactory<T, P extends unknown[] = []>(
     get: (...args: P) => {
       const key = options.key(...args);
 
-      const ref = createSWRValue<SWRGraphNodeRawValue<T>>(options.initialData);
-      mutation.set(key, ref);
+      const ref = getSWRMapRef(mutation, key, options.initialData);
 
       return ({ set, subscription }) => {
         subscription(() => {
@@ -149,14 +147,18 @@ export default function createSWRGraphNodeFactory<T, P extends unknown[] = []>(
     key: (...args: P) => `SWR[${options.key(...args)}]`,
     get: (...args: P) => {
       const key = options.key(...args);
+      const mNode = mutationNode(...args);
+      const rNode = revalidateNode(...args);
+      const fetcher = options.fetch(...args);
+
       return (methods) => {
-        const value = methods.get(mutationNode(...args));
-        const shouldRevalidate = methods.get(revalidateNode(...args));
+        const value = methods.get(mNode);
+        const shouldRevalidate = methods.get(rNode);
 
         if (shouldRevalidate && (options.ssr || !IS_SERVER)) {
           setSWRMap(revalidate, key, false);
 
-          const newValue = options.fetch(...args)(methods);
+          const newValue = fetcher(methods);
 
           if (newValue instanceof Promise) {
             newValue.then((result) => {
