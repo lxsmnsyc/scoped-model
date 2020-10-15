@@ -42,13 +42,17 @@ import IS_SERVER from './utils/is-server';
 
 export type SWRGraphNodeRawValue<T> = T | Promise<T>;
 
-export interface SWRGraphNodeOptions<T> {
-  fetch: (methods: GraphNodeGetInterface<T>) => SWRGraphNodeRawValue<T>;
+export interface SWRGraphNodeBaseOptions<T> {
   revalidateOnFocus?: boolean;
   revalidateOnNetwork?: boolean;
   revalidateOnVisibility?: boolean;
   initialData: T;
   ssr?: boolean;
+}
+
+export interface SWRGraphNodeOptions<T> extends SWRGraphNodeBaseOptions<T> {
+  fetch: (methods: GraphNodeGetInterface<T>) => SWRGraphNodeRawValue<T>;
+  key?: string;
 }
 
 export interface SWRGraphNodeInterface<T> {
@@ -65,6 +69,7 @@ export default function createSWRGraphNode<T>(
   const revalidate = createSWRValue(true);
 
   const revalidateNode = createGraphNode<boolean>({
+    key: options.key != null ? `SWR.Revalidate[${options.key}]` : undefined,
     get: ({ set, subscription }) => {
       subscription(() => {
         addSWRValueListener(revalidate, set);
@@ -118,6 +123,7 @@ export default function createSWRGraphNode<T>(
   });
 
   const mutationNode = createGraphNode<SWRGraphNodeRawValue<T>>({
+    key: options.key != null ? `SWR.Mutation[${options.key}]` : undefined,
     get: ({ set, subscription }) => {
       subscription(() => {
         addSWRValueListener(mutation, set);
@@ -131,6 +137,7 @@ export default function createSWRGraphNode<T>(
   });
 
   const node = createGraphNode<SWRGraphNodeRawValue<T>>({
+    key: options.key != null ? `SWR[${options.key}]` : undefined,
     get: (methods) => {
       const value = methods.get(mutationNode);
       const shouldRevalidate = methods.get(revalidateNode);

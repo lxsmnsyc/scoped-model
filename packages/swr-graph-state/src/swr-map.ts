@@ -25,7 +25,59 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-export { default as createSWRGraphNode } from './create-swr-graph-node';
-export * from './create-swr-graph-node';
-export { default as createSWRGraphNodeFactory } from './create-swr-graph-node-factory';
-export * from './create-swr-graph-node-factory';
+import {
+  addSWRValueListener,
+  setSWRValue,
+  SWRValue,
+  SWRValueListener,
+} from './swr-value';
+
+export type SWRMap<T> = Map<string, SWRValue<T>>;
+
+export function createSWRMap<T>(): SWRMap<T> {
+  return new Map<string, SWRValue<T>>();
+}
+
+export function addSWRMapListener<T>(
+  map: SWRMap<T>,
+  key: string,
+  listener: SWRValueListener<T>,
+): void {
+  const ref = map.get(key);
+
+  if (ref) {
+    addSWRValueListener(ref, listener);
+  }
+}
+
+export function removeSWRMapListener<T>(
+  map: SWRMap<T>,
+  key: string,
+  listener: SWRValueListener<T>,
+): void {
+  const ref = map.get(key);
+
+  if (ref) {
+    addSWRValueListener(ref, listener);
+  }
+}
+
+export function setSWRMap<T>(
+  map: SWRMap<T>,
+  key: string,
+  value: T,
+  notify = true,
+): void {
+  const ref = map.get(key);
+
+  if (ref) {
+    setSWRValue(ref, value, notify);
+  }
+}
+
+export function getSWRMap<T>(
+  map: SWRMap<T>,
+  key: string,
+): T | undefined {
+  return map.get(key)?.value;
+}
