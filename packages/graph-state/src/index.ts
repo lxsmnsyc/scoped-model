@@ -36,3 +36,4 @@ export { default as createGraphDomainScheduler } from './create-domain-scheduler
 export { default as createGraphDomainInterface } from './create-domain-interface';
 
 export { default as performWorkLoop } from './perform-work-loop';
+export { default as cleanDomainMemory } from './clean-domain-memory';
