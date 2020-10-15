@@ -1,0 +1,49 @@
+{
+  "version": "0.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=10"
+  },
+  "scripts": {
+    "prepublish": "pridepack build",
+    "build": "pridepack build",
+    "type-check": "pridepack check",
+    "lint": "pridepack lint",
+    "test": "pridepack test --passWithNoTests",
+    "clean": "pridepack clean",
+    "watch": "pridepack watch"
+  },
+  "license": "MIT",
+  "name": "swr-graph-state",
+  "module": "dist/swr-graph-state.esm.js",
+  "devDependencies": {
+    "@types/jest": "^26.0.14",
+    "@types/node": "^14.11.8",
+    "eslint": "^7.11.0",
+    "eslint-config-lxsmnsyc": "^0.1.19",
+    "pridepack": "^0.1.4",
+    "tslib": "^2.0.3",
+    "typescript": "^4.0.3"
+  },
+  "peerDependencies": {
+    "graph-state": "^0.2.1"
+  },
+  "author": "Alexis Munsayac",
+  "description": "SWR + graph-state",
+  "repository": {
+    "url": "https://github.com/lxsmnsyc/scoped-model.git",
+    "type": "git"
+  },
+  "homepage": "https://github.com/lxsmnsyc/scoped-model",
+  "bugs": {
+    "url": "https://github.com/lxsmnsyc/scoped-model/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
