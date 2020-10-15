@@ -37,6 +37,7 @@ import {
   createGraphDomainInterface,
   performWorkLoop,
   Work,
+  cleanDomainMemory,
 } from 'graph-state';
 import useConstant from './hooks/useConstant';
 import useIsomorphicEffect from './hooks/useIsomorphicEffect';
@@ -62,6 +63,10 @@ function GraphCoreProcess(): VNode {
   useIsomorphicEffect(() => {
     performWorkLoop(memory, scheduler, methods, workQueue, resetWork);
   }, [workQueue]);
+
+  useIsomorphicEffect(() => () => {
+    cleanDomainMemory(memory);
+  }, []);
 
   return <Fragment />;
 }
