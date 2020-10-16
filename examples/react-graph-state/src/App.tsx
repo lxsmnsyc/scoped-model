@@ -9,6 +9,7 @@ import {
   useGraphNodeValue,
   useGraphNodeState,
   useGraphNodeReset,
+  useGraphNodeMutate,
 } from 'react-graph-state';
 
 const temperatureF = createGraphNode({
@@ -116,12 +117,18 @@ function AsyncTemperature(): JSX.Element {
 }
 
 const timer = createGraphNode<number>({
-  get: ({ set }) => {
+  get: ({ set, subscription }) => {
     let count = 0;
-    setInterval(() => {
-      count += 1;
-      set(count);
-    }, 1000);
+    subscription(() => {
+      const interval = setInterval(() => {
+        count += 1;
+        set(count);
+      }, 1000);
+
+      return () => {
+        clearInterval(interval);
+      };
+    });
     return count;
   },
 });
@@ -132,9 +139,11 @@ function Timer(): JSX.Element {
   return <h1>{`Time: ${value}`}</h1>;
 }
 
-export default function App(): JSX.Element {
+function InnerApp(): JSX.Element {
+  useGraphNodeMutate(temperatureF, 100);
+
   return (
-    <GraphDomain>
+    <>
       <Fahrenheit />
       <Celsius />
       <ResetTemperature />
@@ -144,6 +153,14 @@ export default function App(): JSX.Element {
       </Suspense>
       <AsyncTemperature />
       <Timer />
+    </>
+  );
+}
+
+export default function App(): JSX.Element {
+  return (
+    <GraphDomain>
+      <InnerApp />
     </GraphDomain>
   );
 }

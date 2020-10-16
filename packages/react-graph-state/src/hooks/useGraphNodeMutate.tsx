@@ -25,28 +25,14 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { GraphDomainMemory } from './create-domain-memory';
-import { GraphDomainScheduler } from './create-domain-scheduler';
-import { GraphNode } from './graph-node';
+import { GraphNode } from 'graph-state';
+import { useGraphDomainInterface } from '../GraphDomainContext';
 
-export default function setNodeState<S, A>(
-  memory: GraphDomainMemory,
-  scheduler: GraphDomainScheduler,
+export default function useGraphNodeMutate<S, A>(
   node: GraphNode<S, A>,
   value: S,
-  notify = true,
 ): void {
-  const currentState = memory.state.get(node.key);
+  const logic = useGraphDomainInterface();
 
-  if (currentState) {
-    currentState.value = value;
-  } else {
-    memory.state.set(node.key, {
-      value,
-    });
-  }
-
-  if (notify) {
-    scheduler.scheduleUpdate(node);
-  }
+  logic.mutateState(node, value);
 }

@@ -31,9 +31,12 @@ import { GraphDomainScheduler } from './create-domain-scheduler';
 import getNodeState from './get-node-state';
 import registerNodeListener from './register-node-listener';
 import unregisterNodeListener from './unregister-node-listener';
+import setNodeState from './set-node-state';
 
 export type GraphDomainSetState =
   <S, A>(node: GraphNode<S, A>, action: A) => void;
+export type GraphDomainMutateState =
+  <S, A>(node: GraphNode<S, A>, value: S) => void;
 export type GraphDomainGetState =
   <S, A>(node: GraphNode<S, A>) => S;
 export type GraphDomainResetState =
@@ -47,6 +50,7 @@ export interface GraphDomainInterface {
   setState: GraphDomainSetState;
   getState: GraphDomainGetState;
   resetState: GraphDomainResetState;
+  mutateState: GraphDomainMutateState;
   addListener: GraphDomainAddListener;
   removeListener: GraphDomainRemoveListener;
 }
@@ -67,6 +71,9 @@ export default function createGraphDomainInterface(
         action,
         target: node,
       });
+    },
+    mutateState: <S, A>(node: GraphNode<S, A>, value: S): void => {
+      setNodeState(memory, scheduler, node, value, false);
     },
     resetState: <S, A>(node: GraphNode<S, A>): void => {
       scheduler.scheduleCompute(node);

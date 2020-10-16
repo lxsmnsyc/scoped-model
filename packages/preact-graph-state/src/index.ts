@@ -28,6 +28,7 @@
 export { default as useGraphNodeValue } from './hooks/useGraphNodeValue';
 export { default as useGraphNodeState } from './hooks/useGraphNodeState';
 export { default as useGraphNodeReset } from './hooks/useGraphNodeReset';
+export { default as useGraphNodeMutate } from './hooks/useGraphNodeMutate';
 export { default as useGraphNodeDispatch } from './hooks/useGraphNodeDispatch';
 export { default as useGraphNodeResource } from './hooks/useGraphNodeResource';
 export { default as useGraphNodeSnapshot } from './hooks/useGraphNodeSnapshot';

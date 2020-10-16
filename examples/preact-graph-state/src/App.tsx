@@ -12,6 +12,7 @@ import {
   useGraphNodeValue,
   useGraphNodeState,
   useGraphNodeReset,
+  useGraphNodeMutate,
 } from 'preact-graph-state';
 
 const temperatureF = createGraphNode({
@@ -119,12 +120,18 @@ function AsyncTemperature(): VNode {
 }
 
 const timer = createGraphNode<number>({
-  get: ({ set }) => {
+  get: ({ set, subscription }) => {
     let count = 0;
-    setInterval(() => {
-      count += 1;
-      set(count);
-    }, 1000);
+    subscription(() => {
+      const interval = setInterval(() => {
+        count += 1;
+        set(count);
+      }, 1000);
+
+      return () => {
+        clearInterval(interval);
+      };
+    });
     return count;
   },
 });
@@ -135,9 +142,11 @@ function Timer(): VNode {
   return <h1>{`Time: ${value}`}</h1>;
 }
 
-export default function App(): VNode {
+function InnerApp(): VNode {
+  useGraphNodeMutate(temperatureF, 100);
+
   return (
-    <GraphDomain>
+    <Fragment>
       <Fahrenheit />
       <Celsius />
       <ResetTemperature />
@@ -147,6 +156,14 @@ export default function App(): VNode {
       </Suspense>
       <AsyncTemperature />
       <Timer />
+    </Fragment>
+  );
+}
+
+export default function App(): VNode {
+  return (
+    <GraphDomain>
+      <InnerApp />
     </GraphDomain>
   );
 }

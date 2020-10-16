@@ -43,6 +43,7 @@ There are also 6 hooks:
 - `useGraphNodeState`: a combination of `useGraphNodeValue`, `useGraphNodeDispatch` and `useGraphNodeReset` in a form of a tuple.
 - `useGraphNodeResource`: treats the graph node as a valid Preact resource, suspending the component if the graph node's resource is pending.
 - `useGraphNodeSnapshot`: attaches a listener to the node for state updates.
+- `useGraphNodeMutate`: silently mutates a graph node's state. **USE WITH CAUTION**: this hook is only recommended to be used by independent nodes.
 
 If one of these hooks are used to access a graph node, that graph node is registered within `<GraphDomain>` and creates a lifecycle.
 
@@ -136,6 +137,15 @@ This is a hook that attaches a listener to a graph node and subscribes for state
 useGraphNodeSnapshot(node, (state) => {
   console.log('Received', state);
 });
+```
+
+##### `useGraphNodeMutate`
+
+**USE WITH CAUTION**
+Synchronously and silently mutates a graph node's state. This is only recommended for independent nodes as a form of lazy state hydration.
+
+```tsx
+useGraphNodeMutate(countNode, 100);
 ```
 
 ##### `useGraphNodeResource`
