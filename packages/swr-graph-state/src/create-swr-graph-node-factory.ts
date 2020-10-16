@@ -27,7 +27,9 @@
  */
 import {
   createGraphNodeFactory,
+  GraphNodeAsyncPending,
   GraphNodeAsyncResult,
+  GraphNodeAsyncSuccess,
   GraphNodeResourceFactory,
 } from 'graph-state';
 import {
@@ -60,7 +62,7 @@ export interface SWRGraphNodeFactoryInterface<T, P extends unknown[] = []> {
 export default function createSWRGraphNodeFactory<T, P extends unknown[] = []>(
   options: SWRGraphNodeFactoryOptions<T, P>,
 ): SWRGraphNodeFactoryInterface<T, P> {
-  const mutation = createSWRMap<GraphNodeAsyncResult<T>>();
+  const mutation = createSWRMap<GraphNodeAsyncResult<T> | undefined>();
   const revalidate = createSWRMap<boolean>();
 
   const revalidateNode = createGraphNodeFactory<P, boolean>({
@@ -123,15 +125,19 @@ export default function createSWRGraphNodeFactory<T, P extends unknown[] = []>(
     },
   });
 
-  const mutationNode = createGraphNodeFactory<P, GraphNodeAsyncResult<T>>({
+  const mutationNode = createGraphNodeFactory<P, GraphNodeAsyncResult<T> | undefined>({
     key: (...args: P) => `SWR.Mutation[${options.key(...args)}]`,
     get: (...args: P) => {
       const key = options.key(...args);
 
-      const ref = getSWRMapRef(mutation, key, {
-        status: 'success',
-        data: options.initialData,
-      });
+      const ref = getSWRMapRef(mutation, key, undefined);
+
+      if (options.initialData != null) {
+        setSWRMap(mutation, key, {
+          status: 'success',
+          data: options.initialData,
+        });
+      }
 
       return ({ set, subscription }) => {
         subscription(() => {
@@ -156,11 +162,8 @@ export default function createSWRGraphNodeFactory<T, P extends unknown[] = []>(
 
       return (methods) => {
         const value = methods.get(mNode);
-        const shouldRevalidate = methods.get(rNode);
 
-        if (shouldRevalidate && (options.ssr || !IS_SERVER)) {
-          setSWRMap(revalidate, key, false);
-
+        const prefetch = () => {
           const newValue = fetcher(methods);
 
           if (newValue instanceof Promise) {
@@ -178,18 +181,54 @@ export default function createSWRGraphNodeFactory<T, P extends unknown[] = []>(
                 });
               },
             );
+          }
 
-            if (value == null) {
-              setSWRMap(mutation, key, {
+          return newValue;
+        };
+
+        if (value == null) {
+          const newValue = prefetch();
+
+          if (newValue instanceof Promise) {
+            const result: GraphNodeAsyncPending<T> = {
+              status: 'pending',
+              data: newValue,
+            };
+            setSWRMap(mutation, key, result);
+            return result;
+          }
+
+          const result: GraphNodeAsyncSuccess<T> = {
+            status: 'success',
+            data: newValue,
+          };
+          setSWRMap(mutation, key, result);
+          return result;
+        }
+
+        const shouldRevalidate = methods.get(rNode);
+
+        if (shouldRevalidate && (options.ssr || !IS_SERVER)) {
+          setSWRMap(revalidate, key, false);
+
+          const newValue = prefetch();
+
+          if (newValue instanceof Promise) {
+            if (value.data == null) {
+              const result: GraphNodeAsyncPending<T> = {
                 status: 'pending',
                 data: newValue,
-              });
+              };
+              setSWRMap(mutation, key, result);
+              return result;
             }
           } else {
-            setSWRMap(mutation, key, {
+            const result: GraphNodeAsyncSuccess<T> = {
               status: 'success',
               data: newValue,
-            });
+            };
+            setSWRMap(mutation, key, result);
+            return result;
           }
         }
 

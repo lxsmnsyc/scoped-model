@@ -1,5 +1,5 @@
 /** @jsx h */
-import { Fragment, h, VNode } from 'preact';
+import { h, VNode } from 'preact';
 import { Suspense } from 'preact/compat';
 import {
   GraphDomain,
@@ -20,7 +20,7 @@ const dogBreed = createGraphNode({
   get: 'shiba',
 });
 
-const dogAPI = createSWRGraphNode<APIResult | undefined>({
+const dogAPI = createSWRGraphNode<APIResult>({
   fetch: async ({ get }) => {
     const breed = get(dogBreed);
     const response = await fetch(`${API}${breed}${API_SUFFIX}`);
@@ -29,18 +29,13 @@ const dogAPI = createSWRGraphNode<APIResult | undefined>({
   revalidateOnFocus: true,
   revalidateOnNetwork: true,
   revalidateOnVisibility: true,
-  initialData: undefined,
   ssr: false,
 });
 
 function DogImage(): VNode {
   const data = useGraphNodeResource(dogAPI.resource);
 
-  if (data) {
-    return <img src={data.message} alt={data.message} />;
-  }
-
-  return <Fragment />;
+  return <img src={data.message} alt={data.message} />;
 }
 
 function Trigger(): VNode {

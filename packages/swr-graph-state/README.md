@@ -25,7 +25,7 @@ With an additional base options shared with the factory:
 - `revalidateOnVisibility`: `boolean`. Revalidates the cache when the page is visible.Defaults to `false`.
 - `revalidateOnNetwork`: `boolean`. Revalidates the cache when the network connectivity goes back online. Defaults to `false`.
 - `ssr`: Allow fetching on server-side. Defaults to `false`.
-- `initialData`: Hydrates the cache on node creation.
+- `initialData`: Optional. Hydrates the cache on node creation, resulting on `success` state on initial render. If not provided, SWR graph nodes begins with `pending` state.
 
 Upon creation, the function returns not a node, but an interface that provides a way to mutate and revalidate the cache:
 

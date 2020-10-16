@@ -27,7 +27,9 @@
  */
 import {
   createGraphNode,
+  GraphNodeAsyncPending,
   GraphNodeAsyncResult,
+  GraphNodeAsyncSuccess,
   GraphNodeGetInterface,
   GraphNodeResource,
 } from 'graph-state';
@@ -45,7 +47,7 @@ export interface SWRGraphNodeBaseOptions<T> {
   revalidateOnFocus?: boolean;
   revalidateOnNetwork?: boolean;
   revalidateOnVisibility?: boolean;
-  initialData: T;
+  initialData?: T;
   ssr?: boolean;
 }
 
@@ -66,11 +68,15 @@ export interface SWRGraphNodeInterface<T> {
 export default function createSWRGraphNode<T>(
   options: SWRGraphNodeOptions<T>,
 ): SWRGraphNodeInterface<T> {
-  const mutation = createSWRValue<GraphNodeAsyncResult<T>>({
-    status: 'success',
-    data: options.initialData,
-  });
+  const mutation = createSWRValue<GraphNodeAsyncResult<T> | undefined>(undefined);
   const revalidate = createSWRValue(true);
+
+  if (options.initialData != null) {
+    setSWRValue(mutation, {
+      status: 'success',
+      data: options.initialData,
+    });
+  }
 
   const revalidateNode = createGraphNode<boolean>({
     key: options.key != null ? `SWR.Revalidate[${options.key}]` : undefined,
@@ -126,7 +132,7 @@ export default function createSWRGraphNode<T>(
     },
   });
 
-  const mutationNode = createGraphNode<GraphNodeAsyncResult<T>>({
+  const mutationNode = createGraphNode<GraphNodeAsyncResult<T> | undefined>({
     key: options.key != null ? `SWR.Mutation[${options.key}]` : undefined,
     get: ({ set, subscription }) => {
       subscription(() => {
@@ -144,11 +150,8 @@ export default function createSWRGraphNode<T>(
     key: options.key != null ? `SWR[${options.key}]` : undefined,
     get: (methods) => {
       const value = methods.get(mutationNode);
-      const shouldRevalidate = methods.get(revalidateNode);
 
-      if (shouldRevalidate && (options.ssr || !IS_SERVER)) {
-        setSWRValue(revalidate, false);
-
+      const prefetch = () => {
         const newValue = options.fetch(methods);
 
         if (newValue instanceof Promise) {
@@ -166,18 +169,54 @@ export default function createSWRGraphNode<T>(
               });
             },
           );
+        }
 
-          if (value == null) {
-            setSWRValue(mutation, {
+        return newValue;
+      };
+
+      if (value == null) {
+        const newValue = prefetch();
+
+        if (newValue instanceof Promise) {
+          const result: GraphNodeAsyncPending<T> = {
+            status: 'pending',
+            data: newValue,
+          };
+          setSWRValue(mutation, result);
+          return result;
+        }
+
+        const result: GraphNodeAsyncSuccess<T> = {
+          status: 'success',
+          data: newValue,
+        };
+        setSWRValue(mutation, result);
+        return result;
+      }
+
+      const shouldRevalidate = methods.get(revalidateNode);
+
+      if (shouldRevalidate && (options.ssr || !IS_SERVER)) {
+        setSWRValue(revalidate, false);
+
+        const newValue = prefetch();
+
+        if (newValue instanceof Promise) {
+          if (value.data == null) {
+            const result: GraphNodeAsyncPending<T> = {
               status: 'pending',
               data: newValue,
-            });
+            };
+            setSWRValue(mutation, result);
+            return result;
           }
         } else {
-          setSWRValue(mutation, {
+          const result: GraphNodeAsyncSuccess<T> = {
             status: 'success',
             data: newValue,
-          });
+          };
+          setSWRValue(mutation, result);
+          return result;
         }
       }
 

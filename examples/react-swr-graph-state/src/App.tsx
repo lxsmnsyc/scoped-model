@@ -18,7 +18,7 @@ const dogBreed = createGraphNode({
   get: 'shiba',
 });
 
-const dogAPI = createSWRGraphNode<APIResult | undefined>({
+const dogAPI = createSWRGraphNode<APIResult>({
   fetch: async ({ get }) => {
     const breed = get(dogBreed);
     const response = await fetch(`${API}${breed}${API_SUFFIX}`);
@@ -27,18 +27,13 @@ const dogAPI = createSWRGraphNode<APIResult | undefined>({
   revalidateOnFocus: true,
   revalidateOnNetwork: true,
   revalidateOnVisibility: true,
-  initialData: undefined,
   ssr: false,
 });
 
 function DogImage(): JSX.Element {
   const data = useGraphNodeResource(dogAPI.resource);
 
-  if (data) {
-    return <img src={data.message} alt={data.message} />;
-  }
-
-  return <></>;
+  return <img src={data.message} alt={data.message} />;
 }
 
 function Trigger(): JSX.Element {
