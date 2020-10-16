@@ -1,15 +1,15 @@
 {
   "name": "preact-swr-graph-state-vite",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "graph-state": "0.3.1",
+    "graph-state": "0.4.0",
     "preact": "^10.5.4",
-    "preact-graph-state": "0.5.3",
+    "preact-graph-state": "0.6.0",
     "swr-graph-state": "0.3.2"
   },
   "devDependencies": {
