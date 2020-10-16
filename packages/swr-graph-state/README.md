@@ -116,6 +116,10 @@ Similar to `createSWRGraphNode` with the following differences:
 - `trigger`: first parameter is the array of arguments for generating the key.
 - `resource`: Replaced by a graph node factory, and accepts similar arguments that is expected by `fetch` and `key`.
 
+### SSR
+
+If a graph node has no `initialData` provided nor wasn't hydrated using `mutate`, SWR Graph nodes may throw an error indicating an attempt to prefetch data on server-side. To solve this, either provide an `initialData` value or call `mutate` before accessing the instance, or allow server-side prefetching with setting `options.ssr` to true.
+
 ## License
 
 MIT © [lxsmnsyc](https://github.com/lxsmnsyc)

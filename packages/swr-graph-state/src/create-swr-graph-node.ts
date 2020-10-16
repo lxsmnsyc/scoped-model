@@ -40,6 +40,7 @@ import {
   setSWRValue,
 } from './swr-value';
 import IS_SERVER from './utils/is-server';
+import NoServerFetchError from './utils/no-server-fetch-error';
 
 export type SWRGraphNodeRawValue<T> = T | Promise<T>;
 
@@ -71,6 +72,7 @@ export default function createSWRGraphNode<T>(
   const mutation = createSWRValue<GraphNodeAsyncResult<T> | undefined>(undefined);
   const revalidate = createSWRValue(true);
 
+  // Hydrate cache if initialData is provided.
   if (options.initialData != null) {
     setSWRValue(mutation, {
       status: 'success',
@@ -78,9 +80,12 @@ export default function createSWRGraphNode<T>(
     });
   }
 
+  // This is a graph node that manages
+  // the revalidation state of the resource node.
   const revalidateNode = createGraphNode<boolean>({
     key: options.key != null ? `SWR.Revalidate[${options.key}]` : undefined,
     get: ({ set, subscription }) => {
+      // Subscribe to the revalidate cache for external trigger.
       subscription(() => {
         addSWRValueListener(revalidate, set);
         return () => {
@@ -88,11 +93,13 @@ export default function createSWRGraphNode<T>(
         };
       });
 
+      // Only perform most window events on server-side
       if (!IS_SERVER) {
         const onRevalidate = () => {
           set(true);
         };
 
+        // Registers a focus event for revalidation.
         if (options.revalidateOnFocus) {
           subscription(() => {
             window.addEventListener('focus', onRevalidate, false);
@@ -102,6 +109,8 @@ export default function createSWRGraphNode<T>(
             };
           });
         }
+
+        // Registers a online event for revalidation.
         if (options.revalidateOnNetwork) {
           subscription(() => {
             window.addEventListener('online', onRevalidate, false);
@@ -111,6 +120,8 @@ export default function createSWRGraphNode<T>(
             };
           });
         }
+
+        // Registers a visibility change event for revalidation.
         if (options.revalidateOnVisibility) {
           subscription(() => {
             const onVisible = () => {
@@ -132,6 +143,7 @@ export default function createSWRGraphNode<T>(
     },
   });
 
+  // This node manages the cache mutation
   const mutationNode = createGraphNode<GraphNodeAsyncResult<T> | undefined>({
     key: options.key != null ? `SWR.Mutation[${options.key}]` : undefined,
     get: ({ set, subscription }) => {
@@ -149,11 +161,16 @@ export default function createSWRGraphNode<T>(
   const resource = createGraphNode<GraphNodeAsyncResult<T>>({
     key: options.key != null ? `SWR[${options.key}]` : undefined,
     get: (methods) => {
+      // Read the mutation value
       const value = methods.get(mutationNode);
+      // Subscribe to revalidation
+      const shouldRevalidate = methods.get(revalidateNode);
 
       const prefetch = () => {
+        // Perform fetch
         const newValue = options.fetch(methods);
 
+        // Subscribe to Promise resolution for cache updates
         if (newValue instanceof Promise) {
           newValue.then(
             (data) => {
@@ -174,9 +191,17 @@ export default function createSWRGraphNode<T>(
         return newValue;
       };
 
+      // Check if cache is not hydrated
       if (value == null) {
+        // Only perform inital data fetch on client-side
+        if (!options.ssr && IS_SERVER) {
+          throw new NoServerFetchError();
+        }
+
+        // Perform initial fetch
         const newValue = prefetch();
 
+        // Set state to pending if new value is a promise.
         if (newValue instanceof Promise) {
           const result: GraphNodeAsyncPending<T> = {
             status: 'pending',
@@ -186,6 +211,7 @@ export default function createSWRGraphNode<T>(
           return result;
         }
 
+        // Otherwise, set to success
         const result: GraphNodeAsyncSuccess<T> = {
           status: 'success',
           data: newValue,
@@ -194,13 +220,14 @@ export default function createSWRGraphNode<T>(
         return result;
       }
 
-      const shouldRevalidate = methods.get(revalidateNode);
-
+      // Only revalidate on client-side
       if (shouldRevalidate && (options.ssr || !IS_SERVER)) {
+        // Reset revalidation flag
         setSWRValue(revalidate, false);
 
         const newValue = prefetch();
 
+        // Only set state to pending if previous data is nullish
         if (newValue instanceof Promise) {
           if (value.data == null) {
             const result: GraphNodeAsyncPending<T> = {

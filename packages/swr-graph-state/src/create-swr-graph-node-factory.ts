@@ -46,6 +46,7 @@ import {
   removeSWRValueListener,
 } from './swr-value';
 import IS_SERVER from './utils/is-server';
+import NoServerFetchError from './utils/no-server-fetch-error';
 
 export interface SWRGraphNodeFactoryOptions<T, P extends unknown[] = []>
   extends SWRGraphNodeBaseOptions<T> {
@@ -162,6 +163,7 @@ export default function createSWRGraphNodeFactory<T, P extends unknown[] = []>(
 
       return (methods) => {
         const value = methods.get(mNode);
+        const shouldRevalidate = methods.get(rNode);
 
         const prefetch = () => {
           const newValue = fetcher(methods);
@@ -187,6 +189,9 @@ export default function createSWRGraphNodeFactory<T, P extends unknown[] = []>(
         };
 
         if (value == null) {
+          if (!options.ssr && IS_SERVER) {
+            throw new NoServerFetchError();
+          }
           const newValue = prefetch();
 
           if (newValue instanceof Promise) {
@@ -205,8 +210,6 @@ export default function createSWRGraphNodeFactory<T, P extends unknown[] = []>(
           setSWRMap(mutation, key, result);
           return result;
         }
-
-        const shouldRevalidate = methods.get(rNode);
 
         if (shouldRevalidate && (options.ssr || !IS_SERVER)) {
           setSWRMap(revalidate, key, false);
