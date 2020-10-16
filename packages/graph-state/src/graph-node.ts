@@ -126,30 +126,23 @@ export type GraphNodePromise<S> = GraphNode<Promise<S>>;
 export type GraphNodeResource<S> = GraphNode<GraphNodeAsyncResult<S>>;
 
 function promiseToResource<T>(
-  promise: T | Promise<T>,
+  promise: Promise<T>,
   set: GraphNodeGetYield<GraphNodeAsyncResult<T>>,
 ): GraphNodeAsyncResult<T> {
-  if (promise instanceof Promise) {
-    promise.then(
-      (data) => set({
-        data,
-        status: 'success',
-      }),
-      (data) => set({
-        data,
-        status: 'failure',
-      }),
-    );
-
-    return {
-      data: promise,
-      status: 'pending',
-    };
-  }
+  promise.then(
+    (data) => set({
+      data,
+      status: 'success',
+    }),
+    (data) => set({
+      data,
+      status: 'failure',
+    }),
+  );
 
   return {
     data: promise,
-    status: 'success',
+    status: 'pending',
   };
 }
 
@@ -158,7 +151,7 @@ function promiseToResource<T>(
  * @param graphNode
  */
 export function createGraphNodeResource<S>(
-  graphNode: GraphNode<S | Promise<S>>,
+  graphNode: GraphNodePromise<S>,
 ): GraphNodeResource<S> {
   return createGraphNode({
     get: ({ get, set }) => promiseToResource(get(graphNode), set),
@@ -290,7 +283,7 @@ export type GraphNodeResourceFactory<Params extends any[], S> =
   GraphNodeFactory<Params, GraphNodeAsyncResult<S>>;
 
 export function createGraphNodeResourceFactory<Params extends any[], S>(
-  factory: GraphNodeFactory<Params, S | Promise<S>>,
+  factory: GraphNodeFactory<Params, Promise<S>>,
 ): GraphNodeResourceFactory<Params, S> {
   return (...params: Params): GraphNodeResource<S> => createGraphNodeResource(
     factory(...params),
