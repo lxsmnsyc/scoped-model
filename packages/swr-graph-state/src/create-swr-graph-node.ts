@@ -27,8 +27,7 @@
  */
 import {
   createGraphNode,
-  createGraphNodeResource,
-  GraphNode,
+  GraphNodeAsyncResult,
   GraphNodeGetInterface,
   GraphNodeResource,
 } from 'graph-state';
@@ -50,22 +49,27 @@ export interface SWRGraphNodeBaseOptions<T> {
   ssr?: boolean;
 }
 
+export type SWRGraphNodeFetcher<T> =
+  (methods: GraphNodeGetInterface<GraphNodeAsyncResult<T>>) => SWRGraphNodeRawValue<T>;
+
 export interface SWRGraphNodeOptions<T> extends SWRGraphNodeBaseOptions<T> {
-  fetch: (methods: GraphNodeGetInterface<T>) => SWRGraphNodeRawValue<T>;
+  fetch: SWRGraphNodeFetcher<T>;
   key?: string;
 }
 
 export interface SWRGraphNodeInterface<T> {
-  mutate: (value: SWRGraphNodeRawValue<T>, shouldRevalidate?: boolean) => void;
+  mutate: (value: T, shouldRevalidate?: boolean) => void;
   trigger: (shouldRevalidate?: boolean) => void;
-  node: GraphNode<SWRGraphNodeRawValue<T>>;
   resource: GraphNodeResource<T>;
 }
 
 export default function createSWRGraphNode<T>(
   options: SWRGraphNodeOptions<T>,
 ): SWRGraphNodeInterface<T> {
-  const mutation = createSWRValue<SWRGraphNodeRawValue<T>>(options.initialData);
+  const mutation = createSWRValue<GraphNodeAsyncResult<T>>({
+    status: 'success',
+    data: options.initialData,
+  });
   const revalidate = createSWRValue(true);
 
   const revalidateNode = createGraphNode<boolean>({
@@ -122,7 +126,7 @@ export default function createSWRGraphNode<T>(
     },
   });
 
-  const mutationNode = createGraphNode<SWRGraphNodeRawValue<T>>({
+  const mutationNode = createGraphNode<GraphNodeAsyncResult<T>>({
     key: options.key != null ? `SWR.Mutation[${options.key}]` : undefined,
     get: ({ set, subscription }) => {
       subscription(() => {
@@ -136,7 +140,7 @@ export default function createSWRGraphNode<T>(
     },
   });
 
-  const node = createGraphNode<SWRGraphNodeRawValue<T>>({
+  const resource = createGraphNode<GraphNodeAsyncResult<T>>({
     key: options.key != null ? `SWR[${options.key}]` : undefined,
     get: (methods) => {
       const value = methods.get(mutationNode);
@@ -148,17 +152,32 @@ export default function createSWRGraphNode<T>(
         const newValue = options.fetch(methods);
 
         if (newValue instanceof Promise) {
-          newValue.then((result) => {
-            setSWRValue(mutation, result);
-          }, () => {
-            ///
-          });
+          newValue.then(
+            (data) => {
+              setSWRValue(mutation, {
+                status: 'success',
+                data,
+              });
+            },
+            (data: Error) => {
+              setSWRValue(mutation, {
+                status: 'failure',
+                data,
+              });
+            },
+          );
 
           if (value == null) {
-            setSWRValue(mutation, newValue);
+            setSWRValue(mutation, {
+              status: 'pending',
+              data: newValue,
+            });
           }
         } else {
-          setSWRValue(mutation, newValue);
+          setSWRValue(mutation, {
+            status: 'success',
+            data: newValue,
+          });
         }
       }
 
@@ -166,17 +185,18 @@ export default function createSWRGraphNode<T>(
     },
   });
 
-  const resource = createGraphNodeResource(node);
-
   return {
     mutate: (value, shouldRevalidate = true) => {
       setSWRValue(revalidate, shouldRevalidate);
-      setSWRValue(mutation, value);
+
+      setSWRValue(mutation, {
+        status: 'success',
+        data: value,
+      });
     },
     trigger: (shouldRevalidate = true) => {
       setSWRValue(revalidate, shouldRevalidate);
     },
-    node,
     resource,
   };
 }

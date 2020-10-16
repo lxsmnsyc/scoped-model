@@ -27,12 +27,13 @@
  */
 import {
   createGraphNodeFactory,
-  createGraphNodeResourceFactory,
-  GraphNodeFactory,
-  GraphNodeGetInterface,
+  GraphNodeAsyncResult,
   GraphNodeResourceFactory,
 } from 'graph-state';
-import { SWRGraphNodeBaseOptions, SWRGraphNodeRawValue } from './create-swr-graph-node';
+import {
+  SWRGraphNodeBaseOptions,
+  SWRGraphNodeFetcher,
+} from './create-swr-graph-node';
 import {
   createSWRMap,
   getSWRMapRef,
@@ -46,21 +47,20 @@ import IS_SERVER from './utils/is-server';
 
 export interface SWRGraphNodeFactoryOptions<T, P extends unknown[] = []>
   extends SWRGraphNodeBaseOptions<T> {
-  fetch: (...args: P) => (methods: GraphNodeGetInterface<T>) => SWRGraphNodeRawValue<T>;
+  fetch: (...args: P) => SWRGraphNodeFetcher<T>;
   key: (...args: P) => string,
 }
 
 export interface SWRGraphNodeFactoryInterface<T, P extends unknown[] = []> {
-  mutate: (args: P, value: SWRGraphNodeRawValue<T>, shouldRevalidate?: boolean) => void;
+  mutate: (args: P, value: T, shouldRevalidate?: boolean) => void;
   trigger: (args: P, shouldRevalidate?: boolean) => void;
-  node: GraphNodeFactory<P, SWRGraphNodeRawValue<T>>;
   resource: GraphNodeResourceFactory<P, T>;
 }
 
 export default function createSWRGraphNodeFactory<T, P extends unknown[] = []>(
   options: SWRGraphNodeFactoryOptions<T, P>,
 ): SWRGraphNodeFactoryInterface<T, P> {
-  const mutation = createSWRMap<SWRGraphNodeRawValue<T>>();
+  const mutation = createSWRMap<GraphNodeAsyncResult<T>>();
   const revalidate = createSWRMap<boolean>();
 
   const revalidateNode = createGraphNodeFactory<P, boolean>({
@@ -123,12 +123,15 @@ export default function createSWRGraphNodeFactory<T, P extends unknown[] = []>(
     },
   });
 
-  const mutationNode = createGraphNodeFactory<P, SWRGraphNodeRawValue<T>>({
+  const mutationNode = createGraphNodeFactory<P, GraphNodeAsyncResult<T>>({
     key: (...args: P) => `SWR.Mutation[${options.key(...args)}]`,
     get: (...args: P) => {
       const key = options.key(...args);
 
-      const ref = getSWRMapRef(mutation, key, options.initialData);
+      const ref = getSWRMapRef(mutation, key, {
+        status: 'success',
+        data: options.initialData,
+      });
 
       return ({ set, subscription }) => {
         subscription(() => {
@@ -143,7 +146,7 @@ export default function createSWRGraphNodeFactory<T, P extends unknown[] = []>(
     },
   });
 
-  const node = createGraphNodeFactory<P, SWRGraphNodeRawValue<T>>({
+  const resource = createGraphNodeFactory<P, GraphNodeAsyncResult<T>>({
     key: (...args: P) => `SWR[${options.key(...args)}]`,
     get: (...args: P) => {
       const key = options.key(...args);
@@ -161,17 +164,32 @@ export default function createSWRGraphNodeFactory<T, P extends unknown[] = []>(
           const newValue = fetcher(methods);
 
           if (newValue instanceof Promise) {
-            newValue.then((result) => {
-              setSWRMap(mutation, key, result);
-            }, () => {
-              ///
-            });
+            newValue.then(
+              (data) => {
+                setSWRMap(mutation, key, {
+                  status: 'success',
+                  data,
+                });
+              },
+              (data: Error) => {
+                setSWRMap(mutation, key, {
+                  status: 'failure',
+                  data,
+                });
+              },
+            );
 
             if (value == null) {
-              setSWRMap(mutation, key, newValue);
+              setSWRMap(mutation, key, {
+                status: 'pending',
+                data: newValue,
+              });
             }
           } else {
-            setSWRMap(mutation, key, newValue);
+            setSWRMap(mutation, key, {
+              status: 'success',
+              data: newValue,
+            });
           }
         }
 
@@ -180,19 +198,19 @@ export default function createSWRGraphNodeFactory<T, P extends unknown[] = []>(
     },
   });
 
-  const resource = createGraphNodeResourceFactory(node);
-
   return {
     mutate: (args, value, shouldRevalidate = true) => {
       const key = options.key(...args);
       setSWRMap(revalidate, key, shouldRevalidate);
-      setSWRMap(mutation, key, value);
+      setSWRMap(mutation, key, {
+        data: value,
+        status: 'success',
+      });
     },
     trigger: (args, shouldRevalidate = true) => {
       const key = options.key(...args);
       setSWRMap(revalidate, key, shouldRevalidate);
     },
-    node,
     resource,
   };
 }
