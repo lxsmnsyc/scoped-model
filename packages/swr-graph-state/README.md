@@ -29,8 +29,7 @@ With an additional base options shared with the factory:
 
 Upon creation, the function returns not a node, but an interface that provides a way to mutate and revalidate the cache:
 
-- `node`: The graph node instance created.
-- `resource`: The graph node resource derived from the created graph node.
+- `resource`: The fetching graph node resource.
 - `mutate(data: T, shouldRevalidate = true)`: Synchronously mutates the cache. May sychronously revalidate the cache.
 - `trigger(shouldRevalidate = true)`: Sychronously revalidates the cache.
 
@@ -115,8 +114,7 @@ Similar to `createSWRGraphNode` with the following differences:
 `createSWRGraphNodeFactory` returns similar fields to `createSWRGraphNode` with the following differences:
 - `mutate`: first parameter is the array of arguments for generating the key.
 - `trigger`: first parameter is the array of arguments for generating the key.
-- `node`: Replaced by a graph node factory, and accepts similar arguments that is expected by `fetch` and `key`.
-- `resource`: Graph node resource factory wrapper for `node`.
+- `resource`: Replaced by a graph node factory, and accepts similar arguments that is expected by `fetch` and `key`.
 
 ## License
 
