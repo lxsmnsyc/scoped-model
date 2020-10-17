@@ -25,26 +25,16 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { Ref, useRef } from 'preact/hooks';
-import useRefSupplier from './useRefSupplier';
+import { useRef, Ref } from 'preact/hooks';
 
-export function defaultCompare<R>(a: R, b: R): boolean {
-  return !Object.is(a, b);
-}
+export default function useLazyRef<T>(supplier: () => T): Ref<T> {
+  const ref = useRef<Ref<T> | null>();
 
-export type MemoCompare<R> = (a: R, b: R) => boolean;
-
-export default function useFreshRefSupplier<T, R>(
-  supplier: () => T,
-  dependency: R,
-  shouldUpdate: MemoCompare<R> = defaultCompare,
-): Ref<T> {
-  const value = useRefSupplier(supplier);
-  const prevDeps = useRef(dependency);
-
-  if (shouldUpdate(prevDeps.current, dependency)) {
-    value.current = supplier();
+  if (!ref.current) {
+    ref.current = {
+      current: supplier(),
+    };
   }
 
-  return value;
+  return ref.current;
 }
