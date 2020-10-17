@@ -25,8 +25,8 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import useRefSupplier from './useLazyRef';
+import useLazyRef from './useLazyRef';
 
 export default function useConstant<T>(supplier: () => T): T {
-  return useRefSupplier(supplier).current;
+  return useLazyRef(supplier).current;
 }
