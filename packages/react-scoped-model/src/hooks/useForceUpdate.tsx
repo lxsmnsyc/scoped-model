@@ -31,7 +31,5 @@ import { useReducer } from 'react';
  * Force render a component manually
  */
 export default function useForceUpdate(): () => void {
-  const [, forceUpdate] = useReducer(() => ({}), () => ({}));
-
-  return forceUpdate;
+  return useReducer(() => ({}), () => ({}))[1];
 }
