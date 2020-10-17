@@ -28,7 +28,7 @@
 import { useRef } from 'react';
 import useConstantCallback from './useConstantCallback';
 import useForceUpdate from './useForceUpdate';
-import useFreshRefSupplier, { defaultCompare, MemoCompare } from './useFreshRefSupplier';
+import useFreshRefSupplier, { defaultCompare, MemoCompare } from './useFreshLazyRef';
 import useIsomorphicEffect from './useIsomorphicEffect';
 
 export type RefreshStateInitialAction<T> = () => T;

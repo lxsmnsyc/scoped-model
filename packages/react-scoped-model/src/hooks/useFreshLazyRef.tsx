@@ -26,7 +26,7 @@
  * @copyright Alexis Munsayac 2020
  */
 import { MutableRefObject, useRef } from 'react';
-import useRefSupplier from './useRefSupplier';
+import useLazyRef from './useLazyRef';
 
 export function defaultCompare<R>(a: R, b: R): boolean {
   return !Object.is(a, b);
@@ -34,16 +34,17 @@ export function defaultCompare<R>(a: R, b: R): boolean {
 
 export type MemoCompare<R> = (a: R, b: R) => boolean;
 
-export default function useFreshRefSupplier<T, R>(
+export default function useFreshLazyRef<T, R>(
   supplier: () => T,
   dependency: R,
   shouldUpdate: MemoCompare<R> = defaultCompare,
 ): MutableRefObject<T> {
-  const value = useRefSupplier(supplier);
+  const value = useLazyRef(supplier);
   const prevDeps = useRef(dependency);
 
   if (shouldUpdate(prevDeps.current, dependency)) {
     value.current = supplier();
+    prevDeps.current = dependency;
   }
 
   return value;

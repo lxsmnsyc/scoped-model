@@ -27,7 +27,7 @@
  */
 import { MutableRefObject, useRef } from 'react';
 
-export default function useRefSupplier<T>(supplier: () => T): MutableRefObject<T> {
+export default function useLazyRef<T>(supplier: () => T): MutableRefObject<T> {
   const ref = useRef<MutableRefObject<T> | null>();
 
   if (!ref.current) {
