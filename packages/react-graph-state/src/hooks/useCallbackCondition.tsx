@@ -26,7 +26,7 @@
  * @copyright Alexis Munsayac 2020
  */
 import { useRef } from 'react';
-import { defaultCompare, MemoCompare } from './useFreshRefSupplier';
+import { defaultCompare, MemoCompare } from './useFreshLazyRef';
 
 type AnyCallback = (...args: any[]) => any;
 
@@ -40,6 +40,7 @@ export default function useCallbackCondition<T extends AnyCallback, R>(
 
   if (shouldUpdate(prevDeps.current, dependency)) {
     value.current = supplier;
+    prevDeps.current = dependency;
   }
 
   return value.current;

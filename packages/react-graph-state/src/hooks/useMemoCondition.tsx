@@ -25,14 +25,14 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import useFreshRefSupplier, { defaultCompare, MemoCompare } from './useFreshRefSupplier';
+import useFreshLazyRef, { defaultCompare, MemoCompare } from './useFreshLazyRef';
 
 export default function useMemoCondition<T, R>(
   supplier: () => T,
   dependency: R,
   shouldUpdate: MemoCompare<R> = defaultCompare,
 ): T {
-  return useFreshRefSupplier(
+  return useFreshLazyRef(
     supplier,
     dependency,
     shouldUpdate,
