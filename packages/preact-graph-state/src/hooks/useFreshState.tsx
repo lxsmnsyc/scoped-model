@@ -28,7 +28,7 @@
 import { useRef } from 'preact/hooks';
 import useConstantCallback from './useConstantCallback';
 import useForceUpdate from './useForceUpdate';
-import useFreshRefSupplier, { defaultCompare, MemoCompare } from './useFreshRefSupplier';
+import useFreshLazyRef, { defaultCompare, MemoCompare } from './useFreshLazyRef';
 import useIsomorphicEffect from './useIsomorphicEffect';
 
 export type RefreshStateInitialAction<T> = () => T;
@@ -55,7 +55,7 @@ export default function useFreshState<T, R>(
   dependencies: R,
   shouldUpdate: MemoCompare<R> = defaultCompare,
 ): [T, RefreshStateDispatch<T>] {
-  const stateRef = useFreshRefSupplier<T, R>(
+  const stateRef = useFreshLazyRef<T, R>(
     () => (
       isRefreshStateInitialAction(initialState)
         ? initialState()
