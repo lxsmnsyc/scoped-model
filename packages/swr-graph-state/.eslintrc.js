@@ -8,6 +8,7 @@ module.exports = {
   },
   "rules": {
     "no-param-reassign": "off",
+    "@typescript-eslint/no-explicit-any": "off",
   },
 };
 

@@ -30,6 +30,8 @@ import {
   GraphNodeAsyncPending,
   GraphNodeAsyncResult,
   GraphNodeAsyncSuccess,
+  GraphNodeDraftState,
+  GraphNodeFactory,
   GraphNodeResourceFactory,
 } from 'graph-state';
 import {
@@ -48,27 +50,38 @@ import {
 import IS_SERVER from './utils/is-server';
 import NoServerFetchError from './utils/no-server-fetch-error';
 
-export interface SWRGraphNodeFactoryOptions<T, P extends unknown[] = []>
+export interface SWRGraphNodeFactoryOptions<T, P extends any[] = []>
   extends SWRGraphNodeBaseOptions<T> {
   fetch: (...args: P) => SWRGraphNodeFetcher<T>;
   key: (...args: P) => string,
 }
 
-export interface SWRGraphNodeFactoryInterface<T, P extends unknown[] = []> {
+export interface SWRGraphNodeFactoryInterface<T, P extends any[] = []> {
   mutate: (args: P, value: T, shouldRevalidate?: boolean) => void;
   trigger: (args: P, shouldRevalidate?: boolean) => void;
-  resource: GraphNodeResourceFactory<P, T>;
+  resource: GraphNodeResourceFactory<T, P>;
 }
 
-export default function createSWRGraphNodeFactory<T, P extends unknown[] = []>(
+type RevalidateNode<P extends any[] = []> =
+  GraphNodeFactory<boolean, GraphNodeDraftState<boolean>, P>;
+
+type MutationValue<T> = GraphNodeAsyncResult<T> | undefined;
+type MutationNode<T, P extends any[] = []> =
+  GraphNodeFactory<MutationValue<T>, GraphNodeDraftState<MutationValue<T>>, P>;
+
+type ResourceValue<T> = GraphNodeAsyncResult<T>;
+type ResourceNode<T, P extends any[] = []> =
+  GraphNodeFactory<ResourceValue<T>, GraphNodeDraftState<ResourceValue<T>>, P>;
+
+export default function createSWRGraphNodeFactory<T, P extends any[] = []>(
   options: SWRGraphNodeFactoryOptions<T, P>,
 ): SWRGraphNodeFactoryInterface<T, P> {
   const mutation = createSWRMap<GraphNodeAsyncResult<T> | undefined>();
   const revalidate = createSWRMap<boolean>();
 
-  const revalidateNode = createGraphNodeFactory<P, boolean>({
-    key: (...args: P) => `SWR.Revalidate[${options.key(...args)}]`,
-    get: (...args: P) => {
+  const revalidateNode: RevalidateNode<P> = createGraphNodeFactory({
+    key: (...args) => `SWR.Revalidate[${options.key(...args)}]`,
+    get: (...args) => {
       const key = options.key(...args);
 
       const ref = getSWRMapRef(revalidate, key, true);
@@ -126,9 +139,9 @@ export default function createSWRGraphNodeFactory<T, P extends unknown[] = []>(
     },
   });
 
-  const mutationNode = createGraphNodeFactory<P, GraphNodeAsyncResult<T> | undefined>({
-    key: (...args: P) => `SWR.Mutation[${options.key(...args)}]`,
-    get: (...args: P) => {
+  const mutationNode: MutationNode<T, P> = createGraphNodeFactory({
+    key: (...args) => `SWR.Mutation[${options.key(...args)}]`,
+    get: (...args) => {
       const key = options.key(...args);
 
       const ref = getSWRMapRef(mutation, key, undefined);
@@ -153,9 +166,9 @@ export default function createSWRGraphNodeFactory<T, P extends unknown[] = []>(
     },
   });
 
-  const resource = createGraphNodeFactory<P, GraphNodeAsyncResult<T>>({
-    key: (...args: P) => `SWR[${options.key(...args)}]`,
-    get: (...args: P) => {
+  const resource: ResourceNode<T, P> = createGraphNodeFactory({
+    key: (...args) => `SWR[${options.key(...args)}]`,
+    get: (...args) => {
       const key = options.key(...args);
       const mNode = mutationNode(...args);
       const rNode = revalidateNode(...args);

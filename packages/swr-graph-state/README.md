@@ -36,12 +36,12 @@ Upon creation, the function returns not a node, but an interface that provides a
 ### Example
 ```tsx
 import React, { Suspense } from 'react';
-import { createGraphNode } from 'graph-state';
-import { createSWRGraphNode } from 'swr-graph-state';
 import {
   GraphDomain,
   useGraphNodeResource,
 } from 'react-graph-state';
+import { createGraphNode } from 'graph-state';
+import { createSWRGraphNode } from 'swr-graph-state';
 
 const API = 'https://dog.ceo/api/breed/';
 const API_SUFFIX = '/images/random';
@@ -55,7 +55,7 @@ const dogBreed = createGraphNode({
   get: 'shiba',
 });
 
-const dogAPI = createSWRGraphNode<APIResult | undefined>({
+const dogAPI = createSWRGraphNode<APIResult>({
   fetch: async ({ get }) => {
     const breed = get(dogBreed);
     const response = await fetch(`${API}${breed}${API_SUFFIX}`);
@@ -64,18 +64,13 @@ const dogAPI = createSWRGraphNode<APIResult | undefined>({
   revalidateOnFocus: true,
   revalidateOnNetwork: true,
   revalidateOnVisibility: true,
-  initialData: undefined,
   ssr: false,
 });
 
 function DogImage(): JSX.Element {
   const data = useGraphNodeResource(dogAPI.resource);
 
-  if (data) {
-    return <img src={data.message} alt={data.message} />;
-  }
-
-  return <></>;
+  return <img src={data.message} alt={data.message} />;
 }
 
 function Trigger(): JSX.Element {
