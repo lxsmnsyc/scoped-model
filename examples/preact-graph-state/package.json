@@ -1,15 +1,15 @@
 {
   "name": "preact-graph-state-vite",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "graph-state": "0.4.0",
+    "graph-state": "0.4.1",
     "preact": "^10.5.4",
-    "preact-graph-state": "0.6.0"
+    "preact-graph-state": "0.6.1"
   },
   "devDependencies": {
     "@prefresh/vite": "^1.0.2",
