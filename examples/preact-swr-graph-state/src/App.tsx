@@ -21,6 +21,7 @@ const dogBreed = createGraphNode({
 });
 
 const dogAPI = createSWRGraphNode<APIResult>({
+  key: 'dogAPI',
   fetch: async ({ get }) => {
     const breed = get(dogBreed);
     const response = await fetch(`${API}${breed}${API_SUFFIX}`);
@@ -28,7 +29,6 @@ const dogAPI = createSWRGraphNode<APIResult>({
   },
   revalidateOnFocus: true,
   revalidateOnNetwork: true,
-  revalidateOnVisibility: true,
   ssr: false,
 });
 
