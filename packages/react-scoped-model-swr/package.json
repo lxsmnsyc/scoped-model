@@ -3,6 +3,10 @@
   "description": "SWR + react-scoped-model",
   "author": "Alexis Munsayac",
   "main": "dist/index.js",
+  "exports": {
+    "import": "./dist/react-scoped-model-swr.esm.js",
+    "require": "./dist/index.js"
+  },
   "types": "dist/index.d.ts",
   "files": [
     "dist",
@@ -57,5 +61,16 @@
   },
   "dependencies": {
     "swr": "^0.3.2"
-  }
+  },
+  "keywords": [
+    "scoped-model",
+    "react-scoped-model",
+    "provider",
+    "context",
+    "react context",
+    "selector",
+    "state management",
+    "react",
+    "swr"
+  ]
 }

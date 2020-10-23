@@ -1,6 +1,10 @@
 {
   "version": "0.4.1",
   "main": "dist/index.js",
+  "exports": {
+    "import": "./dist/graph-state.esm.js",
+    "require": "./dist/index.js"
+  },
   "types": "dist/index.d.ts",
   "files": [
     "dist",
@@ -39,5 +43,15 @@
   "homepage": "https://github.com/lxsmnsyc/scoped-model",
   "bugs": {
     "url": "https://github.com/lxsmnsyc/scoped-model/issues"
-  }
+  },
+  "keywords": [
+    "graph-state",
+    "graph",
+    "state",
+    "digraph",
+    "state management",
+    "reactive",
+    "recoil",
+    "atomic"
+  ]
 }

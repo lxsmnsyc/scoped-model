@@ -3,6 +3,10 @@
   "description": "Scoped Model pattern in React (but with Hooks)",
   "author": "Alexis Munsayac",
   "main": "dist/index.js",
+  "exports": {
+    "import": "./dist/react-scoped-model.esm.js",
+    "require": "./dist/index.js"
+  },
   "types": "dist/index.d.ts",
   "files": [
     "dist",
@@ -52,5 +56,15 @@
   "homepage": "https://github.com/lxsmnsyc/scoped-model",
   "bugs": {
     "url": "https://github.com/lxsmnsyc/scoped-model/issues"
-  }
+  },
+  "keywords": [
+    "scoped-model",
+    "react-scoped-model",
+    "provider",
+    "context",
+    "react context",
+    "selector",
+    "state management",
+    "preact"
+  ]
 }

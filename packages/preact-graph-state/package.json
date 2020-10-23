@@ -3,6 +3,10 @@
   "description": "Preact bindings for `graph-state`",
   "author": "Alexis Munsayac",
   "main": "dist/index.js",
+  "exports": {
+    "import": "./dist/preact-graph-state.esm.js",
+    "require": "./dist/index.js"
+  },
   "types": "dist/index.d.ts",
   "files": [
     "dist",
@@ -51,5 +55,16 @@
   "bugs": {
     "url": "https://github.com/LXSMNSYC/scoped-model/issues"
   },
-  "homepage": "https://github.com/lxsmnsyc/scoped-model"
+  "homepage": "https://github.com/lxsmnsyc/scoped-model",
+  "keywords": [
+    "graph-state",
+    "graph",
+    "state",
+    "digraph",
+    "state management",
+    "reactive",
+    "recoil",
+    "atomic",
+    "preact"
+  ]
 }

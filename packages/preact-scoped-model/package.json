@@ -3,6 +3,10 @@
   "description": "Scoped Model pattern for Preact",
   "author": "Alexis Munsayac",
   "main": "dist/index.js",
+  "exports": {
+    "import": "./dist/preact-scoped-model.esm.js",
+    "require": "./dist/index.js"
+  },
   "types": "dist/index.d.ts",
   "files": [
     "dist",
@@ -49,5 +53,15 @@
   "bugs": {
     "url": "https://github.com/LXSMNSYC/scoped-model/issues"
   },
-  "homepage": "https://github.com/lxsmnsyc/scoped-model"
+  "homepage": "https://github.com/lxsmnsyc/scoped-model",
+  "keywords": [
+    "scoped-model",
+    "preact-scoped-model",
+    "provider",
+    "context",
+    "preact context",
+    "selector",
+    "state management",
+    "preact"
+  ]
 }

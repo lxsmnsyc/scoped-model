@@ -1,6 +1,10 @@
 {
   "version": "0.3.3",
   "main": "dist/index.js",
+  "exports": {
+    "import": "./dist/swr-graph-state.esm.js",
+    "require": "./dist/index.js"
+  },
   "types": "dist/index.d.ts",
   "files": [
     "dist",
@@ -45,5 +49,17 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "keywords": [
+    "graph-state",
+    "graph",
+    "state",
+    "digraph",
+    "state management",
+    "reactive",
+    "recoil",
+    "atomic",
+    "swr",
+    "data fetching"
+  ]
 }
