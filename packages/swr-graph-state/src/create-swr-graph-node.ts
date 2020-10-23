@@ -34,8 +34,12 @@ import {
   GraphNodeResource,
 } from 'graph-state';
 import {
+  createMutationRef,
+  createRevalidationRef,
+  createTimeRef,
+} from './global-cache';
+import {
   addSWRValueListener,
-  createSWRValue,
   removeSWRValueListener,
   setSWRValue,
 } from './swr-value';
@@ -49,6 +53,7 @@ export interface SWRGraphNodeBaseOptions<T> {
   revalidateOnNetwork?: boolean;
   revalidateOnVisibility?: boolean;
   initialData?: T;
+  useOwnCache?: boolean;
   ssr?: boolean;
 }
 
@@ -57,7 +62,7 @@ export type SWRGraphNodeFetcher<T> =
 
 export interface SWRGraphNodeOptions<T> extends SWRGraphNodeBaseOptions<T> {
   fetch: SWRGraphNodeFetcher<T>;
-  key?: string;
+  key: string;
 }
 
 export interface SWRGraphNodeInterface<T> {
@@ -69,16 +74,17 @@ export interface SWRGraphNodeInterface<T> {
 export default function createSWRGraphNode<T>(
   options: SWRGraphNodeOptions<T>,
 ): SWRGraphNodeInterface<T> {
-  const mutation = createSWRValue<GraphNodeAsyncResult<T> | undefined>(undefined);
-  const revalidate = createSWRValue(true);
-
-  // Hydrate cache if initialData is provided.
-  if (options.initialData != null) {
-    setSWRValue(mutation, {
+  const mutation = createMutationRef<T>(
+    options.key,
+    // Hydrate cache if initialData is provided.
+    options.initialData == null ? undefined : {
       status: 'success',
       data: options.initialData,
-    });
-  }
+    },
+    options.useOwnCache,
+  );
+  const revalidate = createRevalidationRef(options.key, false, options.useOwnCache);
+  const time = createTimeRef(options.key, Date.now(), options.useOwnCache);
 
   // This is a graph node that manages
   // the revalidation state of the resource node.
@@ -167,6 +173,8 @@ export default function createSWRGraphNode<T>(
       const shouldRevalidate = methods.get(revalidateNode);
 
       const prefetch = () => {
+        const currentTime = Date.now();
+        time.value = currentTime;
         // Perform fetch
         const newValue = options.fetch(methods);
 
@@ -174,16 +182,20 @@ export default function createSWRGraphNode<T>(
         if (newValue instanceof Promise) {
           newValue.then(
             (data) => {
-              setSWRValue(mutation, {
-                status: 'success',
-                data,
-              });
+              if (time.value === currentTime) {
+                setSWRValue(mutation, {
+                  status: 'success',
+                  data,
+                });
+              }
             },
             (data: Error) => {
-              setSWRValue(mutation, {
-                status: 'failure',
-                data,
-              });
+              if (time.value === currentTime) {
+                setSWRValue(mutation, {
+                  status: 'failure',
+                  data,
+                });
+              }
             },
           );
         }
@@ -253,6 +265,7 @@ export default function createSWRGraphNode<T>(
 
   return {
     mutate: (value, shouldRevalidate = true) => {
+      time.value = Date.now();
       setSWRValue(revalidate, shouldRevalidate);
 
       setSWRValue(mutation, {
@@ -261,6 +274,7 @@ export default function createSWRGraphNode<T>(
       });
     },
     trigger: (shouldRevalidate = true) => {
+      time.value = Date.now();
       setSWRValue(revalidate, shouldRevalidate);
     },
     resource,

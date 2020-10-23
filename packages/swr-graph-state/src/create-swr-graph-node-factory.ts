@@ -38,8 +38,8 @@ import {
   SWRGraphNodeBaseOptions,
   SWRGraphNodeFetcher,
 } from './create-swr-graph-node';
+import { getMutationMap, getRevalidationMap, getTimeMap } from './global-cache';
 import {
-  createSWRMap,
   getSWRMapRef,
   setSWRMap,
 } from './swr-map';
@@ -76,15 +76,16 @@ type ResourceNode<T, P extends any[] = []> =
 export default function createSWRGraphNodeFactory<T, P extends any[] = []>(
   options: SWRGraphNodeFactoryOptions<T, P>,
 ): SWRGraphNodeFactoryInterface<T, P> {
-  const mutation = createSWRMap<GraphNodeAsyncResult<T> | undefined>();
-  const revalidate = createSWRMap<boolean>();
+  const mutation = getMutationMap<T>(options.useOwnCache);
+  const revalidate = getRevalidationMap(options.useOwnCache);
+  const time = getTimeMap(options.useOwnCache);
 
   const revalidateNode: RevalidateNode<P> = createGraphNodeFactory({
     key: (...args) => `SWR.Revalidate[${options.key(...args)}]`,
     get: (...args) => {
       const key = options.key(...args);
 
-      const ref = getSWRMapRef(revalidate, key, true);
+      const ref = getSWRMapRef(revalidate, key, false);
 
       return ({ set, subscription }) => {
         subscription(() => {
@@ -144,14 +145,10 @@ export default function createSWRGraphNodeFactory<T, P extends any[] = []>(
     get: (...args) => {
       const key = options.key(...args);
 
-      const ref = getSWRMapRef(mutation, key, undefined);
-
-      if (options.initialData != null) {
-        setSWRMap(mutation, key, {
-          status: 'success',
-          data: options.initialData,
-        });
-      }
+      const ref = getSWRMapRef(mutation, key, options.initialData == null ? undefined : {
+        status: 'success',
+        data: options.initialData,
+      });
 
       return ({ set, subscription }) => {
         subscription(() => {
@@ -179,21 +176,31 @@ export default function createSWRGraphNodeFactory<T, P extends any[] = []>(
         const shouldRevalidate = methods.get(rNode);
 
         const prefetch = () => {
+          const currentTime = Date.now();
+          setSWRMap(time, key, currentTime, false);
           const newValue = fetcher(methods);
 
           if (newValue instanceof Promise) {
             newValue.then(
               (data) => {
-                setSWRMap(mutation, key, {
-                  status: 'success',
-                  data,
-                });
+                const timeRef = time.get(key);
+
+                if (timeRef && timeRef.value === currentTime) {
+                  setSWRMap(mutation, key, {
+                    status: 'success',
+                    data,
+                  });
+                }
               },
               (data: Error) => {
-                setSWRMap(mutation, key, {
-                  status: 'failure',
-                  data,
-                });
+                const timeRef = time.get(key);
+
+                if (timeRef && timeRef.value === currentTime) {
+                  setSWRMap(mutation, key, {
+                    status: 'failure',
+                    data,
+                  });
+                }
               },
             );
           }
@@ -256,6 +263,7 @@ export default function createSWRGraphNodeFactory<T, P extends any[] = []>(
   return {
     mutate: (args, value, shouldRevalidate = true) => {
       const key = options.key(...args);
+      setSWRMap(time, key, Date.now(), false);
       setSWRMap(revalidate, key, shouldRevalidate);
       setSWRMap(mutation, key, {
         data: value,
@@ -264,6 +272,7 @@ export default function createSWRGraphNodeFactory<T, P extends any[] = []>(
     },
     trigger: (args, shouldRevalidate = true) => {
       const key = options.key(...args);
+      setSWRMap(time, key, Date.now(), false);
       setSWRMap(revalidate, key, shouldRevalidate);
     },
     resource,

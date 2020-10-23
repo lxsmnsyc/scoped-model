@@ -29,3 +29,4 @@ export { default as createSWRGraphNode } from './create-swr-graph-node';
 export * from './create-swr-graph-node';
 export { default as createSWRGraphNodeFactory } from './create-swr-graph-node-factory';
 export * from './create-swr-graph-node-factory';
+export { mutate, trigger } from './global-cache';
