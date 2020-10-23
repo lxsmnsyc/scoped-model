@@ -1,5 +1,5 @@
 {
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "React bindings for `graph-state`",
   "author": "Alexis Munsayac",
   "main": "dist/index.js",
@@ -36,7 +36,7 @@
     "@types/react": "^16.9.52",
     "eslint": "^7.11.0",
     "eslint-config-lxsmnsyc": "^0.1.19",
-    "graph-state": "0.4.1",
+    "graph-state": "0.4.2",
     "pridepack": "^0.1.4",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",

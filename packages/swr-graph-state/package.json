@@ -1,5 +1,5 @@
 {
-  "version": "0.3.3",
+  "version": "0.3.4",
   "main": "dist/index.js",
   "exports": {
     "import": "./dist/swr-graph-state.esm.js",

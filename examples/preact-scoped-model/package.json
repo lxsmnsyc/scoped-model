@@ -1,6 +1,6 @@
 {
   "name": "preact-scoped-model-vite",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "preact": "^10.5.4",
-    "preact-scoped-model": "0.3.3"
+    "preact-scoped-model": "0.3.4"
   },
   "devDependencies": {
     "@prefresh/vite": "^1.0.2",
