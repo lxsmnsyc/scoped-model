@@ -42,7 +42,7 @@
     "typescript": "^4.0.3"
   },
   "peerDependencies": {
-    "graph-state": "^0.1.0",
+    "graph-state": "^0.4.2",
     "preact": "^10.5.5"
   },
   "publishConfig": {
