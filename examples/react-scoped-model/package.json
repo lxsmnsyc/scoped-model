@@ -1,6 +1,6 @@
 {
   "name": "react-scoped-model-vite",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
