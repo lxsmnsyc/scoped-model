@@ -71,6 +71,6 @@
     "react"
   ],
   "dependencies": {
-    "use-dispose": "^0.2.4"
+    "use-dispose": "^0.2.5"
   }
 }
