@@ -10,7 +10,7 @@ const config: UserConfig = {
       'react-graph-state',
     ],
   },
-  hmr: {
+  hmr: process.env.DEV_REMOTE && {
     protocol: 'wss'
   },
 };

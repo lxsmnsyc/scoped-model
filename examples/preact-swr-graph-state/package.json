@@ -2,7 +2,8 @@
   "name": "preact-swr-graph-state-vite",
   "version": "0.5.4",
   "scripts": {
-    "dev": "vite",
+    "dev": "DEV_REMOTE=true vite",
+    "dev:local": "vite",
     "build": "vite build",
     "type-check": "tsc --noEmit"
   },

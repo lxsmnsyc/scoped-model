@@ -11,7 +11,7 @@ const config: UserConfig = {
       'swr-graph-state',
     ],
   },
-  hmr: {
+  hmr: process.env.DEV_REMOTE && {
     protocol: 'wss'
   },
 };

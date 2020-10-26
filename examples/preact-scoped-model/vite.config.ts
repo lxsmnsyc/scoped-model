@@ -12,7 +12,7 @@ const config: UserConfig = {
       'preact-scoped-model',
     ],
   },
-  hmr: {
+  hmr: process.env.DEV_REMOTE && {
     protocol: 'wss'
   },
 };
