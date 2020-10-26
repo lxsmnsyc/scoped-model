@@ -48,7 +48,7 @@ function GraphCoreProcess(): JSX.Element {
   const [workQueue, scheduleWork, resetWork] = useWorkQueue<Work<any, any>>();
 
   const memory = useDisposableMemo<GraphDomainMemory>(
-    () => createGraphDomainMemory(),
+    createGraphDomainMemory,
     // Component renders twice before side-effects and commits run.
     // Dispose the current memory to prevent leaks to external sources.
     cleanDomainMemory,
