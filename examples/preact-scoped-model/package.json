@@ -1,6 +1,6 @@
 {
   "name": "preact-scoped-model-vite",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "scripts": {
     "dev": "DEV_REMOTE=true vite",
     "dev:local": "vite",

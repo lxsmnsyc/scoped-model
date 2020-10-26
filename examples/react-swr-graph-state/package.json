@@ -1,6 +1,6 @@
 {
   "name": "react-swr-graph-state-vite",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "scripts": {
     "dev": "DEV_REMOTE=true vite",
     "dev:local": "vite",
@@ -13,7 +13,7 @@
     "graph-state": "0.4.3",
     "react": "npm:@pika/react",
     "react-dom": "npm:@pika/react-dom",
-    "react-graph-state": "0.6.6",
+    "react-graph-state": "0.6.7",
     "swr-graph-state": "0.4.2"
   },
   "devDependencies": {
