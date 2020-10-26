@@ -1,5 +1,5 @@
 {
-  "version": "0.6.8",
+  "version": "0.6.9",
   "description": "React bindings for `graph-state`",
   "author": "Alexis Munsayac",
   "main": "dist/index.js",
