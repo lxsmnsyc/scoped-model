@@ -11,6 +11,9 @@ const config: UserConfig = {
       'swr-graph-state',
     ],
   },
+  hmr: {
+    protocol: 'wss'
+  },
 };
 
 export default config;

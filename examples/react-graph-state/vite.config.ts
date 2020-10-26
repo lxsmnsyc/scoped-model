@@ -10,6 +10,9 @@ const config: UserConfig = {
       'react-graph-state',
     ],
   },
+  hmr: {
+    protocol: 'wss'
+  },
 };
 
 export default config;
