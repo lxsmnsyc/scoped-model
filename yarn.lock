@@ -12149,10 +12149,10 @@ url@^0.11.0:
     punycode "1.3.2"
     querystring "0.2.0"
 
-use-dispose@^0.2.5:
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/use-dispose/-/use-dispose-0.2.5.tgz#6c2cfe756bb37028d94bb348f31ab33bd21a85c4"
-  integrity sha512-ZAvkcq38ZOvQMawVnKj/HRiS/2az4uMqdPa3nZ5fN/U8x2KMfW2ks0Q2LVS9lJ669skQwVWQYlyCToMFYOZ+OA==
+use-dispose@^0.2.7:
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/use-dispose/-/use-dispose-0.2.7.tgz#14ff3f44738f7505895fe2c613956811e13eda21"
+  integrity sha512-J5QJzZdQ69n5eZeZTAc0uJyjbHeuo5VANLsm10QbBYfQto3RM7ByjyvrHqtOIvXaN9n7hapqKtOWv3wR3vYx6w==
 
 use@^3.1.0:
   version "3.1.1"
