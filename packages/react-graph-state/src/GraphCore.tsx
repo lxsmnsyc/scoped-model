@@ -26,6 +26,7 @@
  * @copyright Alexis Munsayac 2020
  */
 import React, { memo } from 'react';
+import useDispose from 'use-dispose';
 import {
   createGraphDomainInterface,
   createGraphDomainScheduler,
@@ -65,6 +66,12 @@ function GraphCoreProcess(): JSX.Element {
   useIsomorphicEffect(() => () => {
     cleanDomainMemory(memory);
   }, []);
+
+  // Component renders twice before side-effects and commits run.
+  // Dispose the current memory to prevent leaks to external sources.
+  useDispose(() => {
+    cleanDomainMemory(memory);
+  });
 
   return <></>;
 }
