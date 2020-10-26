@@ -12,9 +12,6 @@ const config: UserConfig = {
       'preact-scoped-model',
     ],
   },
-  hmr : {
-    protocol: 'wss'
-  },
 };
 
 export default config;

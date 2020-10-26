@@ -13,9 +13,6 @@ const config: UserConfig = {
       'preact-graph-state'
     ],
   },
-  hmr : {
-    protocol: 'wss'
-  },
 };
 
 export default config;
