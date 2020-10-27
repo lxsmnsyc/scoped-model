@@ -61,8 +61,12 @@ export function setSWRValue<T>(
   ref.value = value;
 
   if (notify) {
-    ref.listeners.forEach((listener) => {
-      listener(value);
+    Promise.resolve().then(() => {
+      ref.listeners.forEach((listener) => {
+        listener(value);
+      });
+    }, () => {
+      // Non-existent
     });
   }
 }
