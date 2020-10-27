@@ -9,9 +9,6 @@ const config: UserConfig = {
       'react-scoped-model',
     ],
   },
-  hmr: process.env.DEV_REMOTE && {
-    protocol: 'wss'
-  },
 };
 
 export default config;

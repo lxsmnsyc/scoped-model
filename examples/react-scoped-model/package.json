@@ -2,7 +2,7 @@
   "name": "react-scoped-model-vite",
   "version": "0.3.8",
   "scripts": {
-    "dev": "DEV_REMOTE=true vite",
+    "dev": "vite",
     "dev:local": "vite",
     "build": "tsc && vite build",
     "type-check": "tsc --noEmit"
@@ -20,7 +20,7 @@
     "eslint": "^7.12.0",
     "eslint-config-lxsmnsyc": "^0.1.19",
     "typescript": "^4.0.3",
-    "vite": "^1.0.0-rc.6",
+    "vite": "^1.0.0-rc.8",
     "vite-plugin-react": "^3.0.2"
   },
   "private": true
