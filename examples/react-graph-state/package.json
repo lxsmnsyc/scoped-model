@@ -1,6 +1,6 @@
 {
   "name": "react-graph-state-vite",
-  "version": "0.6.9",
+  "version": "0.6.10",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
