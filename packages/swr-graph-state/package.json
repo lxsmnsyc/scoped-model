@@ -31,7 +31,7 @@
     "eslint": "^7.12.0",
     "eslint-config-lxsmnsyc": "^0.1.19",
     "graph-state": "0.4.3",
-    "pridepack": "^0.2.1",
+    "pridepack": "^0.3.3",
     "tslib": "^2.0.3",
     "typescript": "^4.0.3"
   },
