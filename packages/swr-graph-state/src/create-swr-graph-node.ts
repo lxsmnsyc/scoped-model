@@ -52,6 +52,7 @@ export interface SWRGraphNodeBaseOptions<T> {
   revalidateOnFocus?: boolean;
   revalidateOnNetwork?: boolean;
   revalidateOnVisibility?: boolean;
+  refreshInterval?: number;
   initialData?: T;
   useOwnCache?: boolean;
   ssr?: boolean;
@@ -104,6 +105,17 @@ export default function createSWRGraphNode<T>(
         const onRevalidate = () => {
           set(true);
         };
+
+        // Register polling interval
+        if (options.refreshInterval != null) {
+          subscription(() => {
+            const interval = setInterval(onRevalidate, options.refreshInterval);
+
+            return () => {
+              clearInterval(interval);
+            };
+          });
+        }
 
         // Registers a focus event for revalidation.
         if (options.revalidateOnFocus) {

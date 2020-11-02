@@ -100,6 +100,17 @@ export default function createSWRGraphNodeFactory<T, P extends any[] = []>(
             set(true);
           };
 
+          // Register polling interval
+          if (options.refreshInterval != null) {
+            subscription(() => {
+              const interval = setInterval(onRevalidate, options.refreshInterval);
+
+              return () => {
+                clearInterval(interval);
+              };
+            });
+          }
+
           if (options.revalidateOnFocus) {
             subscription(() => {
               window.addEventListener('focus', onRevalidate, false);
