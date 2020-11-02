@@ -1,6 +1,6 @@
 {
   "name": "react-graph-state-concurrent",
-  "version": "0.3.9",
+  "version": "0.3.10",
   "main": "index.js",
   "license": "MIT",
   "private": true,
@@ -9,10 +9,10 @@
     "build": "parcel build index.html"
   },
   "dependencies": {
-    "graph-state": "0.4.3",
+    "graph-state": "0.4.4",
     "react": "^0.0.0-experimental-94c0244ba",
     "react-dom": "^0.0.0-experimental-94c0244ba",
-    "react-graph-state": "0.6.9"
+    "react-graph-state": "0.6.10"
   },
   "devDependencies": {
     "@types/react": "^16.9.53",
