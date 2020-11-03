@@ -33,15 +33,15 @@ import {
   GraphNodeGetSupplier,
 } from './graph-node';
 
-function isNodeValueFunc<T>(
-  nodeValue: GraphNodeGet<T>,
-): nodeValue is GraphNodeGetSupplier<T> {
+function isNodeValueFunc<S, A = GraphNodeDraftState<S>>(
+  nodeValue: GraphNodeGet<S, A>,
+): nodeValue is GraphNodeGetSupplier<S, A> {
   return typeof nodeValue === 'function';
 }
 
 export default function createNodeValue<S, A = GraphNodeDraftState<S>>(
   node: GraphNode<S, A>,
-  methods: GraphNodeGetInterface<S>,
+  methods: GraphNodeGetInterface<S, A>,
 ): S {
   return isNodeValueFunc(node.get)
     ? node.get(methods)

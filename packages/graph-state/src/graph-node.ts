@@ -36,39 +36,46 @@ export type GraphNodeDraftStateAction<S> = (old: S) => S;
 export type GraphNodeDraftState<S> = S | GraphNodeDraftStateAction<S>;
 
 // Function received by the `get` function for yielding state
-export type GraphNodeGetYield<S> = (value: S) => void;
+export type GraphNodeMutateSelf<S> = (value: S) => void;
+export type GraphNodeSetSelf<A> = (value: A) => void;
 
 export type GraphNodeSubscriptionCleanup = () => void;
 export type GraphNodeSubscriptionCallback = () => void | undefined | GraphNodeSubscriptionCleanup;
 export type GraphNodeSubscription = (callback: GraphNodeSubscriptionCallback) => void;
 
-export interface GraphNodeCallbackInterface<S> {
+export interface GraphNodeCallbackInterface<S, A = GraphNodeDraftState<S>> {
   get: GraphNodeGetValue;
-  reset: GraphNodeResetValue;
   set: GraphNodeSetValue;
-  mutate: GraphNodeGetYield<S>;
+  reset: GraphNodeResetValue;
+  mutate: GraphNodeMutateValue;
+  setSelf: GraphNodeSetSelf<A>;
+  mutateSelf: GraphNodeMutateSelf<S>;
 }
 
-export interface GraphNodeGetInterface<S> extends GraphNodeCallbackInterface<S> {
+export interface GraphNodeGetInterface<S, A = GraphNodeDraftState<S>>
+  extends GraphNodeCallbackInterface<S, A> {
   subscription: GraphNodeSubscription;
 }
 
-export type GraphNodeGetSupplier<S> = (facing: GraphNodeGetInterface<S>) => S;
-export type GraphNodeGet<S> = S | GraphNodeGetSupplier<S>;
+export type GraphNodeGetSupplier<S, A = GraphNodeDraftState<S>> =
+  (facing: GraphNodeGetInterface<S, A>) => S;
+export type GraphNodeGet<S, A = GraphNodeDraftState<S>> =
+  S | GraphNodeGetSupplier<S, A>;
 
-export type GraphNodeSetInterface<S> = GraphNodeCallbackInterface<S>;
+export type GraphNodeSetInterface<S, A = GraphNodeDraftState<S>> =
+  GraphNodeCallbackInterface<S, A>;
 
 export type GraphNodeSet<S, A = GraphNodeDraftState<S>> =
-  (facing: GraphNodeSetInterface<S>, action: A) => void;
+  (facing: GraphNodeSetInterface<S, A>, action: A) => void;
 
 export interface GraphNode<S, A = GraphNodeDraftState<S>> {
-  get: GraphNodeGet<S>;
+  get: GraphNodeGet<S, A>;
   key: GraphNodeKey;
   set?: GraphNodeSet<S, A>;
 }
 
 export interface GraphNodeOptions<S, A = GraphNodeDraftState<S>> {
-  get: GraphNodeGet<S>;
+  get: GraphNodeGet<S, A>;
   key?: GraphNodeKey;
   set?: GraphNodeSet<S, A>;
 }
@@ -77,6 +84,8 @@ export type GraphNodeGetValue =
   <S, A = GraphNodeDraftState<S>>(node: GraphNode<S, A>) => S;
 export type GraphNodeSetValue =
   <S, A = GraphNodeDraftState<S>>(node: GraphNode<S, A>, action: A) => void;
+export type GraphNodeMutateValue =
+  <S, A = GraphNodeDraftState<S>>(node: GraphNode<S, A>, value: S) => void;
 export type GraphNodeResetValue =
   <S, A = GraphNodeDraftState<S>>(node: GraphNode<S, A>) => void;
 
@@ -128,7 +137,7 @@ export type GraphNodeResource<S> = GraphNode<GraphNodeAsyncResult<S>>;
 
 function promiseToResource<T>(
   promise: Promise<T>,
-  set: GraphNodeGetYield<GraphNodeAsyncResult<T>>,
+  set: GraphNodeMutateSelf<GraphNodeAsyncResult<T>>,
 ): GraphNodeAsyncResult<T> {
   promise.then(
     (data) => set({
@@ -155,7 +164,7 @@ export function createGraphNodeResource<S, A = GraphNodeDraftState<Promise<S>>>(
   graphNode: GraphNode<Promise<S>, A>,
 ): GraphNodeResource<S> {
   return createGraphNode({
-    get: ({ get, mutate }) => promiseToResource(get(graphNode), mutate),
+    get: ({ get, mutateSelf }) => promiseToResource(get(graphNode), mutateSelf),
     key: `Resource(${graphNode.key})`,
   });
 }
@@ -197,12 +206,12 @@ export function waitForAll<S>(
   const promises = resources.map((resource) => fromResource(resource));
 
   return createGraphNode({
-    get: ({ get, mutate }) => (
+    get: ({ get, mutateSelf }) => (
       promiseToResource(
         Promise.all(
           promises.map((promise) => get(promise)),
         ),
-        mutate,
+        mutateSelf,
       )
     ),
     key: `WaitForAll(${joinResourceKeys(resources)})`,
@@ -220,12 +229,12 @@ export function waitForAny<S>(
   const promises = resources.map((resource) => fromResource(resource));
 
   return createGraphNode({
-    get: ({ get, mutate }) => (
+    get: ({ get, mutateSelf }) => (
       promiseToResource(
         Promise.race(
           promises.map((promise) => get(promise)),
         ),
-        mutate,
+        mutateSelf,
       )
     ),
     key: `WaitForAny(${joinResourceKeys(resources)})`,
@@ -248,15 +257,15 @@ export function joinResources<T>(
 
 export type GraphNodeFactoryKey<P extends any[] = []> =
   (...params: P) => string;
-export type GraphNodeFactoryGet<S, P extends any[] = []> =
-  (...params: P) => GraphNodeGet<S>;
+export type GraphNodeFactoryGet<S, A = GraphNodeDraftState<S>, P extends any[] = []> =
+  (...params: P) => GraphNodeGet<S, A>;
 export type GraphNodeFactorySet<S, A = GraphNodeDraftState<S>, P extends any[] = []> =
   (...params: P) => GraphNodeSet<S, A>;
 
 export interface GraphNodeFactoryOptions<S, A = GraphNodeDraftState<S>, P extends any[] = []> {
   baseKey?: GraphNodeKey;
   key?: GraphNodeFactoryKey<P>;
-  get: GraphNodeFactoryGet<S, P>;
+  get: GraphNodeFactoryGet<S, A, P>;
   set?: GraphNodeFactorySet<S, A, P>;
 }
 

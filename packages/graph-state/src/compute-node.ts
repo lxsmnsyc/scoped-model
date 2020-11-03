@@ -29,9 +29,9 @@ import { GraphNode } from './graph-node';
 import createNodeValue from './create-node-value';
 import getNodeInstance from './get-node-instance';
 import registerNodeDependency from './register-node-dependency';
-import setNodeState from './set-node-state';
 import { GraphDomainMemory } from './create-domain-memory';
 import { GraphDomainScheduler } from './create-domain-scheduler';
+import setNodeState from './set-node-state';
 
 /**
  * Computes the node value
@@ -74,7 +74,7 @@ export default function computeNode<S, A>(
   // Get the current version handle
   const { version } = actualNode;
 
-  return createNodeValue(
+  return createNodeValue<S, A>(
     node,
     {
       get: (dependency) => {
@@ -86,10 +86,23 @@ export default function computeNode<S, A>(
         }
         return currentState;
       },
-      mutate: (value) => {
-        // If the version is still alive, schedule a state update.
+      mutate: (target, value) => {
+        if (version.alive) {
+          setNodeState(memory, scheduler, target, value);
+        }
+      },
+      mutateSelf: (value) => {
         if (version.alive) {
           setNodeState(memory, scheduler, node, value);
+        }
+      },
+      setSelf: (action: A) => {
+        // If the version is still alive, schedule a state update.
+        if (version.alive) {
+          scheduler.scheduleState({
+            target: node,
+            action,
+          });
         }
       },
       set: (target, action) => {

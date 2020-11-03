@@ -65,14 +65,24 @@ export default function performWorkLoop(
                   methods.setState(node, newAction);
                 }
               },
+              setSelf: (newAction) => {
+                if (setterVersion.alive) {
+                  methods.setState(target, newAction);
+                }
+              },
+              mutate: (node, newValue) => {
+                if (setterVersion.alive) {
+                  setNodeState(memory, scheduler, node, newValue);
+                }
+              },
+              mutateSelf: (newValue) => {
+                if (setterVersion.alive) {
+                  setNodeState(memory, scheduler, target, newValue);
+                }
+              },
               reset: (node) => {
                 if (setterVersion.alive) {
                   methods.resetState(node);
-                }
-              },
-              mutate: (value) => {
-                if (setterVersion.alive) {
-                  setNodeState(memory, scheduler, target, value);
                 }
               },
             }, action);
