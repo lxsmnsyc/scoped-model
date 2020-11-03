@@ -84,8 +84,8 @@ describe('useGraphNodeValue', () => {
     const expected = 'Changed';
 
     const exampleNode = createGraphNode<string>({
-      get: ({ set }) => {
-        setTimeout(set, 1000, expected);
+      get: ({ mutateSelf }) => {
+        setTimeout(mutateSelf, 1000, expected);
 
         return 'Result';
       },
@@ -113,8 +113,8 @@ describe('useGraphNodeValue', () => {
     const expected = 'Changed';
 
     const exampleNode = createGraphNode<string>({
-      get: ({ set }) => {
-        setTimeout(set, 1000, expected);
+      get: ({ mutateSelf }) => {
+        setTimeout(mutateSelf, 1000, expected);
 
         return 'Result';
       },
