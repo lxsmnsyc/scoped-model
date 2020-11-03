@@ -87,17 +87,17 @@ export default function createSWRGraphNodeFactory<T, P extends any[] = []>(
 
       const ref = getSWRMapRef(revalidate, key, false);
 
-      return ({ set, subscription }) => {
+      return ({ mutateSelf, subscription }) => {
         subscription(() => {
-          addSWRValueListener(ref, set);
+          addSWRValueListener(ref, mutateSelf);
           return () => {
-            removeSWRValueListener(ref, set);
+            removeSWRValueListener(ref, mutateSelf);
           };
         });
 
         if (!IS_SERVER) {
           const onRevalidate = () => {
-            set(true);
+            mutateSelf(true);
           };
 
           // Register polling interval
@@ -161,11 +161,11 @@ export default function createSWRGraphNodeFactory<T, P extends any[] = []>(
         data: options.initialData,
       });
 
-      return ({ set, subscription }) => {
+      return ({ mutateSelf, subscription }) => {
         subscription(() => {
-          addSWRValueListener(ref, set);
+          addSWRValueListener(ref, mutateSelf);
           return () => {
-            removeSWRValueListener(ref, set);
+            removeSWRValueListener(ref, mutateSelf);
           };
         });
 

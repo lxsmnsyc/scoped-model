@@ -91,19 +91,19 @@ export default function createSWRGraphNode<T>(
   // the revalidation state of the resource node.
   const revalidateNode = createGraphNode<boolean>({
     key: options.key != null ? `SWR.Revalidate[${options.key}]` : undefined,
-    get: ({ set, subscription }) => {
+    get: ({ mutateSelf, subscription }) => {
       // Subscribe to the revalidate cache for external trigger.
       subscription(() => {
-        addSWRValueListener(revalidate, set);
+        addSWRValueListener(revalidate, mutateSelf);
         return () => {
-          removeSWRValueListener(revalidate, set);
+          removeSWRValueListener(revalidate, mutateSelf);
         };
       });
 
       // Only perform most window events on server-side
       if (!IS_SERVER) {
         const onRevalidate = () => {
-          set(true);
+          mutateSelf(true);
         };
 
         // Register polling interval
@@ -164,11 +164,11 @@ export default function createSWRGraphNode<T>(
   // This node manages the cache mutation
   const mutationNode = createGraphNode<GraphNodeAsyncResult<T> | undefined>({
     key: options.key != null ? `SWR.Mutation[${options.key}]` : undefined,
-    get: ({ set, subscription }) => {
+    get: ({ mutateSelf, subscription }) => {
       subscription(() => {
-        addSWRValueListener(mutation, set);
+        addSWRValueListener(mutation, mutateSelf);
         return () => {
-          removeSWRValueListener(mutation, set);
+          removeSWRValueListener(mutation, mutateSelf);
         };
       });
 
