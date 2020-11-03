@@ -26,14 +26,14 @@
   "name": "swr-graph-state",
   "module": "dist/swr-graph-state.esm.js",
   "devDependencies": {
-    "@types/jest": "^26.0.14",
-    "@types/node": "^14.11.8",
-    "eslint": "^7.12.0",
+    "@types/jest": "^26.0.15",
+    "@types/node": "^14.14.6",
+    "eslint": "^7.12.1",
     "eslint-config-lxsmnsyc": "^0.1.19",
     "graph-state": "0.4.4",
-    "pridepack": "^0.3.3",
+    "pridepack": "^0.3.6",
     "tslib": "^2.0.3",
-    "typescript": "^4.0.3"
+    "typescript": "^4.0.5"
   },
   "peerDependencies": {
     "graph-state": "^0.4.2"
