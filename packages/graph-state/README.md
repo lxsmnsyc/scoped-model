@@ -24,19 +24,23 @@ A `Graph State` is a kind of a state management structure that aims to build a c
 
 To create a graph node, you must invoke the `createGraphNode` function. This function an object with 1 required field and 2 optional fields.
 * `get`: acts as a default value. If a function is supplied, the function is lazily evaluated as it enters the `GraphDomain` to provide the default value. This function may also be invoked again if the dependencies update. The function an object with ff. fields:
-  * `{ get, set, mutate, reset, subscription }`: An interface for controlling graph nodes.
+  * `{ get, set, mutate, setSelf, mutateSelf, reset, subscription }`: An interface for controlling graph nodes.
     * `get(dependencyNode)`: Registers the `dependencyNode` as a dependency and returns the dependency's current state. If the `dependencyNode` updates its state at some point, the created graph node reacts to the state and
     invokes the `get` function to recompute and produce the new state.
     * `set(node, action)`: Dispatches a node.
+    * `mutate(node, newValue)`: Sets the new state for the graph node.
+    * `setSelf(action)`: Dispatches the self node.
+    * `mutateSelf(newValue)`: Sets the new state for the self node.
     * `reset(node)`: Resets a given node.
-    * `mutate(newValue)`: Sets the new state for the graph node.
     * `subscription(callback)`: Manages subscriptions to external sources. Callback may return another callback which is called before the node recomputes, allowing for potential cleanup logic.
 * `set`: Optional. Registers a dispatch side-effect. When defined, prevents state mutation for the graph node and must rely on dependency recomputation. This function is invoked when the graph node is scheduled for state update. The function receives two parameters:
-  * `{ get, set, reset, mutate }`: An interface for controlling graph nodes.
+  * `{ get, set, reset, setSelf, mutateSelf, mutate }`: An interface for controlling graph nodes.
     * `get(node)`: Reads the node's value. Unlike `get`, the node is not treated as a dependency and therefore `set` won't be invoked when dependencies update.
     * `set(node, action)`: Dispatches a node.
     * `reset(node)`: Resets a given node.
     * `mutate(newValue)`: Sets the new state for the graph node.
+    * `setSelf(action)`: Dispatches the self node.
+    * `mutateSelf(newValue)`: Sets the new state for the self node.
   * `newValue`: The new state for the graph node.
 * `key`: Optional. Uses the provided key instead of a generated key. Provided key may be shared, although `get` and `set` functions may be different depending on the node instance passed. Use with caution.
 
@@ -59,12 +63,12 @@ const dependentNode = createGraphNode({
 
 // A self-updating node
 const timer = createGraphNode({
-  get: ({ set, subscription }) => {
+  get: ({ mutateSelf, subscription }) => {
     let count = 0;
     subscription(() => {
       const interval = setInterval(() => {
         count += 1;
-        set(count);
+        mutateSelf(count);
       }, 1000);
       return () => {
         clearInterval(interval);
