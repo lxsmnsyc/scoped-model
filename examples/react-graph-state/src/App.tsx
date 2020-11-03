@@ -117,12 +117,12 @@ function AsyncTemperature(): JSX.Element {
 }
 
 const timer = createGraphNode<number>({
-  get: ({ set, subscription }) => {
+  get: ({ mutateSelf, subscription }) => {
     let count = 0;
     subscription(() => {
       const interval = setInterval(() => {
         count += 1;
-        set(count);
+        mutateSelf(count);
       }, 1000);
 
       return () => {
