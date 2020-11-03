@@ -24,6 +24,10 @@ With an additional base options shared with the factory:
 - `revalidateOnFocus`: `boolean`. Revalidates the cache when the page is focused. Defaults to `false`.
 - `revalidateOnVisibility`: `boolean`. Revalidates the cache when the page is visible.Defaults to `false`.
 - `revalidateOnNetwork`: `boolean`. Revalidates the cache when the network connectivity goes back online. Defaults to `false`.
+- `refreshInterval`: `number`. Revalidates data on intervals. Defaults to `undefined`.
+- `refreshWhenHidden`: `boolean`. If `refreshInterval` is defined, overrides `refreshInterval` behavior and data revalidates on intervals when the page is hidden.
+- `refreshWhenBlur`: `boolean`. If `refreshInterval` is defined, overrides `refreshInterval` behavior and data revalidates on intervals when the page is blurred/focused out.
+- `refreshWhenOffline`: `boolean`. If `refreshInterval` is defined, overrides `refreshInterval` behavior and data revalidates on intervals when the page is offline.
 - `ssr`: Allow fetching on server-side. Defaults to `false`.
 - `initialData`: Optional. Hydrates the cache on node creation, resulting on `success` state on initial render. If not provided, SWR graph nodes begins with `pending` state.
 - `useOwnCache`: Optional. If `true`, node opts out of the global cache to use its own cache reference.

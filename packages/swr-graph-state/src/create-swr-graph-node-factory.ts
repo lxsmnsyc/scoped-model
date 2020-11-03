@@ -102,13 +102,86 @@ export default function createSWRGraphNodeFactory<T, P extends any[] = []>(
 
           // Register polling interval
           if (options.refreshInterval != null) {
-            subscription(() => {
-              const interval = setInterval(onRevalidate, options.refreshInterval);
+            if (options.refreshWhenBlur) {
+              subscription(() => {
+                let interval: undefined | number;
 
-              return () => {
-                clearInterval(interval);
-              };
-            });
+                const enter = () => {
+                  clearInterval(interval);
+                  interval = setInterval(onRevalidate, options.refreshInterval);
+                };
+                const exit = () => {
+                  clearInterval(interval);
+                  interval = undefined;
+                };
+
+                window.addEventListener('blur', enter, false);
+                window.addEventListener('focus', exit, false);
+
+                return () => {
+                  window.removeEventListener('blur', enter, false);
+                  window.removeEventListener('focus', exit, false);
+                  clearInterval(interval);
+                };
+              });
+            }
+            if (options.refreshWhenOffline) {
+              subscription(() => {
+                let interval: undefined | number;
+
+                const enter = () => {
+                  clearInterval(interval);
+                  interval = setInterval(onRevalidate, options.refreshInterval);
+                };
+                const exit = () => {
+                  clearInterval(interval);
+                  interval = undefined;
+                };
+
+                window.addEventListener('offline', enter, false);
+                window.addEventListener('online', exit, false);
+
+                return () => {
+                  window.removeEventListener('offline', enter, false);
+                  window.removeEventListener('online', exit, false);
+                  clearInterval(interval);
+                };
+              });
+            }
+            if (options.refreshWhenHidden) {
+              subscription(() => {
+                let interval: undefined | number;
+
+                const onVisibility = () => {
+                  clearInterval(interval);
+                  if (document.visibilityState === 'visible') {
+                    interval = undefined;
+                  } else {
+                    interval = setInterval(onRevalidate, options.refreshInterval);
+                  }
+                };
+
+                window.addEventListener('visibilitychange', onVisibility, false);
+
+                return () => {
+                  window.removeEventListener('visibilitychange', onVisibility, false);
+                  clearInterval(interval);
+                };
+              });
+            }
+            if (
+              !(options.refreshWhenHidden
+              || options.refreshWhenBlur
+              || options.refreshWhenOffline)
+            ) {
+              subscription(() => {
+                const interval = setInterval(onRevalidate, options.refreshInterval);
+
+                return () => {
+                  clearInterval(interval);
+                };
+              });
+            }
           }
 
           if (options.revalidateOnFocus) {
