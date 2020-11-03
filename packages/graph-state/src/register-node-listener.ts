@@ -25,11 +25,11 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { GraphNode } from './graph-node';
+import { GraphNode, GraphNodeDraftState } from './graph-node';
 import getNodeInstance from './get-node-instance';
 import { GraphDomainMemory, GraphNodeListener } from './create-domain-memory';
 
-export default function registerNodeListener<S, A>(
+export default function registerNodeListener<S, A = GraphNodeDraftState<S>>(
   memory: GraphDomainMemory,
   node: GraphNode<S, A>,
   listener: GraphNodeListener<S>,

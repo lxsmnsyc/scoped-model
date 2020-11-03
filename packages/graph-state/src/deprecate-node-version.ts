@@ -25,13 +25,13 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { GraphNode } from './graph-node';
+import { GraphNode, GraphNodeDraftState } from './graph-node';
 import createNodeVersion from './create-node-version';
 import getNodeBaseInstance from './get-node-instance';
 import unregisterNodeDependency from './unregister-node-dependency';
 import { GraphDomainMemory } from './create-domain-memory';
 
-export default function deprecateNodeVersion<S, A>(
+export default function deprecateNodeVersion<S, A = GraphNodeDraftState<S>>(
   memory: GraphDomainMemory,
   node: GraphNode<S, A>,
   actualNode = getNodeBaseInstance(memory, node),

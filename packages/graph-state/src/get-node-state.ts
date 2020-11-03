@@ -25,12 +25,12 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { GraphNode } from './graph-node';
+import { GraphNode, GraphNodeDraftState } from './graph-node';
 import computeNode from './compute-node';
 import { GraphDomainMemory } from './create-domain-memory';
 import { GraphDomainScheduler } from './create-domain-scheduler';
 
-export default function getNodeState<S, A>(
+export default function getNodeState<S, A = GraphNodeDraftState<S>>(
   memory: GraphDomainMemory,
   scheduler: GraphDomainScheduler,
   node: GraphNode<S, A>,

@@ -26,9 +26,9 @@
  * @copyright Alexis Munsayac 2020
  */
 import { GraphDomainMemory, GraphNodeInstance } from './create-domain-memory';
-import { GraphNode } from './graph-node';
+import { GraphNode, GraphNodeDraftState } from './graph-node';
 
-export default function getNodeInstance<S, A>(
+export default function getNodeInstance<S, A = GraphNodeDraftState<S>>(
   memory: GraphDomainMemory,
   node: GraphNode<S, A>,
 ): GraphNodeInstance<S> {

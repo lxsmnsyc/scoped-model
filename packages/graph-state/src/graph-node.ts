@@ -42,23 +42,24 @@ export type GraphNodeSubscriptionCleanup = () => void;
 export type GraphNodeSubscriptionCallback = () => void | undefined | GraphNodeSubscriptionCleanup;
 export type GraphNodeSubscription = (callback: GraphNodeSubscriptionCallback) => void;
 
-export interface GraphNodeGetInterface<S> {
+export interface GraphNodeCallbackInterface<S> {
   get: GraphNodeGetValue;
-  set: GraphNodeGetYield<S>;
+  reset: GraphNodeResetValue;
+  set: GraphNodeSetValue;
+  mutate: GraphNodeGetYield<S>;
+}
+
+export interface GraphNodeGetInterface<S> extends GraphNodeCallbackInterface<S> {
   subscription: GraphNodeSubscription;
 }
 
 export type GraphNodeGetSupplier<S> = (facing: GraphNodeGetInterface<S>) => S;
 export type GraphNodeGet<S> = S | GraphNodeGetSupplier<S>;
 
-export interface GraphNodeSetInterface {
-  get: GraphNodeGetValue;
-  set: GraphNodeSetValue;
-  reset: GraphNodeResetValue;
-}
+export type GraphNodeSetInterface<S> = GraphNodeCallbackInterface<S>;
 
 export type GraphNodeSet<S, A = GraphNodeDraftState<S>> =
-  (facing: GraphNodeSetInterface, action: A) => void;
+  (facing: GraphNodeSetInterface<S>, action: A) => void;
 
 export interface GraphNode<S, A = GraphNodeDraftState<S>> {
   get: GraphNodeGet<S>;
@@ -154,7 +155,7 @@ export function createGraphNodeResource<S, A = GraphNodeDraftState<Promise<S>>>(
   graphNode: GraphNode<Promise<S>, A>,
 ): GraphNodeResource<S> {
   return createGraphNode({
-    get: ({ get, set }) => promiseToResource(get(graphNode), set),
+    get: ({ get, mutate }) => promiseToResource(get(graphNode), mutate),
     key: `Resource(${graphNode.key})`,
   });
 }
@@ -196,12 +197,12 @@ export function waitForAll<S>(
   const promises = resources.map((resource) => fromResource(resource));
 
   return createGraphNode({
-    get: ({ get, set }) => (
+    get: ({ get, mutate }) => (
       promiseToResource(
         Promise.all(
           promises.map((promise) => get(promise)),
         ),
-        set,
+        mutate,
       )
     ),
     key: `WaitForAll(${joinResourceKeys(resources)})`,
@@ -219,12 +220,12 @@ export function waitForAny<S>(
   const promises = resources.map((resource) => fromResource(resource));
 
   return createGraphNode({
-    get: ({ get, set }) => (
+    get: ({ get, mutate }) => (
       promiseToResource(
         Promise.race(
           promises.map((promise) => get(promise)),
         ),
-        set,
+        mutate,
       )
     ),
     key: `WaitForAny(${joinResourceKeys(resources)})`,

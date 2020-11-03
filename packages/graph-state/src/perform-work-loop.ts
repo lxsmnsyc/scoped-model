@@ -34,7 +34,6 @@ import deprecateNodeVersion from './deprecate-node-version';
 import getDraftState from './get-draft-state';
 import getNodeInstance from './get-node-instance';
 import getNodeState from './get-node-state';
-import { GraphNode } from './graph-node';
 import setNodeState from './set-node-state';
 
 export default function performWorkLoop(
@@ -61,14 +60,19 @@ export default function performWorkLoop(
             // Run the node setter for further effects
             target.set({
               get: methods.getState,
-              set: <S, A>(node: GraphNode<S, A>, newAction: A) => {
+              set: (node, newAction) => {
                 if (setterVersion.alive) {
                   methods.setState(node, newAction);
                 }
               },
-              reset: <S, A>(node: GraphNode<S, A>) => {
+              reset: (node) => {
                 if (setterVersion.alive) {
                   methods.resetState(node);
+                }
+              },
+              mutate: (value) => {
+                if (setterVersion.alive) {
+                  setNodeState(memory, scheduler, target, value);
                 }
               },
             }, action);

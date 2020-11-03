@@ -27,6 +27,7 @@
  */
 import {
   GraphNode,
+  GraphNodeDraftState,
   GraphNodeGet,
   GraphNodeGetInterface,
   GraphNodeGetSupplier,
@@ -38,7 +39,7 @@ function isNodeValueFunc<T>(
   return typeof nodeValue === 'function';
 }
 
-export default function createNodeValue<S, A>(
+export default function createNodeValue<S, A = GraphNodeDraftState<S>>(
   node: GraphNode<S, A>,
   methods: GraphNodeGetInterface<S>,
 ): S {

@@ -27,9 +27,9 @@
  */
 import { GraphDomainMemory } from './create-domain-memory';
 import { GraphDomainScheduler } from './create-domain-scheduler';
-import { GraphNode } from './graph-node';
+import { GraphNode, GraphNodeDraftState } from './graph-node';
 
-export default function setNodeState<S, A>(
+export default function setNodeState<S, A = GraphNodeDraftState<S>>(
   memory: GraphDomainMemory,
   scheduler: GraphDomainScheduler,
   node: GraphNode<S, A>,

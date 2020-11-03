@@ -86,10 +86,23 @@ export default function computeNode<S, A>(
         }
         return currentState;
       },
-      set: (value) => {
+      mutate: (value) => {
         // If the version is still alive, schedule a state update.
         if (version.alive) {
           setNodeState(memory, scheduler, node, value);
+        }
+      },
+      set: (target, action) => {
+        if (version.alive) {
+          scheduler.scheduleState({
+            target,
+            action,
+          });
+        }
+      },
+      reset: (target) => {
+        if (version.alive) {
+          scheduler.scheduleCompute(target);
         }
       },
       subscription: (callback) => {
