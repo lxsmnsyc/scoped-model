@@ -26,6 +26,7 @@
  * @copyright Alexis Munsayac 2020
  */
 import { GraphNode } from 'graph-state';
+import { useDebugValue } from 'react';
 import { useGraphDomainInterface } from '../GraphDomainContext';
 import useGraphNodeResetBase, { GraphNodeReset } from './useGraphNodeResetBase';
 
@@ -34,5 +35,7 @@ export default function useGraphNodeReset<S, A>(
 ): GraphNodeReset {
   const logic = useGraphDomainInterface();
 
-  return useGraphNodeResetBase(logic, node);
+  const reset = useGraphNodeResetBase(logic, node);
+  useDebugValue(reset);
+  return reset;
 }

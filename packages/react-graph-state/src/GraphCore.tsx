@@ -25,7 +25,7 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import React, { memo } from 'react';
+import React, { memo, useDebugValue } from 'react';
 import { useDisposableMemo } from 'use-dispose';
 import {
   createGraphDomainInterface,
@@ -43,7 +43,7 @@ import useIsomorphicEffect from './hooks/useIsomorphicEffect';
 import { useGraphDomainContext } from './GraphDomainContext';
 import useWorkQueue from './hooks/useWorkQueue';
 
-function GraphCoreProcess(): JSX.Element {
+function useGraphCoreProcess() {
   const { current } = useGraphDomainContext();
   const [workQueue, scheduleWork, resetWork] = useWorkQueue<Work<any, any>>();
 
@@ -66,6 +66,11 @@ function GraphCoreProcess(): JSX.Element {
     performWorkLoop(memory, scheduler, methods, workQueue, resetWork);
   }, [workQueue]);
 
+  useDebugValue(memory.state);
+}
+
+function GraphCoreProcess(): JSX.Element {
+  useGraphCoreProcess();
   return <></>;
 }
 
