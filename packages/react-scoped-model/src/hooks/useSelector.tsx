@@ -25,14 +25,13 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
+import { useDebugValue } from 'react';
 import { ScopedModel } from '../create-model';
-import { defaultCompare, Compare } from '../utils/comparer';
 import useScopedModelContext from './useScopedModelContext';
-import useFreshState from './useFreshState';
-import useCallbackCondition from './useCallbackCondition';
-import { compareTuple } from '../utils/compareTuple';
-import Notifier, { Listener } from '../notifier';
-import useSnapshotBase from './useSnapshotBase';
+import useSubscription, { Subscription } from './useSubscription';
+import useMemoCondition from './useMemoCondition';
+import { defaultCompare, Compare } from '../utils/comparer';
+import { compareArray } from '../utils/compareTuple';
 
 export type SelectorFn<T, R> =
   (model: Readonly<T>) => R;
@@ -61,30 +60,25 @@ export default function useSelector<S, P, R>(
    */
   const notifier = useScopedModelContext(model);
 
-  const [state, setState] = useFreshState<R, [Notifier<S>, SelectorFn<S, R>]>(
-    () => selector(notifier.value),
-    [notifier, selector],
-    compareTuple,
+  const sub = useMemoCondition(
+    (): Subscription<R> => ({
+      read: () => selector(notifier.value),
+      subscribe: (callback) => {
+        notifier.on(callback);
+        return () => {
+          notifier.off(callback);
+        };
+      },
+      shouldUpdate,
+    }),
+    [notifier, shouldUpdate, selector],
+    compareArray,
   );
-
-  const onSnapshot = useCallbackCondition<Listener<S>, [SelectorFn<S, R>, Compare<R>]>(
-    (next: S) => {
-      setState((old) => {
-        const newValue = selector(next);
-        if (shouldUpdate(old, newValue)) {
-          return newValue;
-        }
-        return old;
-      });
-    },
-    [selector, shouldUpdate],
-    compareTuple,
-  );
-
-  useSnapshotBase(notifier, onSnapshot);
 
   /**
    * Return the current state value
    */
-  return state;
+  const current = useSubscription(sub);
+  useDebugValue(current);
+  return current;
 }
