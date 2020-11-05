@@ -25,6 +25,7 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
+import { useDebugValue } from 'react';
 import { ScopedModel } from '../create-model';
 import {
   defaultCompare, compareList, ListCompare,
@@ -60,5 +61,7 @@ export default function useSelectors<S, P, R extends any[]>(
     ),
     shouldUpdate,
   );
-  return useSelector(model, selector, compare);
+  const value = useSelector(model, selector, compare);
+  useDebugValue(value);
+  return value;
 }

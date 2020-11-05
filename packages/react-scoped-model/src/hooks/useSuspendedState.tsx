@@ -25,6 +25,7 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
+import { useDebugValue } from 'react';
 import useScopedModelContext from './useScopedModelContext';
 import { ScopedModel } from '../create-model';
 import useForceUpdate from './useForceUpdate';
@@ -107,10 +108,12 @@ export default function useSuspendedState<S, P, R>(
 
   useSnapshotBase(notifier, onSnapshot);
 
-  return suspendCacheData(notifier.cache, key, () => captureSuspendedValue(
+  const cache = suspendCacheData(notifier.cache, key, () => captureSuspendedValue(
     notifier,
     notifier.value,
     selector,
     key,
   ));
+  useDebugValue(cache);
+  return cache;
 }

@@ -25,6 +25,7 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
+import { useDebugValue } from 'react';
 import { ScopedModel } from '../create-model';
 import { AsyncState } from '../types';
 import useScopedModelContext from './useScopedModelContext';
@@ -117,6 +118,8 @@ export default function useAsyncSelector<S, P, R>(
       notifier.off(callback);
     };
   }, [notifier, selector]);
+
+  useDebugValue(state);
 
   return state;
 }
