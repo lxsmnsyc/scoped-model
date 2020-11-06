@@ -25,6 +25,7 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
+import { useDebugValue } from 'preact/hooks';
 import { ScopedModel } from '../create-model';
 import { defaultCompare, Compare } from '../utils/comparer';
 import useScopedModelContext from './useScopedModelContext';
@@ -68,5 +69,6 @@ export default function useValue<S, P>(
   /**
    * Return the current state value
    */
+  useDebugValue(state);
   return state;
 }

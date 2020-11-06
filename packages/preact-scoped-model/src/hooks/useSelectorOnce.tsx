@@ -25,7 +25,7 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-
+import { useDebugValue } from 'preact/hooks';
 import { ScopedModel } from '../create-model';
 import useValueOnce from './useValueOnce';
 import { SelectorFn } from './useSelector';
@@ -44,9 +44,11 @@ export default function useSelectorOnce<S, P, R>(
 ): R {
   const baseValue = useValueOnce(model);
 
-  return useMemoCondition<R, [S, SelectorFn<S, R>]>(
+  const value = useMemoCondition<R, [S, SelectorFn<S, R>]>(
     () => selector(baseValue),
     [baseValue, selector],
     compareTuple,
   );
+  useDebugValue(value);
+  return value;
 }

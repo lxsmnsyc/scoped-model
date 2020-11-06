@@ -28,7 +28,7 @@
 import { GraphDomainInterface, GraphNode, GraphNodeListener } from 'graph-state';
 import useIsomorphicEffect from './useIsomorphicEffect';
 
-export default function useGraphNodeSubscribeBase<S, A>(
+export default function useGraphNodeSnapshotBase<S, A>(
   logic: GraphDomainInterface,
   node: GraphNode<S, A>,
   listener: GraphNodeListener<S>,
