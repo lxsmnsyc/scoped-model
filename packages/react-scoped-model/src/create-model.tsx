@@ -32,6 +32,7 @@ import React, {
   useContext,
   FC,
   memo,
+  useDebugValue,
 } from 'react';
 import Notifier from './notifier';
 import useConstant from './hooks/useConstant';
@@ -75,7 +76,7 @@ export default function createModel<Model, Props = unknown>(
    */
   const displayName = options.displayName || `ScopedModel-${id}`;
 
-  const ProcessorInner = (props: Props) => {
+  function useProcessor(props: Props) {
     const emitter = useContext(context);
     if (!emitter) {
       throw new MissingScopedModelError(displayName);
@@ -89,6 +90,11 @@ export default function createModel<Model, Props = unknown>(
       emitter.consume(model);
     }, [emitter, model]);
 
+    useDebugValue(model);
+  }
+
+  const ProcessorInner = (props: Props) => {
+    useProcessor(props);
     return null;
   };
   ProcessorInner.displayName = `ScopedModelProcessor(${displayName}.Processor)`;
