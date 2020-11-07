@@ -26,7 +26,7 @@
  * @copyright Alexis Munsayac 2020
  */
 import { useDebugValue } from 'react';
-import { Compare, defaultCompare } from '../utils/comparer';
+import { MemoCompare, defaultCompare } from './useFreshLazyRef';
 import useFreshState from './useFreshState';
 import useIsomorphicEffect from './useIsomorphicEffect';
 
@@ -36,7 +36,7 @@ type Subscribe = (callback: () => void) => () => void;
 export interface Subscription<T> {
   read: ReadSource<T>;
   subscribe: Subscribe;
-  shouldUpdate?: Compare<T>;
+  shouldUpdate?: MemoCompare<T>;
 }
 
 export default function useSubscription<T>({
