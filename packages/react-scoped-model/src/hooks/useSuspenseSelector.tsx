@@ -25,6 +25,7 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
+import { useDebugValue } from 'react';
 import { ScopedModel } from '../create-model';
 import useScopedModelContext from './useScopedModelContext';
 import useForceUpdate from './useForceUpdate';
@@ -64,9 +65,11 @@ export default function useSuspenseSelector<S, P, R>(
 
   useSnapshotBase(notifier, onSnapshot);
 
-  return suspendCacheData(notifier.cache, key, () => createCachedData(
+  const cache = suspendCacheData(notifier.cache, key, () => createCachedData(
     notifier.cache,
     key,
     selector(notifier.value),
   ));
+  useDebugValue(cache);
+  return cache;
 }

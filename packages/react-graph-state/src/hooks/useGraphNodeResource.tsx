@@ -26,10 +26,13 @@
  * @copyright Alexis Munsayac 2020
  */
 import { GraphNodeResource } from 'graph-state';
+import { useDebugValue } from 'react';
 import useGraphNodeValue from './useGraphNodeValue';
 
 export default function useGraphNodeResource<T>(node: GraphNodeResource<T>): T {
   const value = useGraphNodeValue(node);
+
+  useDebugValue(value);
 
   if (value.status === 'success') {
     return value.data;

@@ -26,8 +26,8 @@
  * @copyright Alexis Munsayac 2020
  */
 import { GraphDomainInterface, GraphNode } from 'graph-state';
+import { compareArray } from '../utils/compareTuple';
 import useCallbackCondition from './useCallbackCondition';
-import { compare, Dependency } from './useGraphNodeStateBase';
 
 export type GraphNodeReset = () => void;
 
@@ -35,9 +35,9 @@ export default function useGraphNodeResetBase<S, A>(
   logic: GraphDomainInterface,
   node: GraphNode<S, A>,
 ): GraphNodeReset {
-  return useCallbackCondition<GraphNodeReset, Dependency<S, A>>(
+  return useCallbackCondition(
     () => logic.resetState(node),
     [logic, node],
-    compare,
+    compareArray,
   );
 }

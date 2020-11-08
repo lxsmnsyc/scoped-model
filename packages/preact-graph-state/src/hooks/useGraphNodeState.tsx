@@ -25,28 +25,24 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
+import { useDebugValue } from 'preact/hooks';
 import { GraphNode } from 'graph-state';
 import { useGraphDomainInterface } from '../GraphDomainContext';
-// import useGraphNodeStateBase from './useGraphNodeStateBase';
-import useGraphNodeSnapshotBase from './useGraphNodeSnapshotBase';
+import useGraphNodeStateBase from './useGraphNodeStateBase';
 import useGraphNodeDispatchBase, { GraphNodeDispatch } from './useGraphNodeDispatchBase';
-import useForceUpdate from './useForceUpdate';
 import useGraphNodeResetBase, { GraphNodeReset } from './useGraphNodeResetBase';
+import useGraphNodeSnapshotBase from './useGraphNodeSnapshotBase';
 
 export default function useGraphNodeState<S, A>(
   node: GraphNode<S, A>,
 ): [S, GraphNodeDispatch<A>, GraphNodeReset] {
   const logic = useGraphDomainInterface();
 
-  // FIXME: It seems that Preact does not clean hooks during Suspense.
-  // const [state, setState] = useGraphNodeStateBase(logic, node);
-  // useGraphNodeSubscribeBase(logic, node, setState);
-
-  const forceUpdate = useForceUpdate();
-  useGraphNodeSnapshotBase(logic, node, forceUpdate);
-
+  const [state, setState] = useGraphNodeStateBase(logic, node);
+  useGraphNodeSnapshotBase(logic, node, setState);
   const dispatch = useGraphNodeDispatchBase(logic, node);
   const reset = useGraphNodeResetBase(logic, node);
 
-  return [logic.getState(node), dispatch, reset];
+  useDebugValue([state, dispatch, reset]);
+  return [state, dispatch, reset];
 }

@@ -26,8 +26,8 @@
  * @copyright Alexis Munsayac 2020
  */
 import { GraphDomainInterface, GraphNode } from 'graph-state';
+import { compareArray } from '../utils/compareTuple';
 import useCallbackCondition from './useCallbackCondition';
-import { compare, Dependency } from './useGraphNodeStateBase';
 
 export type GraphNodeDispatch<A> = (action: A) => void;
 
@@ -35,9 +35,9 @@ export default function useGraphNodeDispatchBase<S, A>(
   logic: GraphDomainInterface,
   node: GraphNode<S, A>,
 ): GraphNodeDispatch<A> {
-  return useCallbackCondition<GraphNodeDispatch<A>, Dependency<S, A>>(
+  return useCallbackCondition(
     (action: A) => logic.setState(node, action),
     [logic, node],
-    compare,
+    compareArray,
   );
 }

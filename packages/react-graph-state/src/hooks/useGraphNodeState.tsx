@@ -26,22 +26,22 @@
  * @copyright Alexis Munsayac 2020
  */
 import { GraphNode } from 'graph-state';
+import { useDebugValue } from 'react';
 import { useGraphDomainInterface } from '../GraphDomainContext';
-import useGraphNodeStateBase from './useGraphNodeStateBase';
-import useGraphNodeSnapshotBase from './useGraphNodeSnapshotBase';
 import useGraphNodeDispatchBase, { GraphNodeDispatch } from './useGraphNodeDispatchBase';
 import useGraphNodeResetBase, { GraphNodeReset } from './useGraphNodeResetBase';
+import useGraphNodeValueBase from './useGraphNodeValueBase';
 
 export default function useGraphNodeState<S, A>(
   node: GraphNode<S, A>,
 ): [S, GraphNodeDispatch<A>, GraphNodeReset] {
   const logic = useGraphDomainInterface();
 
-  const [state, setState] = useGraphNodeStateBase(logic, node);
-  useGraphNodeSnapshotBase(logic, node, setState);
-
+  const state = useGraphNodeValueBase(logic, node);
   const dispatch = useGraphNodeDispatchBase(logic, node);
   const reset = useGraphNodeResetBase(logic, node);
+
+  useDebugValue([state, dispatch, reset]);
 
   return [state, dispatch, reset];
 }

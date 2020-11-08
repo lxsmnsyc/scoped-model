@@ -25,12 +25,30 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { useLayoutEffect, useEffect } from 'react';
+export type Compare<T> = (a: T, b: T) => boolean;
 
-const useIsomorphicEffect = typeof window !== 'undefined'
-  && typeof window.document !== 'undefined'
-  && typeof window.document.createElement !== 'undefined'
-  ? useLayoutEffect
-  : useEffect;
+export function defaultCompare<T>(a: T, b: T): boolean {
+  return !Object.is(a, b);
+}
 
-export default useIsomorphicEffect;
+type ArrayType<T> = T extends Array<infer U> ? U : T;
+
+export type ListCompare<T extends any[]> = Compare<ArrayType<T>>;
+
+export function compareList<T extends any[]>(
+  a: T, b: T,
+  compare: Compare<ArrayType<T>> = defaultCompare,
+): boolean {
+  if (a === b) {
+    return false;
+  }
+  if (a.length !== b.length) {
+    return true;
+  }
+  for (let i = 0; i < a.length; i += 1) {
+    if (compare(a[i], b[i])) {
+      return true;
+    }
+  }
+  return false;
+}

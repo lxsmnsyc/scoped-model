@@ -25,27 +25,31 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
+import { useDebugValue } from 'react';
 import { GraphDomainInterface, GraphNode } from 'graph-state';
-import useFreshState, { RefreshStateDispatch } from './useFreshState';
+import useMemoCondition from './useMemoCondition';
+import useSubscription, { Subscription } from './useSubscription';
+import { compareArray } from '../utils/compareTuple';
 
-export type Dependency<S, A> = [GraphDomainInterface, GraphNode<S, A>];
-
-export function compare<S, A>(
-  prev: Dependency<S, A>,
-  next: Dependency<S, A>,
-): boolean {
-  return (
-    !Object.is(prev[0], next[0]) || !Object.is(prev[1], next[1])
-  );
-}
-
-export default function useGraphNodeStateBase<S, A>(
+export default function useGraphNodeValueBase<S, A>(
   logic: GraphDomainInterface,
   node: GraphNode<S, A>,
-): [S, RefreshStateDispatch<S>] {
-  return useFreshState<S, Dependency<S, A>>(
-    () => logic.getState(node),
+): S {
+  const sub = useMemoCondition(
+    (): Subscription<S> => ({
+      read: () => logic.getState(node),
+      subscribe: (callback) => {
+        logic.addListener(node, callback);
+        return () => {
+          logic.removeListener(node, callback);
+        };
+      },
+    }),
     [logic, node],
-    compare,
+    compareArray,
   );
+
+  const current = useSubscription(sub);
+  useDebugValue(current);
+  return current;
 }

@@ -25,6 +25,7 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
+import { useDebugValue } from 'preact/hooks';
 import { ScopedModel } from '../create-model';
 import useScopedModelContext from './useScopedModelContext';
 
@@ -36,5 +37,7 @@ import useScopedModelContext from './useScopedModelContext';
 export default function useValueOnce<S, P>(
   model: ScopedModel<S, P>,
 ): S {
-  return useScopedModelContext(model).value;
+  const { value } = useScopedModelContext(model);
+  useDebugValue(value);
+  return value;
 }

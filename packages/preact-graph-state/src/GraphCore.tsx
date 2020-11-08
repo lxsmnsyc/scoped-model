@@ -27,7 +27,7 @@
  */
 /** @jsx h */
 import { h, Fragment, VNode } from 'preact';
-import { memo } from 'preact/compat';
+import { memo, useDebugValue } from 'preact/compat';
 import {
   GraphDomainMemory,
   createGraphDomainMemory,
@@ -44,7 +44,7 @@ import useIsomorphicEffect from './hooks/useIsomorphicEffect';
 import useWorkQueue from './hooks/useWorkQueue';
 import { useGraphDomainContext } from './GraphDomainContext';
 
-function GraphCoreProcess(): VNode {
+function useGraphCoreProcess(): void {
   const { current } = useGraphDomainContext();
   const [workQueue, scheduleWork, resetWork] = useWorkQueue<Work<any, any>>();
 
@@ -68,6 +68,11 @@ function GraphCoreProcess(): VNode {
     cleanDomainMemory(memory);
   }, []);
 
+  useDebugValue(memory.state);
+}
+
+function GraphCoreProcess(): VNode {
+  useGraphCoreProcess();
   return <Fragment />;
 }
 
