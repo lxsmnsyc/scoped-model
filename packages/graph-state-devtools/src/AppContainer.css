@@ -1,0 +1,8 @@
+.AppContainer {
+  width: 100%;
+  height: 100vh;
+
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: 3fr 1fr;
+}

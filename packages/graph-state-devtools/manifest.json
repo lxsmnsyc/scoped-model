@@ -1,0 +1,8 @@
+{
+  "name": "Graph State DevTools",
+  "version": "0.0.0",
+  "description": "DevTools for graph-state library",
+  "devtools_page": "devtools.html",
+  "minimum_chrome_version": "10.0",
+  "manifest_version": 2
+}
