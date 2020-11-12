@@ -33,8 +33,13 @@ export type Compare<T> = (a: T, b: T) => boolean;
 export type Enqueue<T> = (node: T, compare?: Compare<T>) => void;
 export type QueueReset = () => void;
 
+function defer(cb: () => void, catchError: (error: any) => void): void {
+  Promise.resolve(true).then(cb, catchError);
+}
+
 export default function useWorkQueue<T>(): [T[], Enqueue<T>, QueueReset] {
   const [state, setState] = useState<T[]>([]);
+  const [error, setError] = useState<Error | undefined>();
 
   const lifecycle = useRef(false);
 
@@ -46,7 +51,7 @@ export default function useWorkQueue<T>(): [T[], Enqueue<T>, QueueReset] {
   }, []);
 
   const schedule = useConstantCallback((node: T, compare?: Compare<T>) => {
-    if (lifecycle.current) {
+    defer(() => {
       setState((current) => {
         const queue = compare
           ? current.filter((value) => compare(node, value))
@@ -54,14 +59,18 @@ export default function useWorkQueue<T>(): [T[], Enqueue<T>, QueueReset] {
 
         return [...queue, node];
       });
-    }
+    }, setError);
   });
 
   const reset = useConstantCallback(() => {
-    if (lifecycle.current) {
+    defer(() => {
       setState([]);
-    }
+    }, setError);
   });
+
+  if (error) {
+    throw error;
+  }
 
   return [state, schedule, reset];
 }
