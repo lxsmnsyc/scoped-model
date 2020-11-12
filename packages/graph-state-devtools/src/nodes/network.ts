@@ -18,14 +18,23 @@ const network = createGraphNode<Network | undefined>({
       const instance = new Network(container, {
         nodes: get(nodes),
         edges: get(edges),
-      }, {});
+      }, {
+        nodes: {
+          shape: 'dot',
+          font: {
+            strokeColor: '#000',
+            color: '#fff',
+          },
+        },
+      });
 
       subscription(() => {
         instance.on('click', (params: ClickEvent) => {
           if (params.nodes.length) {
+            const id = params.nodes[0];
             set(networkSelected, {
               type: 'node',
-              id: params.nodes[0],
+              id,
             });
           } else if (params.edges.length) {
             set(networkSelected, {

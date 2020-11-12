@@ -11,7 +11,6 @@ import {
   useGraphNodeValue,
   useGraphNodeDispatch,
 } from 'react-graph-state';
-import network from './nodes/network';
 import networkSelected from './nodes/network-selected';
 import networkSelectedNode from './nodes/network-selected-node';
 import nodes from './nodes/nodes';
@@ -40,7 +39,6 @@ interface NodeURLProps {
 
 export function NodeURL({ id }: NodeURLProps): JSX.Element {
   const currentNodes = useGraphNodeValue(nodes);
-  const currentNetwork = useGraphNodeValue(network);
   const setSelected = useGraphNodeDispatch(networkSelected);
 
   const node = useMemo(
@@ -50,15 +48,12 @@ export function NodeURL({ id }: NodeURLProps): JSX.Element {
 
   const onClick = useCallback(
     () => {
-      if (currentNetwork) {
-        currentNetwork.selectNodes([id], true);
-      }
       setSelected({
         type: 'node',
         id,
       });
     },
-    [currentNetwork, id, setSelected],
+    [id, setSelected],
   );
 
   if (node) {

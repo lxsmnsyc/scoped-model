@@ -5,9 +5,10 @@ import {
 import {
   Text,
 } from '@geist-ui/react';
-import networkSelected from './nodes/network-selected';
 import EdgeInfo from './EdgeInfo';
 import NodeInfo from './NodeInfo';
+import networkSelected from './nodes/network-selected';
+import NodeSearch from './NodeSearch';
 
 function Fallback() {
   return (
@@ -17,7 +18,7 @@ function Fallback() {
   );
 }
 
-export default function Info(): JSX.Element {
+function InfoInternal(): JSX.Element {
   const selected = useGraphNodeValue(networkSelected);
 
   if (selected) {
@@ -30,4 +31,13 @@ export default function Info(): JSX.Element {
   }
 
   return <Fallback />;
+}
+
+export default function Info(): JSX.Element {
+  return (
+    <>
+      <NodeSearch />
+      <InfoInternal />
+    </>
+  );
 }

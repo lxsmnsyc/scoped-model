@@ -1,12 +1,13 @@
-import { createGraphNode, GraphNodeDebugData } from 'graph-state';
+import { createGraphNode } from 'graph-state';
 import { DataSet } from 'vis-data';
 
-export interface DataNode extends GraphNodeDebugData {
+export interface DataNode {
   id: string;
   label: string;
   value: number;
   dependencies: string[];
   dependents: string[];
+  state?: any;
 }
 
 const nodes = createGraphNode({

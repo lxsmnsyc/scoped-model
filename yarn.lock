@@ -1007,6 +1007,11 @@
     unique-filename "^1.1.1"
     which "^1.3.1"
 
+"@geist-ui/react-icons@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@geist-ui/react-icons/-/react-icons-1.0.1.tgz#5da112bbc98216bf05da3aabbd7d21594440b209"
+  integrity sha512-/phre1NwXT0Mrxcq3yb+KksJ16/ykptgxI7+jh5pmDZfxnIMPlBWFBGDK0yw96oi752Wuo24X6+tkWjVe/g5Bg==
+
 "@geist-ui/react@^2.1.0-canary.2":
   version "2.1.0-canary.2"
   resolved "https://registry.yarnpkg.com/@geist-ui/react/-/react-2.1.0-canary.2.tgz#cc90f193bd41c99e880413cda2dd867d43ef0063"
@@ -2113,9 +2118,9 @@
   integrity sha512-98epbP6cLl8qDgw0nq1GDbQGURVOkQnYpgfU+nxtGTFBJwJEYxViwXi02WEQcytS8Kr2xjWA6t66qz9RLxtbBA==
 
 "@prefresh/vite@^1.0.2":
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/@prefresh/vite/-/vite-1.1.4.tgz#4aa7fd77e28fe04f7ae92a9b70c7d750a324269e"
-  integrity sha512-Xmf9i2YWIAVfs7DG3zkwz4l4hvS3+ujYK1gT0rstRoyUzCW08eecAJhqO3X/Ly2hYhwP2+zC/1l7p4lKSuv0yg==
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@prefresh/vite/-/vite-1.2.1.tgz#2293f608b71dbcfb664099b0e60d29d8679e3d1a"
+  integrity sha512-sdrnV3f4ObGuk92QePyB15zpBmIlxyV9bhsxMx17CnoyvLAK+FbYRtUsfWGaB0ljw5w9LP71IU49M5aquXvTAQ==
   dependencies:
     "@babel/core" "^7.9.6"
     "@prefresh/babel-plugin" "0.2.2"
@@ -3295,9 +3300,9 @@ balanced-match@^1.0.0:
   integrity sha1-ibTRmasr7kneFk6gK4nORi1xt2c=
 
 base64-js@^1.0.2:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.5.0.tgz#2d03045876d9e2b68a7a0f87d6bd163595e3b6af"
-  integrity sha512-Jrdy04F2EKcNggUDfubMUPNAZg2vMquLQSm8sKLYJvz40ClFL1S8GKyDshGkNsbNNE5Z+fQavzU7nSK1I9JUGA==
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.5.1.tgz#1b1b440160a5bf7ad40b650f095963481903930a"
+  integrity sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==
 
 base@^0.11.1:
   version "0.11.2"
@@ -4444,9 +4449,9 @@ css-tree@1.0.0-alpha.37:
     source-map "^0.6.1"
 
 css-tree@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/css-tree/-/css-tree-1.0.0.tgz#21993fa270d742642a90409a2c0cb3ac0298adf6"
-  integrity sha512-CdVYz/Yuqw0VdKhXPBIgi8DO3NicJVYZNWeX9XcIuSp9ZoFT5IcleVRW07O5rMjdcx1mb+MEJPknTTEW7DdsYw==
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/css-tree/-/css-tree-1.0.1.tgz#7726678dfe2a57993a018d9dce519bf1760e3b6d"
+  integrity sha512-WroX+2MvsYcRGP8QA0p+rxzOniT/zpAoQ/DTKDSJzh5T3IQKUkFHeIIfgIapm2uaP178GWY3Mime1qbk8GO/tA==
   dependencies:
     mdn-data "2.0.12"
     source-map "^0.6.1"
@@ -5021,9 +5026,9 @@ ee-first@1.1.1:
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
 electron-to-chromium@^1.3.591:
-  version "1.3.592"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.592.tgz#4621521b223bf6e5469373528321e185d3c24670"
-  integrity sha512-kGNowksvqQiPb1pUSQKpd8JFoGPLxYOwduNRCqCxGh/2Q1qE2JdmwouCW41lUzDxOb/2RIV4lR0tVIfboWlO9A==
+  version "1.3.593"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.593.tgz#947ccf6dc8e013e2b053d2463ecd1043c164fcef"
+  integrity sha512-GvO7G1ZxvffnMvPCr4A7+iQPVuvpyqMrx2VWSERAjG+pHK6tmO9XqYdBfMIq9corRyi4bNImSDEiDvIoDb8HrA==
 
 elliptic@^6.5.3:
   version "6.5.3"
@@ -12471,9 +12476,9 @@ vis-data@^7.1.0:
   integrity sha512-uWhBJD3NPlQqAWMYZ7P2WHtBeUrnt25vH6WiZwrwTbyv75g58WrzmxQmf1muRLyPeAydWRmuEC+ptGaKUtMKew==
 
 vis-network@^8.5.2:
-  version "8.5.2"
-  resolved "https://registry.yarnpkg.com/vis-network/-/vis-network-8.5.2.tgz#20e7929d58ac2bd7062b0ee7ac4051248bc4390a"
-  integrity sha512-JIKeVelCGkO6+nRCTeLmFlVaNGcU3PfuF8Roqfst3Wx8sXKd3wFcigk7SH3rRKFFW4ibK8vYozztC+G7H/yFRg==
+  version "8.5.3"
+  resolved "https://registry.yarnpkg.com/vis-network/-/vis-network-8.5.3.tgz#3c938806ea95ed48d502c58826d557057e2b1120"
+  integrity sha512-6Lvu7hWjm7tJS5b+b/U0GVDx75QdlknRKmGwvVQosN4pc3HjzU3vXB+yXfqNHIxk5eQuWCQT+/GsE4GGF2BkDg==
 
 vite-plugin-react@^3.0.2:
   version "3.0.2"

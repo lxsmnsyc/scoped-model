@@ -6,6 +6,7 @@
   },
   "dependencies": {
     "@geist-ui/react": "^2.1.0-canary.2",
+    "@geist-ui/react-icons": "^1.0.1",
     "@types/react-inspector": "^4.0.1",
     "esbuild": "^0.8.5",
     "graph-state": "^0.5.0",
@@ -27,7 +28,7 @@
   "private": false,
   "description": "Graph State DevTools",
   "publishConfig": {
-    "access": "public"
+    "access": "restricted"
   },
   "repository": {
     "type": "git",

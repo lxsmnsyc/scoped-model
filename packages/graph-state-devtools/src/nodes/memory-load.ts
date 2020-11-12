@@ -1,43 +1,30 @@
-import { createGraphNode, GraphNodeDebugData } from 'graph-state';
+import {
+  createGraphNode,
+  createGraphNodeResource,
+  GraphNodeDebugData,
+} from 'graph-state';
+
+import refresh from './refresh';
+import nodes from './nodes';
+import edges from './edges';
+
 import readMemory from '../utils/read-memory';
-import shouldRefresh from './should-refresh';
-import refreshInterval from './refresh-interval';
-import shouldRefreshOnFocus from './should-refresh-on-focus';
+import { formatEdge } from '../utils/format-edge';
+import { formatNode } from '../utils/format-node';
 
 const memoryLoad = createGraphNode<Promise<GraphNodeDebugData[]>>({
-  get: ({ get, subscription, mutateSelf }) => {
-    const load = () => {
-      mutateSelf(readMemory());
-    };
+  get: async ({ get }) => {
+    get(refresh);
 
-    const refreshFlag = get(shouldRefresh);
+    const memory = await readMemory();
 
-    if (refreshFlag) {
-      const refreshMs = get(refreshInterval);
+    formatNode(get(nodes), memory);
+    formatEdge(get(edges), memory);
 
-      subscription(() => {
-        const interval = setInterval(load, refreshMs);
-
-        return () => {
-          clearInterval(interval);
-        };
-      });
-    }
-
-    const focusFlag = get(shouldRefreshOnFocus);
-
-    if (focusFlag) {
-      subscription(() => {
-        window.addEventListener('focus', load, false);
-
-        return () => {
-          window.removeEventListener('focus', load, false);
-        };
-      });
-    }
-
-    return readMemory();
+    return memory;
   },
 });
+
+export const memoryResource = createGraphNodeResource(memoryLoad);
 
 export default memoryLoad;
