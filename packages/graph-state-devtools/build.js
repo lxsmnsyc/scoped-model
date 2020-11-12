@@ -9,6 +9,6 @@ esbuild.buildSync({
   },
   bundle: true,
   platform: 'browser',
-  outfile: './dist/index.js',
+  outfile: './out/index.js',
   target: 'es2017'
 });
