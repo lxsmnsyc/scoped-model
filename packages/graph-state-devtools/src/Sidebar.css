@@ -1,0 +1,18 @@
+.Sidebar {
+  height: 100vh;
+
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.SidebarTitle {
+  padding: 16px 16px 0px;
+}
+
+.SidebarTabs {
+  padding: 0px 16px;
+}
+
+.SidebarContentSection {
+  margin: 16px 0px;
+}

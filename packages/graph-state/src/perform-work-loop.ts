@@ -31,6 +31,7 @@ import { GraphDomainMemory } from './create-domain-memory';
 import { GraphDomainScheduler, Work, WorkQueue } from './create-domain-scheduler';
 import deprecateNodeBaseVersion from './deprecate-node-base-version';
 import deprecateNodeVersion from './deprecate-node-version';
+import exposeToWindow from './expose-to-window';
 import getDraftState from './get-draft-state';
 import getNodeInstance from './get-node-instance';
 import getNodeState from './get-node-state';
@@ -134,5 +135,9 @@ export default function performWorkLoop(
           break;
       }
     });
+
+    if (process.env.NODE_ENV !== 'production') {
+      exposeToWindow(memory);
+    }
   }
 }

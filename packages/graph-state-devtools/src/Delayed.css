@@ -1,0 +1,9 @@
+.Mounted {
+  transition: opacity 400ms ease-in;
+  opacity: 1;
+}
+
+.Unmounted {
+  transition: opacity 400ms ease-out;
+  opacity: 0;
+}
