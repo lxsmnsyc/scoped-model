@@ -2,7 +2,8 @@
   "name": "graph-state-devtools",
   "version": "0.1.1",
   "scripts": {
-    "build": "node build.js"
+    "build": "node build.js",
+    "prepublish": "yarn build"
   },
   "dependencies": {
     "@geist-ui/react": "^2.1.0-canary.2",
@@ -25,7 +26,7 @@
     "eslint-config-lxsmnsyc": "^0.1.19",
     "typescript": "^4.0.5"
   },
-  "private": false,
+  "private": true,
   "description": "Graph State DevTools",
   "publishConfig": {
     "access": "restricted"
