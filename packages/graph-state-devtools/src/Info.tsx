@@ -5,9 +5,11 @@ import {
 import {
   Text,
 } from '@geist-ui/react';
+
+import networkSelected from './nodes/network-selected';
+
 import EdgeInfo from './EdgeInfo';
 import NodeInfo from './NodeInfo';
-import networkSelected from './nodes/network-selected';
 import NodeSearch from './NodeSearch';
 
 function Fallback() {

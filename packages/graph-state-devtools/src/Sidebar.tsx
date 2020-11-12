@@ -1,5 +1,6 @@
 import React from 'react';
 import { Tabs, Text } from '@geist-ui/react';
+
 import Info from './Info';
 import Settings from './Settings';
 

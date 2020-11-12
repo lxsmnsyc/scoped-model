@@ -11,8 +11,8 @@ import {
   useGraphNodeValue,
 } from 'react-graph-state';
 import shouldRefresh from './nodes/should-refresh';
-import shouldRefreshOnFocus from './nodes/should-refresh-on-focus';
 import refreshInterval from './nodes/refresh-interval';
+import shouldRefreshOnFocus from './nodes/should-refresh-on-focus';
 
 import './RefreshSettings.css';
 

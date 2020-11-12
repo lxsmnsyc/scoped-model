@@ -31077,6 +31077,33 @@ For more info, visit https://fb.me/react-mock-scheduler`);
     actualNode.version.alive = false;
     actualNode.version = createNodeVersion();
   }
+  /**
+   * @license
+   * MIT License
+   *
+   * Copyright (c) 2020 Alexis Munsayac
+   * Permission is hereby granted, free of charge, to any person obtaining a copy
+   * of this software and associated documentation files (the "Software"), to deal
+   * in the Software without restriction, including without limitation the rights
+   * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+   * copies of the Software, and to permit persons to whom the Software is
+   * furnished to do so, subject to the following conditions:
+   *
+   * The above copyright notice and this permission notice shall be included in all
+   * copies or substantial portions of the Software.
+   *
+   * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+   * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+   * SOFTWARE.
+   *
+   *
+   * @author Alexis Munsayac <alexis.munsayac@gmail.com>
+   * @copyright Alexis Munsayac 2020
+   */
   function parseDependencies(dependencies) {
     return Array.from(dependencies).map((node) => node.key);
   }
@@ -69772,7 +69799,6 @@ div.vis-color-picker input.vis-saturation-range {
   // src/nodes/network-selected-edge.ts
   const networkSelectedEdge = createGraphNode({
     get: ({get: get2}) => {
-      get2(refresh_default);
       const selected = get2(network_selected_default);
       if (selected && selected.type === "edge") {
         const currentEdges = get2(edges_default);
@@ -69785,6 +69811,15 @@ div.vis-color-picker input.vis-saturation-range {
     }
   });
   var network_selected_edge_default = networkSelectedEdge;
+
+  // src/nodes/refreshed-selected-edge.ts
+  const refreshedSelectedEdge = createGraphNode({
+    get: ({get: get2}) => {
+      get2(refresh_default);
+      return get2(network_selected_edge_default);
+    }
+  });
+  var refreshed_selected_edge_default = refreshedSelectedEdge;
 
   // src/NodeInfo.tsx
   const react194 = __toModule(require_react());
@@ -69814,7 +69849,6 @@ div.vis-color-picker input.vis-saturation-range {
   // src/nodes/network-selected-node.ts
   const networkSelectedNode = createGraphNode({
     get: ({get: get2, set: set2}) => {
-      get2(refresh_default);
       const selected = get2(network_selected_default);
       if (selected && selected.type === "node") {
         const currentNodes = get2(nodes_default);
@@ -69833,6 +69867,15 @@ div.vis-color-picker input.vis-saturation-range {
     }
   });
   var network_selected_node_default = networkSelectedNode;
+
+  // src/nodes/refreshed-selected-node.ts
+  const refreshedSelectedNode = createGraphNode({
+    get: ({get: get2}) => {
+      get2(refresh_default);
+      return get2(network_selected_node_default);
+    }
+  });
+  var refreshed_selected_node_default = refreshedSelectedNode;
 
   // src/StateViewer.tsx
   const react193 = __toModule(require_react());
@@ -72282,7 +72325,7 @@ div.vis-color-picker input.vis-saturation-range {
 
   // src/NodeInfo.tsx
   function NodeKey() {
-    const selectedNode = useGraphNodeValue(network_selected_node_default);
+    const selectedNode = useGraphNodeValue(refreshed_selected_node_default);
     if (selectedNode) {
       return /* @__PURE__ */ react194.default.createElement("div", {
         className: "SidebarContentSection"
@@ -72324,7 +72367,7 @@ div.vis-color-picker input.vis-saturation-range {
     }, "There are no nodes.");
   }
   function NodeLinks({title, type}) {
-    const selectedNode = useGraphNodeValue(network_selected_node_default);
+    const selectedNode = useGraphNodeValue(refreshed_selected_node_default);
     if (selectedNode) {
       return /* @__PURE__ */ react194.default.createElement("div", {
         className: "SidebarContentSection"
@@ -72338,7 +72381,7 @@ div.vis-color-picker input.vis-saturation-range {
     return /* @__PURE__ */ react194.default.createElement(react194.default.Fragment, null);
   }
   function NodeState() {
-    const selectedNode = useGraphNodeValue(network_selected_node_default);
+    const selectedNode = useGraphNodeValue(refreshed_selected_node_default);
     if (selectedNode) {
       return /* @__PURE__ */ react194.default.createElement("div", {
         className: "SidebarContentSection"
@@ -72363,7 +72406,7 @@ div.vis-color-picker input.vis-saturation-range {
 
   // src/EdgeInfo.tsx
   function EdgeLink({title, type}) {
-    const selectedEdge = useGraphNodeValue(network_selected_edge_default);
+    const selectedEdge = useGraphNodeValue(refreshed_selected_edge_default);
     if (selectedEdge) {
       return /* @__PURE__ */ react197.default.createElement("div", {
         className: "SidebarContentSection"

@@ -1,11 +1,10 @@
 import { createGraphNode } from 'graph-state';
+
 import edges, { DataEdge } from './edges';
 import networkSelected from './network-selected';
-import refresh from './refresh';
 
 const networkSelectedEdge = createGraphNode<DataEdge | undefined>({
   get: ({ get }) => {
-    get(refresh);
     const selected = get(networkSelected);
 
     if (selected && selected.type === 'edge') {

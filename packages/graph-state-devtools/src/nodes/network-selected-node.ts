@@ -1,14 +1,14 @@
 import { createGraphNode } from 'graph-state';
 import nodes, { DataNode } from './nodes';
-import networkSelected from './network-selected';
-import refresh from './refresh';
+
 import network from './network';
+import networkSelected from './network-selected';
 import nodeSearchSelected from './node-search-selected';
+
 import { moveNetworkViewToNode, selectNode } from '../utils/network';
 
 const networkSelectedNode = createGraphNode<DataNode | undefined>({
   get: ({ get, set }) => {
-    get(refresh);
     const selected = get(networkSelected);
 
     if (selected && selected.type === 'node') {

@@ -1,5 +1,6 @@
 import React from 'react';
 import Inspector from 'react-inspector';
+
 import theme from './utils/state-viewer-theme';
 
 interface StateViewerProps {

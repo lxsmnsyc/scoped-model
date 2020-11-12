@@ -11,13 +11,15 @@ import {
   useGraphNodeValue,
   useGraphNodeDispatch,
 } from 'react-graph-state';
+
 import networkSelected from './nodes/network-selected';
-import networkSelectedNode from './nodes/network-selected-node';
+import refreshedSelectedNode from './nodes/refreshed-selected-node';
 import nodes from './nodes/nodes';
+
 import StateViewer from './StateViewer';
 
 function NodeKey() {
-  const selectedNode = useGraphNodeValue(networkSelectedNode);
+  const selectedNode = useGraphNodeValue(refreshedSelectedNode);
 
   if (selectedNode) {
     return (
@@ -92,7 +94,7 @@ interface NodeLinksProps {
 }
 
 function NodeLinks({ title, type }: NodeLinksProps): JSX.Element {
-  const selectedNode = useGraphNodeValue(networkSelectedNode);
+  const selectedNode = useGraphNodeValue(refreshedSelectedNode);
 
   if (selectedNode) {
     return (
@@ -113,7 +115,7 @@ function NodeLinks({ title, type }: NodeLinksProps): JSX.Element {
 }
 
 function NodeState(): JSX.Element {
-  const selectedNode = useGraphNodeValue(networkSelectedNode);
+  const selectedNode = useGraphNodeValue(refreshedSelectedNode);
 
   if (selectedNode) {
     return (

@@ -1,5 +1,6 @@
 import { createGraphNode } from 'graph-state';
 import { Network } from 'vis-network/standalone/esm';
+
 import edges from './edges';
 import nodes from './nodes';
 import networkContainer from './network-container';

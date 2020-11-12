@@ -1,10 +1,16 @@
-import { AutoCompleteOption } from '@geist-ui/react/dist/auto-complete/auto-complete';
 import React, { useRef, useEffect } from 'react';
-import { useGraphNodeValue, useGraphNodeDispatch } from 'react-graph-state';
+import {
+  useGraphNodeValue,
+  useGraphNodeDispatch,
+} from 'react-graph-state';
+
 import { AutoComplete, Description } from '@geist-ui/react';
+import { AutoCompleteOption } from '@geist-ui/react/dist/auto-complete/auto-complete';
+
 import networkSelected from './nodes/network-selected';
-import { nodeSearchDataResource } from './nodes/node-search-data';
 import nodeSearchSelected from './nodes/node-search-selected';
+import { nodeSearchDataResource } from './nodes/node-search-data';
+
 import { formatNodeId } from './utils/format-node';
 
 function NodeSearchInput(): JSX.Element {

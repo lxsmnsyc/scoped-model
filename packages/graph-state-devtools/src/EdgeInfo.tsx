@@ -1,7 +1,9 @@
 import { Description } from '@geist-ui/react';
 import React from 'react';
 import { useGraphNodeValue } from 'react-graph-state';
-import networkSelectedEdge from './nodes/network-selected-edge';
+
+import refreshedSelectedEdge from './nodes/refreshed-selected-edge';
+
 import { NodeURL } from './NodeInfo';
 
 interface EdgeLinkProps {
@@ -10,7 +12,7 @@ interface EdgeLinkProps {
 }
 
 function EdgeLink({ title, type }: EdgeLinkProps): JSX.Element {
-  const selectedEdge = useGraphNodeValue(networkSelectedEdge);
+  const selectedEdge = useGraphNodeValue(refreshedSelectedEdge);
 
   if (selectedEdge) {
     return (
