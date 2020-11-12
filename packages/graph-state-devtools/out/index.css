@@ -232,3 +232,9 @@ template {
 }
 
 /* src/RefreshSettings.css */
+
+/* src/StateViewer.css */
+.StateViewer {
+  width: 100%;
+  overflow-x: auto;
+}

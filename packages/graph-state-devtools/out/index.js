@@ -69697,7 +69697,7 @@ div.vis-color-picker input.vis-saturation-range {
 
   // src/nodes/should-refresh.ts
   const shouldRefresh = createGraphNode({
-    get: true
+    get: false
   });
   var should_refresh_default = shouldRefresh;
 
@@ -72282,7 +72282,7 @@ div.vis-color-picker input.vis-saturation-range {
     BASE_COLOR: "#7928CA",
     OBJECT_PREVIEW_ARRAY_MAX_PROPERTIES: 10,
     OBJECT_PREVIEW_OBJECT_MAX_PROPERTIES: 5,
-    OBJECT_NAME_COLOR: "#3291ff",
+    OBJECT_NAME_COLOR: "#fafafa",
     OBJECT_VALUE_NULL_COLOR: "#7928CA",
     OBJECT_VALUE_UNDEFINED_COLOR: "#7928CA",
     OBJECT_VALUE_REGEXP_COLOR: "#F81CE5",
@@ -72299,13 +72299,13 @@ div.vis-color-picker input.vis-saturation-range {
     HTML_COMMENT_COLOR: "rgb(137, 137, 137)",
     HTML_DOCTYPE_COLOR: "rgb(192, 192, 192)",
     ARROW_COLOR: "#fff",
-    ARROW_MARGIN_RIGHT: "4",
+    ARROW_MARGIN_RIGHT: "4px",
     ARROW_FONT_SIZE: "12px",
     ARROW_ANIMATION_DURATION: "0",
     TREENODE_FONT_FAMILY: mono,
     TREENODE_FONT_SIZE: "12px",
-    TREENODE_LINE_HEIGHT: 1.2,
-    TREENODE_PADDING_LEFT: "8px",
+    TREENODE_LINE_HEIGHT: 1,
+    TREENODE_PADDING_LEFT: "16px",
     TABLE_BORDER_COLOR: "rgb(85, 85, 85)",
     TABLE_TH_BACKGROUND_COLOR: "rgb(44, 44, 44)",
     TABLE_TH_HOVER_COLOR: "rgb(48, 48, 48)",
@@ -72316,11 +72316,13 @@ div.vis-color-picker input.vis-saturation-range {
   var state_viewer_theme_default = theme2;
 
   // src/StateViewer.tsx
-  function StateViewer({state}) {
-    return /* @__PURE__ */ react193.default.createElement(react_inspector_default, {
+  function StateViewer2({state}) {
+    return /* @__PURE__ */ react193.default.createElement("div", {
+      className: "StateViewer"
+    }, /* @__PURE__ */ react193.default.createElement(react_inspector_default, {
       theme: state_viewer_theme_default,
       data: state
-    });
+    }));
   }
 
   // src/NodeInfo.tsx
@@ -72387,7 +72389,7 @@ div.vis-color-picker input.vis-saturation-range {
         className: "SidebarContentSection"
       }, /* @__PURE__ */ react194.default.createElement(description_default2, {
         title: "State",
-        content: /* @__PURE__ */ react194.default.createElement(StateViewer, {
+        content: /* @__PURE__ */ react194.default.createElement(StateViewer2, {
           state: selectedNode.state
         })
       }));
@@ -72433,9 +72435,9 @@ div.vis-color-picker input.vis-saturation-range {
   const react198 = __toModule(require_react());
 
   // src/utils/read-memory.ts
-  function readMemory() {
+  function readMemorySize() {
     return new Promise((resolve, reject) => {
-      chrome.devtools.inspectedWindow.eval("withGraphStateDomainMemory", (result, exception) => {
+      chrome.devtools.inspectedWindow.eval("withGraphStateDomainMemory.length", (result, exception) => {
         if (exception) {
           reject(exception);
         } else {
@@ -72443,6 +72445,52 @@ div.vis-color-picker input.vis-saturation-range {
         }
       });
     });
+  }
+  function readMemoryIndex(index2) {
+    return new Promise((resolve, reject) => {
+      chrome.devtools.inspectedWindow.eval(`(() => {
+        const getCircularReplacer = () => {
+          const seen = new WeakSet();
+          return (key, value) => {
+            if (value instanceof Promise) {
+              return '\xABPromise\xBB';
+            }
+            if (typeof value === "function") {
+              return '\u0192' + value.name + ' () { }';
+            }
+            if (typeof value === "object" && value !== null) {
+              if (seen.has(value)) {
+                return;
+              }
+              seen.add(value);
+            }
+            return value;
+          };
+        };
+
+        const memory = withGraphStateDomainMemory[${index2}];
+        
+        const result = JSON.stringify(memory, getCircularReplacer());
+
+        return result;
+      })()`, (result, exception) => {
+        if (exception) {
+          reject(exception);
+        } else {
+          const parsedResult = JSON.parse(result);
+          resolve(parsedResult);
+        }
+      });
+    });
+  }
+  async function readMemory() {
+    const size = await readMemorySize();
+    const requests = [];
+    for (let i = 0; i < size; i += 1) {
+      const request = readMemoryIndex(i);
+      requests.push(request);
+    }
+    return Promise.all(requests);
   }
 
   // src/utils/format-node.ts
@@ -72492,6 +72540,7 @@ div.vis-color-picker input.vis-saturation-range {
     get: async ({get: get2}) => {
       get2(refresh_default);
       const memory = await readMemory();
+      console.log(memory);
       formatNode(get2(nodes_default), memory);
       formatEdge(get2(edges_default), memory);
       return memory;

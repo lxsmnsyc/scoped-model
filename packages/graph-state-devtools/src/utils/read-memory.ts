@@ -14,10 +14,10 @@ interface Chrome {
 
 declare const chrome: Chrome;
 
-export default function readMemory(): Promise<GraphNodeDebugData[]> {
+function readMemorySize(): Promise<number> {
   return new Promise((resolve, reject) => {
-    chrome.devtools.inspectedWindow.eval<GraphNodeDebugData[]>(
-      'withGraphStateDomainMemory',
+    chrome.devtools.inspectedWindow.eval<number>(
+      'withGraphStateDomainMemory.length',
       (result, exception) => {
         if (exception) {
           reject(exception);
@@ -27,4 +27,58 @@ export default function readMemory(): Promise<GraphNodeDebugData[]> {
       },
     );
   });
+}
+
+function readMemoryIndex(index: number): Promise<GraphNodeDebugData> {
+  return new Promise((resolve, reject) => {
+    chrome.devtools.inspectedWindow.eval<string>(
+      `(() => {
+        const getCircularReplacer = () => {
+          const seen = new WeakSet();
+          return (key, value) => {
+            if (value instanceof Promise) {
+              return '« Promise »';
+            }
+            if (typeof value === "function") {
+              return 'ƒ ' + value.name + ' () { }';
+            }
+            if (typeof value === "object" && value !== null) {
+              if (seen.has(value)) {
+                return;
+              }
+              seen.add(value);
+            }
+            return value;
+          };
+        };
+
+        const memory = withGraphStateDomainMemory[${index}];
+        
+        const result = JSON.stringify(memory, getCircularReplacer());
+
+        return result;
+      })()`,
+      (result, exception) => {
+        if (exception) {
+          reject(exception);
+        } else {
+          const parsedResult = JSON.parse(result);
+          resolve(parsedResult);
+        }
+      },
+    );
+  });
+}
+
+export default async function readMemory(): Promise<GraphNodeDebugData[]> {
+  const size = await readMemorySize();
+
+  const requests: Promise<GraphNodeDebugData>[] = [];
+
+  for (let i = 0; i < size; i += 1) {
+    const request = readMemoryIndex(i);
+    requests.push(request);
+  }
+
+  return Promise.all(requests);
 }

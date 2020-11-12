@@ -1,7 +1,7 @@
 chrome.devtools.inspectedWindow.eval(
-  'withGraphStateDomainMemory',
-  (result, isException) => {
-    if (!isException) {
+  'typeof withGraphStateDomainMemory',
+  (result) => {
+    if (result !== 'undefined') {
       chrome.devtools.panels.create('Graph State DevTools', '', 'panel.html');
     }
   },
