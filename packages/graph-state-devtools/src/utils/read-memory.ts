@@ -32,32 +32,43 @@ function readMemorySize(): Promise<number> {
 function readMemoryIndex(index: number): Promise<GraphNodeDebugData> {
   return new Promise((resolve, reject) => {
     chrome.devtools.inspectedWindow.eval<string>(
-      `(() => {
-        const getCircularReplacer = () => {
-          const seen = new WeakSet();
-          return (key, value) => {
-            if (value instanceof Promise) {
-              return '« Promise »';
-            }
-            if (typeof value === "function") {
-              return 'ƒ ' + value.name + ' () { }';
-            }
-            if (typeof value === "object" && value !== null) {
-              if (seen.has(value)) {
-                return;
-              }
-              seen.add(value);
-            }
-            return value;
-          };
-        };
+      `
+(function () {
+  function parseSafe(obj) {
+    const getCircularReplacer = () => {
+      const seen = new WeakSet();
+      return (key, value) => {
+        if (value instanceof Promise) {
+          return '« Promise »';
+        }
+        if (value instanceof Map) {
+          return Array.from(value);
+        }
+        if (value instanceof Set) {
+          return Array.from(value);
+        }
+        if (typeof value === "function") {
+          return 'ƒ ' + value.name + ' () { }';
+        }
+        if (typeof value === "object" && value !== null) {
+          if (seen.has(value)) {
+            return;
+          }
+          seen.add(value);
+        }
+        return value;
+      };
+    };
 
-        const memory = withGraphStateDomainMemory[${index}];
-        
-        const result = JSON.stringify(memory, getCircularReplacer());
+    return JSON.stringify(obj, getCircularReplacer());
+  }
+  const memory = withGraphStateDomainMemory[${index}];
+  
+  const result = parseSafe(memory);
 
-        return result;
-      })()`,
+  return result;
+})();
+      `,
       (result, exception) => {
         if (exception) {
           reject(exception);

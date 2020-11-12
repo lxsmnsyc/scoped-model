@@ -72448,32 +72448,43 @@ div.vis-color-picker input.vis-saturation-range {
   }
   function readMemoryIndex(index2) {
     return new Promise((resolve, reject) => {
-      chrome.devtools.inspectedWindow.eval(`(() => {
-        const getCircularReplacer = () => {
-          const seen = new WeakSet();
-          return (key, value) => {
-            if (value instanceof Promise) {
-              return '\xABPromise\xBB';
-            }
-            if (typeof value === "function") {
-              return '\u0192' + value.name + ' () { }';
-            }
-            if (typeof value === "object" && value !== null) {
-              if (seen.has(value)) {
-                return;
-              }
-              seen.add(value);
-            }
-            return value;
-          };
-        };
+      chrome.devtools.inspectedWindow.eval(`
+(function () {
+  function parseSafe(obj) {
+    const getCircularReplacer = () => {
+      const seen = new WeakSet();
+      return (key, value) => {
+        if (value instanceof Promise) {
+          return '\xAB Promise \xBB';
+        }
+        if (value instanceof Map) {
+          return Array.from(value);
+        }
+        if (value instanceof Set) {
+          return Array.from(value);
+        }
+        if (typeof value === "function") {
+          return '\u0192 ' + value.name + ' () { }';
+        }
+        if (typeof value === "object" && value !== null) {
+          if (seen.has(value)) {
+            return;
+          }
+          seen.add(value);
+        }
+        return value;
+      };
+    };
 
-        const memory = withGraphStateDomainMemory[${index2}];
-        
-        const result = JSON.stringify(memory, getCircularReplacer());
+    return JSON.stringify(obj, getCircularReplacer());
+  }
+  const memory = withGraphStateDomainMemory[${index2}];
+  
+  const result = parseSafe(memory);
 
-        return result;
-      })()`, (result, exception) => {
+  return result;
+})();
+      `, (result, exception) => {
         if (exception) {
           reject(exception);
         } else {
