@@ -52,19 +52,22 @@ export default function useWorkQueue<T>(): [T[], Enqueue<T>, QueueReset] {
 
   const schedule = useConstantCallback((node: T, compare?: Compare<T>) => {
     defer(() => {
-      setState((current) => {
-        const queue = compare
-          ? current.filter((value) => compare(node, value))
-          : current;
-
-        return [...queue, node];
-      });
+      if (lifecycle.current) {
+        setState((current) => {
+          const queue = compare
+            ? current.filter((value) => compare(node, value))
+            : current;
+          return [...queue, node];
+        });
+      }
     }, setError);
   });
 
   const reset = useConstantCallback(() => {
     defer(() => {
-      setState([]);
+      if (lifecycle.current) {
+        setState([]);
+      }
     }, setError);
   });
 
