@@ -14,9 +14,12 @@ export function formatEdge(
   edges: DataSet<DataEdge>,
   memory: GraphNodeDebugData[],
 ): void {
+  const marked = new Set();
+
   memory.forEach((node) => {
     node.dependents.forEach((dependent) => {
       const id = formatEdgeId(node.id, dependent);
+      marked.add(id);
 
       edges.update({
         id,
@@ -25,5 +28,11 @@ export function formatEdge(
         arrows: 'to',
       });
     });
+  });
+
+  edges.getIds({
+    filter: (item) => !marked.has(item.id),
+  }).forEach((edge) => {
+    edges.remove(edge);
   });
 }

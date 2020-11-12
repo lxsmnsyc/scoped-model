@@ -11,8 +11,10 @@ export function formatNode(
   nodes: DataSet<DataNode>,
   memory: GraphNodeDebugData[],
 ): void {
+  const marked = new Set();
   memory.forEach((node) => {
     const id = formatNodeId(node.id);
+    marked.add(id);
 
     nodes.update({
       label: `${node.id}`,
@@ -22,6 +24,12 @@ export function formatNode(
       dependents: node.dependents.map(formatNodeId),
       id,
     });
+  });
+
+  nodes.getIds({
+    filter: (item) => !marked.has(item.id),
+  }).forEach((edge) => {
+    nodes.remove(edge);
   });
 }
 

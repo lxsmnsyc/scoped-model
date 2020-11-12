@@ -72520,8 +72520,10 @@ div.vis-color-picker input.vis-saturation-range {
     return `GraphNode(id: ${id2})`;
   }
   function formatNode(nodes6, memory) {
+    const marked = new Set();
     memory.forEach((node) => {
       const id2 = formatNodeId(node.id);
+      marked.add(id2);
       nodes6.update(__assign(__assign({
         label: `${node.id}`,
         value: node.dependencies.length + 1
@@ -72530,6 +72532,11 @@ div.vis-color-picker input.vis-saturation-range {
         dependents: node.dependents.map(formatNodeId),
         id: id2
       }));
+    });
+    nodes6.getIds({
+      filter: (item) => !marked.has(item.id)
+    }).forEach((edge) => {
+      nodes6.remove(edge);
     });
   }
   function formatNodeAutoComplete(memory) {
@@ -72544,9 +72551,11 @@ div.vis-color-picker input.vis-saturation-range {
     return `Edge(from: ${from2}, to: ${to})`;
   }
   function formatEdge(edges5, memory) {
+    const marked = new Set();
     memory.forEach((node) => {
       node.dependents.forEach((dependent) => {
         const id2 = formatEdgeId(node.id, dependent);
+        marked.add(id2);
         edges5.update({
           id: id2,
           from: formatNodeId(node.id),
@@ -72555,6 +72564,11 @@ div.vis-color-picker input.vis-saturation-range {
         });
       });
     });
+    edges5.getIds({
+      filter: (item) => !marked.has(item.id)
+    }).forEach((edge) => {
+      edges5.remove(edge);
+    });
   }
 
   // src/nodes/memory-load.ts
@@ -72562,7 +72576,6 @@ div.vis-color-picker input.vis-saturation-range {
     get: async ({get: get2}) => {
       get2(refresh_default);
       const memory = await readMemory();
-      console.log(memory);
       formatNode(get2(nodes_default), memory);
       formatEdge(get2(edges_default), memory);
       return memory;

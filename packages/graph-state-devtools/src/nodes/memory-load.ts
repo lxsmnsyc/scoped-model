@@ -18,8 +18,6 @@ const memoryLoad = createGraphNode<Promise<GraphNodeDebugData[]>>({
 
     const memory = await readMemory();
 
-    console.log(memory);
-
     formatNode(get(nodes), memory);
     formatEdge(get(edges), memory);
 
