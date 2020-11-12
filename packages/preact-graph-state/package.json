@@ -1,5 +1,5 @@
 {
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Preact bindings for `graph-state`",
   "author": "Alexis Munsayac",
   "main": "dist/index.js",
@@ -35,7 +35,7 @@
     "@types/node": "^14.14.6",
     "eslint": "^7.12.1",
     "eslint-config-lxsmnsyc": "^0.1.19",
-    "graph-state": "0.5.0",
+    "graph-state": "0.6.0",
     "preact": "^10.5.5",
     "pridepack": "^0.3.6",
     "tslib": "^2.0.3",

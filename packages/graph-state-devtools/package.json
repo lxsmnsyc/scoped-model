@@ -1,6 +1,6 @@
 {
   "name": "graph-state-devtools",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "scripts": {
     "build": "node build.js"
   },
@@ -9,11 +9,11 @@
     "@geist-ui/react-icons": "^1.0.1",
     "@types/react-inspector": "^4.0.1",
     "esbuild": "^0.8.5",
-    "graph-state": "^0.5.0",
+    "graph-state": "0.6.0",
     "normalize.css": "^8.0.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-graph-state": "^0.8.0",
+    "react-graph-state": "0.8.1",
     "react-inspector": "^5.1.0",
     "vis-data": "^7.1.0",
     "vis-network": "^8.5.2"
