@@ -1105,7 +1105,7 @@
           var dispatcher = resolveDispatcher();
           return dispatcher.useLayoutEffect(create5, deps);
         }
-        function useCallback11(callback, deps) {
+        function useCallback12(callback, deps) {
           var dispatcher = resolveDispatcher();
           return dispatcher.useCallback(callback, deps);
         }
@@ -1367,7 +1367,7 @@
         exports.isValidElement = isValidElement;
         exports.lazy = lazy;
         exports.memo = memo3;
-        exports.useCallback = useCallback11;
+        exports.useCallback = useCallback12;
         exports.useContext = useContext3;
         exports.useDebugValue = useDebugValue9;
         exports.useEffect = useEffect46;
@@ -28168,11 +28168,11 @@ For more info, visit https://fb.me/react-mock-scheduler`);
     var _extends22 = _interopRequireDefault(require_extends());
     var _objectWithoutProperties22 = _interopRequireDefault(require_objectWithoutProperties());
     var _react = _interopRequireDefault(require_react());
-    var ZoomOut = function ZoomOut2(_ref) {
+    var ZoomOut2 = function ZoomOut3(_ref) {
       var _ref$color = _ref.color, color5 = _ref$color === void 0 ? "currentColor" : _ref$color, _ref$size = _ref.size, size = _ref$size === void 0 ? 24 : _ref$size, props = (0, _objectWithoutProperties22["default"])(_ref, ["color", "size"]);
       return /* @__PURE__ */ _react["default"].createElement("svg", (0, _extends22["default"])({fill: "none", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "1.5", shapeRendering: "geometricPrecision", viewBox: "0 0 24 24"}, props, {height: size, width: size, style: {color: color5}}), /* @__PURE__ */ _react["default"].createElement("circle", {cx: "11", cy: "11", r: "8"}), /* @__PURE__ */ _react["default"].createElement("path", {d: "M21 21l-4.35-4.35M8 11h6"}));
     };
-    var _default = ZoomOut;
+    var _default = ZoomOut2;
     exports["default"] = _default;
   });
 
@@ -69751,6 +69751,20 @@ div.vis-color-picker input.vis-saturation-range {
   var refresh_default = refresh;
 
   // src/NetworkVisualizerControls.tsx
+  function ZoomOutControl() {
+    const currentNetwork = useGraphNodeValue(network_default);
+    const onClick3 = react189.useCallback(() => {
+      if (currentNetwork) {
+        currentNetwork.fit({
+          animation: true
+        });
+      }
+    }, [currentNetwork]);
+    return /* @__PURE__ */ react189.default.createElement(button_default2, {
+      iconRight: /* @__PURE__ */ react189.default.createElement(react_icons.ZoomOut, null),
+      onClick: onClick3
+    });
+  }
   function RefreshControl() {
     const resetRefresh = useGraphNodeReset(refresh_default);
     return /* @__PURE__ */ react189.default.createElement(button_default2, {
@@ -69759,7 +69773,7 @@ div.vis-color-picker input.vis-saturation-range {
     });
   }
   function NetworkVisualizerControls() {
-    return /* @__PURE__ */ react189.default.createElement(button_group_default2, null, /* @__PURE__ */ react189.default.createElement(RefreshControl, null));
+    return /* @__PURE__ */ react189.default.createElement(button_group_default2, null, /* @__PURE__ */ react189.default.createElement(ZoomOutControl, null), /* @__PURE__ */ react189.default.createElement(RefreshControl, null));
   }
 
   // src/NetworkVisualizer.tsx
@@ -69832,11 +69846,8 @@ div.vis-color-picker input.vis-saturation-range {
 
   // src/utils/network.ts
   function moveNetworkViewToNode(instance, id2) {
-    instance.moveTo({
-      position: instance.getViewPosition()
-    });
-    instance.moveTo({
-      position: instance.getPosition(id2),
+    instance.fit({
+      nodes: [id2],
       animation: true
     });
   }
