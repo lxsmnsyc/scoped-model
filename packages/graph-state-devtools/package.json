@@ -14,7 +14,7 @@
     "normalize.css": "^8.0.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-graph-state": "0.8.3",
+    "react-graph-state": "^0.8.3",
     "react-inspector": "^5.1.0",
     "vis-data": "^7.1.0",
     "vis-network": "^8.5.2"
