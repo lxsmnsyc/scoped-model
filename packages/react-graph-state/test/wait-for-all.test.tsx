@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect, useRef } from 'react';
 import {
   act, cleanup, render, screen, waitFor,
 } from '@testing-library/react';
@@ -64,7 +64,7 @@ describe('waitForAll', () => {
   );
 
   describe('useGraphNodeValue', () => {
-    it('should receive a pending state on initial render.', () => {
+    it('should receive a pending state on initial render.', async () => {
       const finder = 'example';
       const expected = 'Pending';
 
@@ -77,8 +77,14 @@ describe('waitForAll', () => {
       function Consumer(): JSX.Element {
         const value = useGraphNodeValue(values);
 
+        const rerendered = useRef(false);
+
+        useEffect(() => {
+          rerendered.current = true;
+        }, [value]);
+
         return (
-          <p title={finder}>
+          <p title={rerendered.current ? finder : undefined}>
             {
               value.status === 'pending' ? expected : undefined
             }
@@ -92,7 +98,7 @@ describe('waitForAll', () => {
         </GraphDomain>,
       );
 
-      expect(screen.getByTitle(finder)).toContainHTML(expected);
+      expect(await waitFor(() => screen.getByTitle(finder))).toContainHTML(expected);
     });
     it('should receive a pending state on until all resources has settled.', () => {
       const finder = 'example';
