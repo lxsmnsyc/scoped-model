@@ -1,4 +1,9 @@
-import { Checkbox, Col, Row, Spacer } from '@geist-ui/react';
+import {
+  Checkbox,
+  Col,
+  Row,
+  Spacer,
+} from '@geist-ui/react';
 import React from 'react';
 import { useGraphNodeDispatch } from 'react-graph-state';
 import { TodoListData } from '../nodes/todo-list';
