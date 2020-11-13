@@ -14,7 +14,7 @@ function AllButton(): JSX.Element {
         setFilter('all');
       }}
     >
-      Completed
+      All
     </Button>
   );
 }
@@ -44,7 +44,7 @@ function IncompleteButton(): JSX.Element {
         setFilter('incomplete');
       }}
     >
-      Completed
+      Incomplete
     </Button>
   );
 }
