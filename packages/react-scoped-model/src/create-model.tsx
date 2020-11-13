@@ -97,10 +97,8 @@ export default function createModel<Model, Props = unknown>(
     useProcessor(props);
     return null;
   };
-  ProcessorInner.displayName = `ScopedModelProcessor(${displayName}.Processor)`;
 
   const Processor = memo(ProcessorInner, options.shouldUpdate);
-  Processor.displayName = `ScopedModelProcessor(${displayName}.Processor)`;
 
   const Provider: FC<Props> = ({ children, ...props }) => {
     const emitter = useConstant(() => new Notifier<Model>());
@@ -123,8 +121,12 @@ export default function createModel<Model, Props = unknown>(
   /**
    * Display name for the Provider
    */
-  Provider.displayName = `ScopedModel(${displayName})`;
-  context.displayName = displayName;
+  if (process.env.NODE_ENV !== 'production') {
+    ProcessorInner.displayName = `ScopedModelProcessor(${displayName}.Processor)`;
+    Processor.displayName = `ScopedModelProcessor(${displayName}.Processor)`;
+    Provider.displayName = `ScopedModel(${displayName})`;
+    context.displayName = displayName;
+  }
 
   return {
     context,
