@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
-  act, cleanup, fireEvent, render, screen,
+  act, cleanup, fireEvent, render, screen, waitFor,
 } from '@testing-library/react';
 import {
   createGraphNode,
@@ -78,7 +78,7 @@ describe('useGraphNodeValue', () => {
 
     expect(screen.getByTitle(finder)).toContainHTML(expected);
   });
-  it('should re-render if the graph node value changes', () => {
+  it('should re-render if the graph node value changes', async () => {
     const finder = 'example';
     const expected = 'Changed';
 
@@ -93,8 +93,14 @@ describe('useGraphNodeValue', () => {
     function Consumer(): JSX.Element {
       const value = useGraphNodeValue(exampleNode);
 
+      const rerendered = useRef(false);
+
+      useEffect(() => {
+        rerendered.current = true;
+      }, [value]);
+
       return (
-        <p title={finder}>{ value }</p>
+        <p title={rerendered.current ? finder : undefined}>{ value }</p>
       );
     }
 
@@ -105,9 +111,9 @@ describe('useGraphNodeValue', () => {
     );
 
     step();
-    expect(screen.getByTitle(finder)).toContainHTML(expected);
+    expect(await waitFor(() => screen.getByTitle(finder))).toContainHTML(expected);
   });
-  it('should re-render if the dependency graph node value changes', () => {
+  it('should re-render if the dependency graph node value changes', async () => {
     const finder = 'example';
     const expected = 'Changed';
 
@@ -126,8 +132,14 @@ describe('useGraphNodeValue', () => {
     function Consumer(): JSX.Element {
       const value = useGraphNodeValue(exampleNode2);
 
+      const rerendered = useRef(false);
+
+      useEffect(() => {
+        rerendered.current = true;
+      }, [value]);
+
       return (
-        <p title={finder}>{ value }</p>
+        <p title={rerendered.current ? finder : undefined}>{ value }</p>
       );
     }
 
@@ -138,7 +150,7 @@ describe('useGraphNodeValue', () => {
     );
 
     step();
-    expect(screen.getByTitle(finder)).toContainHTML(expected);
+    expect(await waitFor(() => screen.getByTitle(finder))).toContainHTML(expected);
   });
   it('should throw an error if the graph domain is not mounted before accessing.', () => {
     const exampleNode = createGraphNode({
@@ -160,7 +172,7 @@ describe('useGraphNodeValue', () => {
 });
 
 describe('useGraphNodeDispatch', () => {
-  it('should re-render the consumer components of the node', () => {
+  it('should re-render the consumer components of the node', async () => {
     const expected = 'Changed';
     const finder = 'example';
 
@@ -171,8 +183,14 @@ describe('useGraphNodeDispatch', () => {
     function Consumer(): JSX.Element {
       const value = useGraphNodeValue(exampleNode);
 
+      const rerendered = useRef(false);
+
+      useEffect(() => {
+        rerendered.current = true;
+      }, [value]);
+
       return (
-        <p title={finder}>{ value }</p>
+        <p title={rerendered.current ? finder : undefined}>{ value }</p>
       );
     }
 
@@ -200,9 +218,9 @@ describe('useGraphNodeDispatch', () => {
 
     fireEvent.click(screen.getByText('Update'));
 
-    expect(screen.getByTitle(finder)).toContainHTML(expected);
+    expect(await waitFor(() => screen.getByTitle(finder))).toContainHTML(expected);
   });
-  it('should re-render the consumer components of the dependent node', () => {
+  it('should re-render the consumer components of the dependent node', async () => {
     const expected = 'Changed';
     const finder = 'example';
 
@@ -217,8 +235,14 @@ describe('useGraphNodeDispatch', () => {
     function Consumer(): JSX.Element {
       const value = useGraphNodeValue(exampleNode2);
 
+      const rerendered = useRef(false);
+
+      useEffect(() => {
+        rerendered.current = true;
+      }, [value]);
+
       return (
-        <p title={finder}>{ value }</p>
+        <p title={rerendered.current ? finder : undefined}>{ value }</p>
       );
     }
 
@@ -246,9 +270,9 @@ describe('useGraphNodeDispatch', () => {
 
     fireEvent.click(screen.getByText('Update'));
 
-    expect(screen.getByTitle(finder)).toContainHTML(expected);
+    expect(await waitFor(() => screen.getByTitle(finder))).toContainHTML(expected);
   });
-  it('should re-render the consumer components of the dependency node through side-effects', () => {
+  it('should re-render the consumer components of the dependency node through side-effects', async () => {
     const expected = 'Changed';
     const finder = 'example';
 
@@ -266,8 +290,14 @@ describe('useGraphNodeDispatch', () => {
     function Consumer(): JSX.Element {
       const value = useGraphNodeValue(exampleNode);
 
+      const rerendered = useRef(false);
+
+      useEffect(() => {
+        rerendered.current = true;
+      }, [value]);
+
       return (
-        <p title={finder}>{ value }</p>
+        <p title={rerendered.current ? finder : undefined}>{ value }</p>
       );
     }
 
@@ -295,7 +325,7 @@ describe('useGraphNodeDispatch', () => {
 
     fireEvent.click(screen.getByText('Update'));
 
-    expect(screen.getByTitle(finder)).toContainHTML(expected);
+    expect(await waitFor(() => screen.getByTitle(finder))).toContainHTML(expected);
   });
 
   it('should throw an error if the graph domain is not mounted before accessing.', () => {
