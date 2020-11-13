@@ -30089,7 +30089,7 @@ For more info, visit https://fb.me/react-mock-scheduler`);
   // src/App.tsx
   const react211 = __toModule(require_react());
 
-  // node_modules/react-graph-state/dist/react-graph-state.esm.js
+  // ../react-graph-state/dist/react-graph-state.esm.js
   const react5 = __toModule(require_react());
   const react6 = __toModule(require_react());
   const react7 = __toModule(require_react());
@@ -31104,6 +31104,52 @@ For more info, visit https://fb.me/react-mock-scheduler`);
    * @author Alexis Munsayac <alexis.munsayac@gmail.com>
    * @copyright Alexis Munsayac 2020
    */
+  function parseDependencies(dependencies) {
+    return Array.from(dependencies).map((node) => node.key);
+  }
+  function parseGraphDomainMemory(memory) {
+    return Array.from(memory.nodes).map(([key, value]) => {
+      var _a;
+      return {
+        id: key,
+        state: (_a = memory.state.get(key)) == null ? void 0 : _a.value,
+        dependents: parseDependencies(value.dependents),
+        dependencies: parseDependencies(value.version.dependencies)
+      };
+    });
+  }
+  function exposeToWindow(memory) {
+    if (typeof window !== "undefined") {
+      window.withGraphStateDomainMemory = parseGraphDomainMemory(memory);
+    }
+  }
+  /**
+   * @license
+   * MIT License
+   *
+   * Copyright (c) 2020 Alexis Munsayac
+   * Permission is hereby granted, free of charge, to any person obtaining a copy
+   * of this software and associated documentation files (the "Software"), to deal
+   * in the Software without restriction, including without limitation the rights
+   * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+   * copies of the Software, and to permit persons to whom the Software is
+   * furnished to do so, subject to the following conditions:
+   *
+   * The above copyright notice and this permission notice shall be included in all
+   * copies or substantial portions of the Software.
+   *
+   * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+   * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+   * SOFTWARE.
+   *
+   *
+   * @author Alexis Munsayac <alexis.munsayac@gmail.com>
+   * @copyright Alexis Munsayac 2020
+   */
   function isDraftStateFunc(action) {
     return typeof action === "function";
   }
@@ -31210,6 +31256,9 @@ For more info, visit https://fb.me/react-mock-scheduler`);
             break;
         }
       });
+      if (true) {
+        exposeToWindow(memory);
+      }
     }
   }
   /**
@@ -31275,7 +31324,7 @@ For more info, visit https://fb.me/react-mock-scheduler`);
    * @copyright Alexis Munsayac 2020
    */
 
-  // node_modules/react-graph-state/dist/react-graph-state.esm.js
+  // ../react-graph-state/dist/react-graph-state.esm.js
   const react21 = __toModule(require_react());
   var __assign2 = Object.assign;
   /**

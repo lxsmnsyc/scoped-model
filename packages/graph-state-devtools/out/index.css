@@ -216,6 +216,7 @@ template {
 
 /* src/Sidebar.css */
 .Sidebar {
+  width: 100%;
   height: 100vh;
   overflow-y: scroll;
   overflow-x: hidden;
@@ -226,6 +227,13 @@ template {
 }
 .SidebarContentSection {
   margin: 16px 0px;
+}
+@media screen and (max-width: 650px) {
+  .Sidebar {
+    height: auto;
+    overflow-y: auto;
+    overflow-x: auto;
+  }
 }
 
 /* src/Settings.css */
