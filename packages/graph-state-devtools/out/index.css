@@ -149,31 +149,31 @@ template {
 /* src/AppContainer.css */
 .AppContainer {
   width: 100%;
-  height: 100vh;
-  display: grid;
-  grid-template-rows: 1fr;
-  grid-template-columns: 3fr 1fr;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  border-top: 1px solid #333;
 }
 @media screen and (max-width: 650px) {
   .AppContainer {
-    grid-template-rows: 3fr 1fr;
-    grid-template-columns: 1fr;
+    flex-direction: column;
   }
 }
-@media screen and (min-width: 650px) and (max-width: 1280px) {
-  .AppContainer {
-    grid-template-rows: 1fr;
-    grid-template-columns: 2fr 1fr;
-  }
+
+/* src/AppTitle.css */
+.AppTitle {
+  padding: 16px 16px 0px;
 }
 
 /* src/NetworkVisualizer.css */
 .NetworkVisualizerContainer {
-  height: 100vh;
+  width: 60vmax;
+  height: 100vmin;
   display: grid;
 }
 .NetworkVisualizer {
-  height: 100vh;
+  width: 60vmax;
+  height: 100vmin;
   grid-column: 1 / 2;
   grid-row: 1 / 2;
 }
@@ -195,13 +195,23 @@ template {
   opacity: 0;
 }
 .NetworkVisualizerControls {
+  width: calc(100% - 32px);
+  height: calc(100% - 32px);
   grid-column: 1 / 2;
   grid-row: 1 / 2;
   display: flex;
   align-items: flex-start;
   justify-content: flex-end;
-  margin: 16px;
+  padding: 16px;
   pointer-events: none;
+}
+@media screen and (max-width: 650px) {
+  .NetworkVisualizerContainer {
+    width: 100vmin;
+  }
+  .NetworkVisualizer {
+    width: 100vmin;
+  }
 }
 
 /* src/Sidebar.css */
@@ -210,10 +220,8 @@ template {
   overflow-y: scroll;
   overflow-x: hidden;
 }
-.SidebarTitle {
-  padding: 16px 16px 0px;
-}
 .SidebarTabs {
+  margin: 16px 0px;
   padding: 0px 16px;
 }
 .SidebarContentSection {

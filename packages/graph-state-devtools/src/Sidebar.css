@@ -5,11 +5,8 @@
   overflow-x: hidden;
 }
 
-.SidebarTitle {
-  padding: 16px 16px 0px;
-}
-
 .SidebarTabs {
+  margin: 16px 0px;
   padding: 0px 16px;
 }
 
