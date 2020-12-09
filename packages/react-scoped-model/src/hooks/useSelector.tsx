@@ -26,12 +26,14 @@
  * @copyright Alexis Munsayac 2020
  */
 import { useDebugValue } from 'react';
+import { useDisposableMemo } from 'use-dispose';
+import {
+  createExternalSubject,
+  useExternalSubject,
+} from 'react-external-subject';
 import { ScopedModel } from '../create-model';
 import useScopedModelContext from './useScopedModelContext';
-import useSubscription, { Subscription } from './useSubscription';
-import useMemoCondition from './useMemoCondition';
 import { defaultCompare, Compare } from '../utils/comparer';
-import { compareArray } from '../utils/compareTuple';
 
 export type SelectorFn<T, R> =
   (model: Readonly<T>) => R;
@@ -60,8 +62,8 @@ export default function useSelector<S, P, R>(
    */
   const notifier = useScopedModelContext(model);
 
-  const sub = useMemoCondition(
-    (): Subscription<R> => ({
+  const sub = useDisposableMemo(
+    () => createExternalSubject({
       read: () => selector(notifier.value),
       subscribe: (callback) => {
         notifier.on(callback);
@@ -71,14 +73,14 @@ export default function useSelector<S, P, R>(
       },
       shouldUpdate,
     }),
+    (instance) => instance.destroy(),
     [notifier, shouldUpdate, selector],
-    compareArray,
   );
 
   /**
    * Return the current state value
    */
-  const current = useSubscription(sub);
+  const current = useExternalSubject(sub, false);
   useDebugValue(current);
   return current;
 }

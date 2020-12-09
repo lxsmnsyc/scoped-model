@@ -26,13 +26,14 @@
  * @copyright Alexis Munsayac 2020
  */
 import { useDebugValue } from 'react';
+import { useDisposableMemo } from 'use-dispose';
+import {
+  createExternalSubject,
+  useExternalSubject,
+} from 'react-external-subject';
 import { ScopedModel } from '../create-model';
-import Notifier from '../notifier';
 import useScopedModelContext from './useScopedModelContext';
-import useMemoCondition from './useMemoCondition';
-import useSubscription, { Subscription } from './useSubscription';
-import { defaultCompare, Compare } from '../utils/comparer';
-import { compareTuple } from '../utils/compareTuple';
+import { MemoCompare, defaultCompare } from './useFreshLazyRef';
 
 /**
  * Subscribes to the given model's state
@@ -43,12 +44,12 @@ import { compareTuple } from '../utils/compareTuple';
  */
 export default function useValue<S, P>(
   model: ScopedModel<S, P>,
-  shouldUpdate: Compare<S> = defaultCompare,
+  shouldUpdate: MemoCompare<S> = defaultCompare,
 ): S {
   const notifier = useScopedModelContext(model);
 
-  const sub = useMemoCondition<Subscription<S>, [Notifier<S>, Compare<S>]>(
-    () => ({
+  const sub = useDisposableMemo(
+    () => createExternalSubject({
       read: () => notifier.value,
       subscribe: (callback) => {
         notifier.on(callback);
@@ -58,14 +59,14 @@ export default function useValue<S, P>(
       },
       shouldUpdate,
     }),
+    (instance) => instance.destroy(),
     [notifier, shouldUpdate],
-    compareTuple,
   );
 
   /**
    * Return the current state value
    */
-  const current = useSubscription(sub);
+  const current = useExternalSubject(sub, false);
   useDebugValue(current);
   return current;
 }
