@@ -94,7 +94,7 @@ export default function useSuspendedState<S, P, R>(
   const onSnapshot = useCallbackCondition(
     (next: S) => {
       captureSuspendedValue(
-        notifier,
+        notifier.model,
         next,
         selector,
         key,
@@ -108,9 +108,9 @@ export default function useSuspendedState<S, P, R>(
 
   useSnapshotBase(notifier, onSnapshot);
 
-  const cache = suspendCacheData(notifier.cache, key, () => captureSuspendedValue(
-    notifier,
-    notifier.value,
+  const cache = suspendCacheData(notifier.model.cache, key, () => captureSuspendedValue(
+    notifier.model,
+    notifier.model.value,
     selector,
     key,
   ));

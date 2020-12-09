@@ -34,6 +34,10 @@ import React, {
   memo,
   useDebugValue,
 } from 'react';
+import {
+  createExternalSubject,
+  ExternalSubject,
+} from 'react-external-subject';
 import Notifier from './notifier';
 import useConstant from './hooks/useConstant';
 import MissingScopedModelError from './utils/MissingScopedModelError';
@@ -44,6 +48,11 @@ export type ScopedModelHook<Model, Props = unknown> = (props: Props) => Model;
 
 export type ScopedModelMemo<Props = unknown> = (prev: Props, next: Props) => boolean;
 
+export interface ScopedModelRef<Model> {
+  model: Notifier<Model>;
+  subject?: ExternalSubject<Model>;
+}
+
 export interface ScopedModelOptions<Props = unknown> {
   displayName?: string;
   propTypes?: WeakValidationMap<Props>;
@@ -52,7 +61,7 @@ export interface ScopedModelOptions<Props = unknown> {
 }
 
 export interface ScopedModel<Model, Props = unknown> {
-  context: Context<Notifier<Model> | null>;
+  context: Context<ScopedModelRef<Model> | null>;
   Provider: React.FC<Props>;
   displayName: string;
 }
@@ -68,7 +77,7 @@ export default function createModel<Model, Props = unknown>(
   useModelHook: ScopedModelHook<Model, Props>,
   options: ScopedModelOptions<Props> = {},
 ): ScopedModel<Model, Props> {
-  const context = createContext<Notifier<Model> | null>(null);
+  const context = createContext<ScopedModelRef<Model> | null>(null);
   const id = generateId();
 
   /**
@@ -84,11 +93,28 @@ export default function createModel<Model, Props = unknown>(
 
     const model = useModelHook(props);
 
-    emitter.sync(model);
+    emitter.model.sync(model);
 
     useIsomorphicEffect(() => {
-      emitter.consume(model);
+      emitter.model.consume(model);
+
+      if (emitter.subject) {
+        emitter.subject.requestUpdate();
+      }
     }, [emitter, model]);
+
+    if (!emitter.subject) {
+      emitter.subject = createExternalSubject({
+        read: () => emitter.model.value,
+        subscribe: (handler) => {
+          emitter.model.on(handler);
+          return () => {
+            emitter.model.off(handler);
+          };
+        },
+        lazySubscribe: true,
+      });
+    }
 
     useDebugValue(model);
   }
@@ -101,7 +127,10 @@ export default function createModel<Model, Props = unknown>(
   const Processor = memo(ProcessorInner, options.shouldUpdate);
 
   const Provider: FC<Props> = ({ children, ...props }) => {
-    const emitter = useConstant(() => new Notifier<Model>());
+    const emitter = useConstant(() => ({
+      model: new Notifier<Model>(),
+      subject: undefined,
+    }));
 
     return (
       <context.Provider value={emitter}>

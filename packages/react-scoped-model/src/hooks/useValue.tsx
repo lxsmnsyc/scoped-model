@@ -26,14 +26,12 @@
  * @copyright Alexis Munsayac 2020
  */
 import { useDebugValue } from 'react';
-import { useDisposableMemo } from 'use-dispose';
-import {
-  createExternalSubject,
-  useExternalSubject,
-} from 'react-external-subject';
-import { ScopedModel } from '../create-model';
+import { ScopedModel, ScopedModelRef } from '../create-model';
 import useScopedModelContext from './useScopedModelContext';
-import { MemoCompare, defaultCompare } from './useFreshLazyRef';
+import useMemoCondition from './useMemoCondition';
+import useSubscription, { Subscription } from './useSubscription';
+import { defaultCompare, Compare } from '../utils/comparer';
+import { compareTuple } from '../utils/compareTuple';
 
 /**
  * Subscribes to the given model's state
@@ -44,29 +42,30 @@ import { MemoCompare, defaultCompare } from './useFreshLazyRef';
  */
 export default function useValue<S, P>(
   model: ScopedModel<S, P>,
-  shouldUpdate: MemoCompare<S> = defaultCompare,
+  shouldUpdate: Compare<S> = defaultCompare,
 ): S {
   const notifier = useScopedModelContext(model);
 
-  const sub = useDisposableMemo(
-    () => createExternalSubject({
-      read: () => notifier.value,
-      subscribe: (callback) => {
-        notifier.on(callback);
-        return () => {
-          notifier.off(callback);
-        };
+  const sub = useMemoCondition<Subscription<S>, [ScopedModelRef<S>, Compare<S>]>(
+    () => ({
+      read: () => {
+        if (notifier.subject) {
+          return notifier.subject.getCachedValue();
+        }
+
+        throw new Error('Unexpected missing model reference.');
       },
+      subscribe: (callback) => notifier.subject?.subscribe(callback),
       shouldUpdate,
     }),
-    (instance) => instance.destroy(),
     [notifier, shouldUpdate],
+    compareTuple,
   );
 
   /**
    * Return the current state value
    */
-  const current = useExternalSubject(sub, false);
+  const current = useSubscription(sub);
   useDebugValue(current);
   return current;
 }

@@ -55,7 +55,7 @@ export default function useSuspenseSelector<S, P, R>(
 
   const onSnapshot = useCallbackCondition(
     (next: S) => {
-      createCachedData(notifier.cache, key, selector(next));
+      createCachedData(notifier.model.cache, key, selector(next));
 
       forceUpdate();
     },
@@ -65,10 +65,10 @@ export default function useSuspenseSelector<S, P, R>(
 
   useSnapshotBase(notifier, onSnapshot);
 
-  const cache = suspendCacheData(notifier.cache, key, () => createCachedData(
-    notifier.cache,
+  const cache = suspendCacheData(notifier.model.cache, key, () => createCachedData(
+    notifier.model.cache,
     key,
-    selector(notifier.value),
+    selector(notifier.model.value),
   ));
   useDebugValue(cache);
   return cache;

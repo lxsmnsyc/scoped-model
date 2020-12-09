@@ -37,7 +37,7 @@ import useScopedModelContext from './useScopedModelContext';
 export default function useValueOnce<S, P>(
   model: ScopedModel<S, P>,
 ): S {
-  const { value } = useScopedModelContext(model);
+  const { model: { value } } = useScopedModelContext(model);
   useDebugValue(value);
   return value;
 }
