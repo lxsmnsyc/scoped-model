@@ -1,5 +1,5 @@
 {
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Scoped Model pattern for Preact",
   "author": "Alexis Munsayac",
   "main": "dist/index.js",
