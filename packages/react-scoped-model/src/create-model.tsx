@@ -112,7 +112,6 @@ export default function createModel<Model, Props = unknown>(
             emitter.model.off(handler);
           };
         },
-        lazySubscribe: true,
       });
     }
 
