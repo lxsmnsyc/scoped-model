@@ -62,14 +62,8 @@ export default function useSelector<S, P, R>(
 
   const sub = useMemoCondition(
     (): Subscription<R> => ({
-      read: () => {
-        if (notifier.subject) {
-          return selector(notifier.subject.getCachedValue());
-        }
-
-        throw new Error('Unexpected missing model reference.');
-      },
-      subscribe: (callback) => notifier.subject?.subscribe(callback),
+      read: () => selector(notifier.value),
+      subscribe: (callback) => notifier.subscribe(callback),
       shouldUpdate,
     }),
     [notifier, shouldUpdate],

@@ -26,12 +26,13 @@
  * @copyright Alexis Munsayac 2020
  */
 import { useDebugValue } from 'react';
-import { ScopedModel, ScopedModelRef } from '../create-model';
+import { ScopedModel } from '../create-model';
 import useScopedModelContext from './useScopedModelContext';
 import useMemoCondition from './useMemoCondition';
 import useSubscription, { Subscription } from './useSubscription';
 import { defaultCompare, Compare } from '../utils/comparer';
 import { compareTuple } from '../utils/compareTuple';
+import Notifier from '../notifier';
 
 /**
  * Subscribes to the given model's state
@@ -46,16 +47,10 @@ export default function useValue<S, P>(
 ): S {
   const notifier = useScopedModelContext(model);
 
-  const sub = useMemoCondition<Subscription<S>, [ScopedModelRef<S>, Compare<S>]>(
+  const sub = useMemoCondition<Subscription<S>, [Notifier<S>, Compare<S>]>(
     () => ({
-      read: () => {
-        if (notifier.subject) {
-          return notifier.subject.getCachedValue();
-        }
-
-        throw new Error('Unexpected missing model reference.');
-      },
-      subscribe: (callback) => notifier.subject?.subscribe(callback),
+      read: () => notifier.value,
+      subscribe: (callback) => notifier.subscribe(callback),
       shouldUpdate,
     }),
     [notifier, shouldUpdate],

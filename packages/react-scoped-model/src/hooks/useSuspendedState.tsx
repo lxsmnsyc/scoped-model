@@ -61,15 +61,15 @@ function captureSuspendedValue<Model, R>(
   }
 
   return createCachedData(notifier.cache, key, new Promise<R>((resolve) => {
+    let unsubscribe: () => void;
     const listener = (m: Model): void => {
       const { value: innerValue, suspend: innerSuspend } = selector(m);
       if (!innerSuspend) {
         resolve(innerValue);
-        notifier.off(listener);
+        unsubscribe();
       }
     };
-
-    notifier.on(listener);
+    unsubscribe = notifier.subscribe(listener);
   }));
 }
 
@@ -94,7 +94,7 @@ export default function useSuspendedState<S, P, R>(
   const onSnapshot = useCallbackCondition(
     (next: S) => {
       captureSuspendedValue(
-        notifier.model,
+        notifier,
         next,
         selector,
         key,
@@ -108,9 +108,9 @@ export default function useSuspendedState<S, P, R>(
 
   useSnapshotBase(notifier, onSnapshot);
 
-  const cache = suspendCacheData(notifier.model.cache, key, () => captureSuspendedValue(
-    notifier.model,
-    notifier.model.value,
+  const cache = suspendCacheData(notifier.cache, key, () => captureSuspendedValue(
+    notifier,
+    notifier.value,
     selector,
     key,
   ));

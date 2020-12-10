@@ -37,12 +37,11 @@ export default class Notifier<T> {
 
   private listeners = new Set<Listener<T>>();
 
-  on(callback: Listener<T>): void {
+  subscribe(callback: Listener<T>): () => void {
     this.listeners.add(callback);
-  }
-
-  off(callback: Listener<T>): void {
-    this.listeners.delete(callback);
+    return () => {
+      this.listeners.delete(callback);
+    };
   }
 
   consume(value: T): void {

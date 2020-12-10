@@ -1887,11 +1887,6 @@
     npmlog "^4.1.2"
     write-file-atomic "^2.3.0"
 
-"@lyonph/react-hooks@^0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@lyonph/react-hooks/-/react-hooks-0.1.2.tgz#add78885179d427e62613fdf19eb712ffcba349e"
-  integrity sha512-dum2rHq1TDcOq1TrD2Kg7RmOPAfyrEdE9+tS9FXOX0YvZmchiXxLyyekSft6qYuqPz01pQ7PiL6LfDchHRjROg==
-
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"
@@ -10320,13 +10315,6 @@ react-dom@^16.13.1:
     object-assign "^4.1.1"
     prop-types "^15.6.2"
     scheduler "^0.19.1"
-
-react-external-subject@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/react-external-subject/-/react-external-subject-0.2.0.tgz#4319079721371c2cf4ecb09f3ff027de2a87fa6e"
-  integrity sha512-lxizAfAeoXAjDYOPng0ZkRHNPBEpASOyBLOzbGf52IUhlmgLyS6Dyh2Rb0d67wAQZhEzo62RCX0C6T7e/dXCiA==
-  dependencies:
-    "@lyonph/react-hooks" "^0.1.2"
 
 react-is@^16.8.1, react-is@^16.8.6:
   version "16.13.1"

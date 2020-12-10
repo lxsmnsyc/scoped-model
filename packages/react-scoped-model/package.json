@@ -68,7 +68,6 @@
     "preact"
   ],
   "dependencies": {
-    "react-external-subject": "^0.2.0",
     "use-dispose": "^0.4.0"
   }
 }

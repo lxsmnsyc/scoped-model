@@ -59,7 +59,7 @@ export default function useAsyncSelector<S, P, R>(
   useIsomorphicEffect(() => {
     let mounted = true;
 
-    selector(notifier.model.value).then(
+    selector(notifier.value).then(
       (data) => {
         if (mounted) {
           setState({
@@ -110,12 +110,12 @@ export default function useAsyncSelector<S, P, R>(
       }
     };
 
-    notifier.model.on(callback);
+    const unsubscribe = notifier.subscribe(callback);
 
     return () => {
       mounted = false;
 
-      notifier.model.off(callback);
+      unsubscribe();
     };
   }, [notifier, selector]);
 

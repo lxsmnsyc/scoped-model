@@ -26,12 +26,13 @@
  * @copyright Alexis Munsayac 2020
  */
 import { useContext } from 'react';
-import { ScopedModel, ScopedModelRef } from '../create-model';
+import { ScopedModel } from '../create-model';
+import Notifier from '../notifier';
 import MissingScopedModelError from '../utils/MissingScopedModelError';
 
 export default function useScopedModelContext<S, P>(
   model: ScopedModel<S, P>,
-): ScopedModelRef<S> {
+): Notifier<S> {
   const context = useContext(model.context);
 
   if (!context) {

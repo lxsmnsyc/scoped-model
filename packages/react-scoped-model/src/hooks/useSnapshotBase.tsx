@@ -25,12 +25,11 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { ScopedModelRef } from '../create-model';
-import { Listener } from '../notifier';
+import Notifier, { Listener } from '../notifier';
 import useIsomorphicEffect from './useIsomorphicEffect';
 
 export default function useSnapshotBase<S>(
-  notifier: ScopedModelRef<S>,
+  notifier: Notifier<S>,
   listener: Listener<S>,
 ): void {
   useIsomorphicEffect(() => {
@@ -42,12 +41,12 @@ export default function useSnapshotBase<S>(
       }
     };
 
-    notifier.model.on(callback);
+    const unsubscribe = notifier.subscribe(callback);
 
     return () => {
       mounted = false;
 
-      notifier.model.off(callback);
+      unsubscribe();
     };
   }, [notifier, listener]);
 }
