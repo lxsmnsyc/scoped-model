@@ -50,7 +50,7 @@ export default class Notifier<T> {
     this.ref = {
       current: value,
     };
-    new Set(this.listeners).forEach((cb) => {
+    this.listeners.forEach((cb) => {
       cb(value);
     });
   }
