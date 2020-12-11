@@ -84,9 +84,10 @@ export default function createModel<Model, Props = unknown>(
 
     const model = useModelHook(props);
 
-    emitter.sync(model);
+    emitter.hydrate(model);
 
     useIsomorphicEffect(() => {
+      emitter.initialized = true;
       emitter.consume(model);
     }, [emitter, model]);
 

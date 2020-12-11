@@ -35,6 +35,8 @@ export default class Notifier<T> {
 
   private suspenseCache= new Map<string, AsyncState<any>>();
 
+  public initialized = false;
+
   private listeners = new Set<Listener<T>>();
 
   subscribe(callback: Listener<T>): () => void {
@@ -45,13 +47,19 @@ export default class Notifier<T> {
   }
 
   consume(value: T): void {
-    this.sync(value);
+    this.ref = {
+      current: value,
+    };
     new Set(this.listeners).forEach((cb) => {
       cb(value);
     });
   }
 
-  sync(value: T): void {
+  hydrate(value: T): void {
+    if (this.initialized) {
+      return;
+    }
+
     this.ref = {
       current: value,
     };
