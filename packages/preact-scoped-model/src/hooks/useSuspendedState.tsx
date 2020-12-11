@@ -60,15 +60,16 @@ function captureSuspendedValue<Model, R>(
   }
 
   return createCachedData(notifier.cache, key, new Promise<R>((resolve) => {
+    let unsubscribe: () => void;
+
     const listener = (m: Model): void => {
       const { value: innerValue, suspend: innerSuspend } = selector(m);
       if (!innerSuspend) {
         resolve(innerValue);
-        notifier.off(listener);
+        unsubscribe();
       }
     };
-
-    notifier.on(listener);
+    unsubscribe = notifier.subscribe(listener);
   }));
 }
 

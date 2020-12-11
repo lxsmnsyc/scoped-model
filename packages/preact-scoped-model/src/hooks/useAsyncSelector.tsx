@@ -109,12 +109,12 @@ export default function useAsyncSelector<S, P, R>(
       }
     };
 
-    notifier.on(callback);
+    const unsubscribe = notifier.subscribe(callback);
 
     return () => {
       mounted = false;
 
-      notifier.off(callback);
+      unsubscribe();
     };
   }, [notifier, selector]);
 

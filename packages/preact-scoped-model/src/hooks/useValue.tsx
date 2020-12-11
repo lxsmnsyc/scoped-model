@@ -27,12 +27,12 @@
  */
 import { useDebugValue } from 'preact/hooks';
 import { ScopedModel } from '../create-model';
+import Notifier from '../notifier';
 import { defaultCompare, Compare } from '../utils/comparer';
+import { compareTuple } from '../utils/compareTuple';
 import useScopedModelContext from './useScopedModelContext';
-import useFreshState from './useFreshState';
-import useCallbackCondition from './useCallbackCondition';
-import { Listener } from '../notifier';
-import useSnapshotBase from './useSnapshotBase';
+import useSubscription, { Subscription } from './useSubscription';
+import useMemoCondition from './useMemoCondition';
 
 /**
  * Subscribes to the given model's state
@@ -47,28 +47,20 @@ export default function useValue<S, P>(
 ): S {
   const notifier = useScopedModelContext(model);
 
-  const [state, setState] = useFreshState(
-    () => notifier.value,
-    notifier,
+  const sub = useMemoCondition<Subscription<S>, [Notifier<S>, Compare<S>]>(
+    () => ({
+      read: () => notifier.value,
+      subscribe: (callback) => notifier.subscribe(callback),
+      shouldUpdate,
+    }),
+    [notifier, shouldUpdate],
+    compareTuple,
   );
-
-  const onSnapshot = useCallbackCondition<Listener<S>, Compare<S>>(
-    (next: S) => {
-      setState((old) => {
-        if (shouldUpdate(old, next)) {
-          return next;
-        }
-        return old;
-      });
-    },
-    shouldUpdate,
-  );
-
-  useSnapshotBase(notifier, onSnapshot);
 
   /**
    * Return the current state value
    */
-  useDebugValue(state);
-  return state;
+  const current = useSubscription(sub);
+  useDebugValue(current);
+  return current;
 }

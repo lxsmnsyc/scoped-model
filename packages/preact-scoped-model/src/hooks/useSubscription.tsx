@@ -25,28 +25,68 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import Notifier, { Listener } from '../notifier';
+import { useDebugValue } from 'preact/hooks';
+import { MemoCompare, defaultCompare } from './useFreshLazyRef';
+import useFreshState from './useFreshState';
 import useIsomorphicEffect from './useIsomorphicEffect';
 
-export default function useSnapshotBase<S>(
-  notifier: Notifier<S>,
-  listener: Listener<S>,
-): void {
+type ReadSource<T> = () => T;
+type Subscribe = (callback: () => void) => (() => void) | undefined | void;
+
+export interface Subscription<T> {
+  read: ReadSource<T>;
+  subscribe: Subscribe;
+  shouldUpdate?: MemoCompare<T>;
+}
+
+export default function useSubscription<T>({
+  read, subscribe, shouldUpdate = defaultCompare,
+}: Subscription<T>): T {
+  const [state, setState] = useFreshState(
+    () => ({
+      read,
+      subscribe,
+      shouldUpdate,
+      value: read(),
+    }),
+    [read, subscribe, shouldUpdate],
+  );
+
+  useDebugValue(state.value);
+
   useIsomorphicEffect(() => {
     let mounted = true;
 
-    const callback = (value: S) => {
+    const readCurrent = () => {
       if (mounted) {
-        listener(value);
+        setState((prev) => {
+          if (
+            prev.read !== read
+            || prev.subscribe !== subscribe
+            || prev.shouldUpdate !== shouldUpdate
+          ) {
+            return prev;
+          }
+          const nextValue = read();
+          if (!shouldUpdate(prev.value, nextValue)) {
+            return prev;
+          }
+          return { ...prev, value: nextValue };
+        });
       }
     };
 
-    const unsubscribe = notifier.subscribe(callback);
+    readCurrent();
+
+    const unsubscribe = subscribe(readCurrent);
 
     return () => {
       mounted = false;
-
-      unsubscribe();
+      if (unsubscribe) {
+        unsubscribe();
+      }
     };
-  }, [notifier, listener]);
+  }, [read, subscribe, shouldUpdate]);
+
+  return state.value;
 }
