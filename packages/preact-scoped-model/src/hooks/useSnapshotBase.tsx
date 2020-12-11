@@ -25,14 +25,14 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
+import { useEffect } from 'preact/hooks';
 import Notifier, { Listener } from '../notifier';
-import useIsomorphicEffect from './useIsomorphicEffect';
 
 export default function useSnapshotBase<S>(
   notifier: Notifier<S>,
   listener: Listener<S>,
 ): void {
-  useIsomorphicEffect(() => {
+  useEffect(() => {
     let mounted = true;
 
     const callback = (value: S) => {

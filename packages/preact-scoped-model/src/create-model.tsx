@@ -32,13 +32,12 @@ import {
   Context,
   FunctionComponent,
 } from 'preact';
-import { useContext } from 'preact/hooks';
+import { useContext, useEffect } from 'preact/hooks';
 import { memo } from 'preact/compat';
 import Notifier from './notifier';
 import useConstant from './hooks/useConstant';
 import generateId from './utils/id';
 import MissingScopedModelError from './utils/MissingScopedModelError';
-import useIsomorphicEffect from './hooks/useIsomorphicEffect';
 
 export type ScopedModelHook<Model, Props = unknown> = (props: Props) => Model;
 
@@ -84,7 +83,7 @@ export default function createModel<Model, Props>(
 
     emitter.hydrate(model);
 
-    useIsomorphicEffect(() => {
+    useEffect(() => {
       emitter.initialized = true;
       emitter.consume(model);
     }, [emitter, model]);

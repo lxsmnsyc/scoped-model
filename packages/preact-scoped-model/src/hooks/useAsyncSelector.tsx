@@ -25,10 +25,10 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
+import { useEffect } from 'preact/hooks';
 import { ScopedModel } from '../create-model';
 import { AsyncState } from '../types';
 import useScopedModelContext from './useScopedModelContext';
-import useIsomorphicEffect from './useIsomorphicEffect';
 import { SelectorFn } from './useSelector';
 import useFreshState from './useFreshState';
 
@@ -51,11 +51,11 @@ export default function useAsyncSelector<S, P, R>(
     model,
   );
 
-  useIsomorphicEffect(() => {
+  useEffect(() => {
     setState({ status: 'pending' });
-  }, [notifier]);
+  }, [notifier, setState]);
 
-  useIsomorphicEffect(() => {
+  useEffect(() => {
     let mounted = true;
 
     selector(notifier.value).then(
@@ -79,9 +79,9 @@ export default function useAsyncSelector<S, P, R>(
     return () => {
       mounted = false;
     };
-  }, [notifier, selector]);
+  }, [notifier, selector, setState]);
 
-  useIsomorphicEffect(() => {
+  useEffect(() => {
     let mounted = true;
 
     const callback = (next: S) => {
@@ -116,7 +116,7 @@ export default function useAsyncSelector<S, P, R>(
 
       unsubscribe();
     };
-  }, [notifier, selector]);
+  }, [notifier, selector, setState]);
 
   return state;
 }

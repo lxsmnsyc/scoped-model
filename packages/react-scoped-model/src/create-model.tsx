@@ -33,12 +33,12 @@ import React, {
   FC,
   memo,
   useDebugValue,
+  useEffect,
 } from 'react';
 import Notifier from './notifier';
 import useConstant from './hooks/useConstant';
 import MissingScopedModelError from './utils/MissingScopedModelError';
 import generateId from './utils/id';
-import useIsomorphicEffect from './hooks/useIsomorphicEffect';
 
 export type ScopedModelHook<Model, Props = unknown> = (props: Props) => Model;
 
@@ -86,7 +86,7 @@ export default function createModel<Model, Props = unknown>(
 
     emitter.hydrate(model);
 
-    useIsomorphicEffect(() => {
+    useEffect(() => {
       emitter.initialized = true;
       emitter.consume(model);
     }, [emitter, model]);

@@ -25,9 +25,8 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { useDebugValue, useState } from 'react';
+import { useDebugValue, useEffect, useState } from 'react';
 import { MemoCompare, defaultCompare } from './useFreshLazyRef';
-import useIsomorphicEffect from './useIsomorphicEffect';
 
 type ReadSource<T> = () => T;
 type Subscribe = (callback: () => void) => (() => void) | undefined | void;
@@ -67,7 +66,7 @@ export default function useSubscription<T>({
 
   useDebugValue(currentValue);
 
-  useIsomorphicEffect(() => {
+  useEffect(() => {
     let mounted = true;
 
     const readCurrent = () => {
