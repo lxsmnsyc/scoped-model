@@ -1,5 +1,5 @@
 {
-  "version": "1.8.2",
+  "version": "1.9.0",
   "description": "Scoped Model pattern in React (but with Hooks)",
   "author": "Alexis Munsayac",
   "main": "dist/index.js",
@@ -67,6 +67,5 @@
     "selector",
     "state management",
     "preact"
-  ],
-  "dependencies": {}
+  ]
 }
