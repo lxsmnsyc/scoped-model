@@ -20,30 +20,39 @@ module Listener = {
 };
 
 type t('a) = {
-  mutable currentValue: option('a),
+  mutable value: option('a),
   listeners: NativeSet.t(Listener.t('a)),
 };
 
 let make = (): t('a) => {
-  currentValue: None,
+  value: None,
   listeners: NativeSet.make(),
 };
 
-let on = (source: t('a), cb: Listener.t('a)) => {
+let subscribe = (. source: t('a), cb: Listener.t('a)) => {
   source.listeners##add(cb);
+  () => {
+    source.listeners##delete(cb);
+  };
 };
 
-let off = (source: t('a), cb: Listener.t('a)) => {
-  source.listeners##delete(cb);
+let hydrate = (. source: t('a), value: 'a) => {
+  if (source.value == None) {
+    source.value = Some(value);
+  }
 };
 
-let sync = (source: t('a), value: 'a) => {
-  source.currentValue = Some(value);
-};
-
-let emit = (source: t('a), value: 'a) => {
-  sync(source, value);
+let emit = (. source: t('a), value: 'a) => {
+  source.value = Some(value);
   source.listeners##forEach(
     (listener) => listener(value),
+  );
+};
+
+let value = (. source: t('a)): 'a => {
+  Utils.Result.get(
+    .
+    source.value,
+    Exceptions.DesyncScopedModel,
   );
 };

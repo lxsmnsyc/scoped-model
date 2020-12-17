@@ -52,6 +52,7 @@ module Make = (Facing: Interface) => {
        * throw an error if there's notifier consumed.
        */
       let notifier = Result.get(
+        . 
         React.useContext(context),
         Exceptions.MissingScopedModel,
       );
@@ -64,7 +65,7 @@ module Make = (Facing: Interface) => {
       /**
        * Synchronize notifier state
        */
-      Notifier.sync(notifier, model);
+      Notifier.hydrate(. notifier, model);
 
       /**
        * After React 16.13, components
@@ -73,7 +74,7 @@ module Make = (Facing: Interface) => {
        * We have to defer such calls to the useEffect
        */
       React.useEffect2(() => {
-        Notifier.emit(notifier, model);
+        Notifier.emit(. notifier, model);
         None;
       }, (notifier, model));
 
@@ -114,7 +115,7 @@ module Make = (Facing: Interface) => {
       /**
        * Create a notifier instance
        */
-      let notifier = Hooks.Constant.use(() => Some(Notifier.make()));
+      let notifier = Hooks.Constant.use(. () => Some(Notifier.make()));
 
       <ContextProvider value=notifier>
         <Processor props=props />
@@ -139,91 +140,58 @@ module Make = (Facing: Interface) => {
 };
 
 module Internals = {
-  let useScopedModelContext = (reference: t('a)) => {
+  let useScopedModelContext = (. reference: t('a)) => {
     Result.get(
+      .
       React.useContext(reference.context),
       Exceptions.MissingScopedModel,
     );
   };
 };
 
-module ShouldUpdate = {
-  type t('a) = ('a, 'a) => bool;
-  
-  let default: t('a) = (prev, next) => prev != next;
-
-  let useDefault = (test: option(t('a))): t('a) => {
-    switch (test) {
-      | Some(value) => value;
-      | None => default;
-    }
-  };
-};
-
 /**
  * Reads the model's current state once.
  */
-let useValueOnce = (reference: t('a)) => {
-  let notifier = Internals.useScopedModelContext(reference);
+let useValueOnce = (. reference: t('a)): 'a => {
+  let notifier = Internals.useScopedModelContext(. reference);
 
-  Result.get(
-    notifier.currentValue,
-    Exceptions.DesyncScopedModel,
-  );
+  Notifier.value(. notifier);
 };
 
 /**
  * Reads the model's current state. Conditionally re-renders
  * the component if the state changes by comparison.
  */
-let useValue = (reference: t('a), shouldUpdate: option(ShouldUpdate.t('a))) => {
-  let memo = ShouldUpdate.useDefault(shouldUpdate);
-  let notifier = Internals.useScopedModelContext(reference);
-  let (state, setState) = Hooks.FreshState.use(
-    () => {
-      Result.get(
-        notifier.currentValue,
-        Exceptions.DesyncScopedModel,
-      );
+let useValue = (. reference: t('a), shouldUpdate: option(Utils.Compare.t('a))): 'a => {
+  let notifier = Internals.useScopedModelContext(. reference);
+
+  let subscription = Utils.Hooks.ConditionalMemo.use(
+    .
+    (): Utils.Hooks.Subscription.t('a) => {
+      read: () => Notifier.value(. notifier),
+      subscribe: (handler) => Some(Notifier.subscribe(. notifier, (_) => {
+        handler();
+      })),
+      shouldUpdate,
     },
-    reference,
-    (oldRef, newRef) => {
-      oldRef !== newRef;
-    },
+    (notifier, shouldUpdate),
+    Some((. (prevN, prevSU), (nextN, nextSU)) => {
+      prevN !== nextN
+      || prevSU !== nextSU
+    }),
   );
 
-  React.useEffect3(() => {
-    let cb: Notifier.Listener.t('a) = (value) => {
-      setState((prev) => {
-        if (memo(prev, value)) {
-          value;
-        } else {
-          prev;
-        }
-      });
-    };
-
-    Notifier.on(notifier, cb);
-
-    Some(() => {
-      Notifier.off(notifier, cb);
-    });
-  }, (notifier, setState, memo));
-
-  state;
+  Utils.Hooks.Subscription.use(. subscription);
 };
 
 /**
  * Reads the model's current state once and transforms it into a
  * new value.
  */
-let useSelectorOnce = (reference: t('a), selector: 'a => 'b) => {
-  let notifier = Internals.useScopedModelContext(reference);
+let useSelectorOnce = (. reference: t('a), selector: 'a => 'b): 'b => {
+  let notifier = Internals.useScopedModelContext(. reference);
 
-  selector(Result.get(
-    notifier.currentValue,
-    Exceptions.DesyncScopedModel,
-  ));
+  selector(Notifier.value(. notifier));
 };
 
 /**
@@ -233,55 +201,44 @@ let useSelectorOnce = (reference: t('a), selector: 'a => 'b) => {
  * the transformed value changes by comparison.
  */
 let useSelector = (
+  .
   reference: t('a),
   selector: 'a => 'b,
-  shouldUpdate: option(ShouldUpdate.t('b))
-) => {
-  let memo = ShouldUpdate.useDefault(shouldUpdate);
-  let notifier = Internals.useScopedModelContext(reference);
-  let (state, setState) = Hooks.FreshState.use(
-    () => {
-      selector(Result.get(
-        notifier.currentValue,
-        Exceptions.DesyncScopedModel,
-      ));
+  shouldUpdate: option(Utils.Compare.t('b))
+): 'b => {
+  let notifier = Internals.useScopedModelContext(. reference);
+
+  let subscription = Utils.Hooks.ConditionalMemo.use(
+    .
+    (): Utils.Hooks.Subscription.t('b) => {
+      read: () => selector(Notifier.value(. notifier)),
+      subscribe: (handler) => Some(Notifier.subscribe(. notifier, (_) => {
+        handler();
+      })),
+      shouldUpdate,
     },
-    (reference, selector),
-    (prev, next) => {
-      let (oldRef, oldSelector) = prev;
-      let (newRef, newSelector) = next;
-      oldRef !== newRef && oldSelector !== newSelector;
-    },
+    (notifier, shouldUpdate, selector),
+    Some((. (prevN, prevSU, prevS), (nextN, nextSU, nextS)) => {
+      Js.log("Cursed");
+      Js.log(prevS !== nextS);
+      Js.log([%raw {|
+        !Object.is(prevS, nextS)
+      |}]);
+      prevN !== nextN
+      || prevSU !== nextSU
+      || prevS !== nextS
+    }),
   );
 
-  React.useEffect4(() => {
-    let cb: Notifier.Listener.t('a) = (value) => {
-      setState((prev) => {
-        let next = selector(value);
-        if (memo(prev, next)) {
-          next;
-        } else {
-          prev;
-        }
-      });
-    };
-
-    Notifier.on(notifier, cb);
-
-    Some(() => {
-      Notifier.off(notifier, cb);
-    });
-  }, (notifier, selector, setState, memo));
-
-  state;
+  Utils.Hooks.Subscription.use(. subscription);
 };
 
 /**
  * Creates a useValueOnce hook.
  */
-let createValueOnce = (reference: t('a)) => {
+let createValueOnce = (. reference: t('a)): (unit => 'a) => {
   (): 'a => {
-    useValueOnce(reference);
+    useValueOnce(. reference);
   };
 };
 
@@ -289,11 +246,12 @@ let createValueOnce = (reference: t('a)) => {
  * Creates a useValue hook.
  */
 let createValue = (
+  .
   reference: t('a), 
-  shouldUpdate: option(ShouldUpdate.t('a))
-) => {
+  shouldUpdate: option(Utils.Compare.t('a))
+): (unit => 'a) => {
   (): 'a => {
-    useValue(reference, shouldUpdate);
+    useValue(. reference, shouldUpdate);
   };
 };
 
@@ -301,11 +259,12 @@ let createValue = (
  * Creates a useSelectorOnce hook.
  */
 let createSelectorOnce = (
+  .
   reference: t('a),
   selector: 'a => 'b
-) => {
+): (unit => 'b) => {
   (): 'b => {
-    useSelectorOnce(reference, selector);
+    useSelectorOnce(. reference, selector);
   };
 };
 
@@ -313,12 +272,13 @@ let createSelectorOnce = (
  * Creates a useSelector hook.
  */
 let createSelector = (
+  .
   reference: t('a),
   selector: 'a => 'b,
-  shouldUpdate: option(ShouldUpdate.t('b))
-) => {
+  shouldUpdate: option(Utils.Compare.t('b))
+): (unit => 'b) => {
   (): 'b => {
-    useSelector(reference, selector, shouldUpdate);
+    useSelector(. reference, selector, shouldUpdate);
   };
 };
 
