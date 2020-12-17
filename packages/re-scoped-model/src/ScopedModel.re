@@ -219,11 +219,6 @@ let useSelector = (
     },
     (notifier, shouldUpdate, selector),
     Some((. (prevN, prevSU, prevS), (nextN, nextSU, nextS)) => {
-      Js.log("Cursed");
-      Js.log(prevS !== nextS);
-      Js.log([%raw {|
-        !Object.is(prevS, nextS)
-      |}]);
       prevN !== nextN
       || prevSU !== nextSU
       || prevS !== nextS
