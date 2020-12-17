@@ -7,21 +7,19 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@pika/react": "^16.13.1",
-    "@pika/react-dom": "^16.13.1",
-    "react": "npm:@pika/react",
-    "react-dom": "npm:@pika/react-dom",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
     "react-scoped-model": "1.9.0",
     "react-scoped-model-swr": "0.6.0"
   },
   "devDependencies": {
-    "@types/react": "^16.9.55",
-    "@types/react-dom": "^16.9.8",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
     "eslint": "^7.15.0",
     "eslint-config-lxsmnsyc": "^0.1.20",
     "typescript": "^4.1.2",
     "vite": "^1.0.0-rc.13",
-    "vite-plugin-react": "^3.0.2"
+    "vite-plugin-react": "^4.0.1"
   },
   "private": true
 }
