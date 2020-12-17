@@ -65,7 +65,6 @@ module Counter = {
 module CounterModel = ScopedModel.Make(Counter);
 ```
 
-
 ### Adding to your component tree
 
 To add the Model to your component tree, simply use the `Provider` component property:
@@ -98,7 +97,7 @@ For example, in our `Count` component, we only `select` the `count` field of our
 module Count {
   [@react.component]
   let make = () => {
-    let count = ScopedModel.useSelector(Counter, state => state.count, None);
+    let count = ScopedModel.useSelector(. Counter, state => state.count, None);
 
     Js.log("Count");
 
@@ -111,7 +110,7 @@ module Count {
 module Increment {
   [@react.component]
   let make = () => {
-    let increment = ScopedModel.useSelector(Counter, state => state.increment, None);
+    let increment = ScopedModel.useSelector(. Counter, state => state.increment, None);
 
     Js.log("Increment");
 
@@ -126,7 +125,7 @@ module Increment {
 module Decrement {
   [@react.component]
   let make = () => {
-    let decrement = ScopedModel.useSelector(Counter, state => state.decrement, None);
+    let decrement = ScopedModel.useSelector(. Counter, state => state.decrement, None);
 
     Js.log("Decrement");
 
@@ -163,6 +162,7 @@ module IncDec {
 ### Other hooks
 
 There are 3 other hooks:
+
 - `useValue`: Consumes the model's current state and updates when the model's state updates.
 - `useValueOnce`: Consumes the model's current state once.
 - `useSelectorOnce`: Similar to `useSelector`, consumes and transforms the model's current state once.
@@ -180,6 +180,7 @@ There are 4 built-in functions that are higher-order hooks. These functions are 
 
 - `MakeNullary` - a model with unit props, stabilizing the model from further recomputation whenever the `Provider` updates props or children.
 - `MakeState` - a kind of nullary model whose state is that of the `React.useState`.
+
 ```reason
 module Count = MakeState({
   type state = int;
@@ -189,7 +190,9 @@ module Count = MakeState({
   let displayName = "Count";
 });
 ```
+
 - `MakeReducer` - a kind of nullary model whose state is that of the `React.useReducer`.
+
 ```reason
 module Count = MakeReducer({
   type state = int;
@@ -210,6 +213,7 @@ module Count = MakeReducer({
   let displayName = "Count";
 });
 ```
+
 - `MakePropSelector`- a kind of model whose props and state are the same.
 
 ## License
