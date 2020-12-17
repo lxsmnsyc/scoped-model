@@ -1,0 +1,2 @@
+exception MissingScopedModel;
+exception DesyncScopedModel;

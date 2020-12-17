@@ -3,6 +3,7 @@
 var Curry = require("bs-platform/lib/js/curry.js");
 var React = require("react");
 var Caml_option = require("bs-platform/lib/js/caml_option.js");
+var Caml_exceptions = require("bs-platform/lib/js/caml_exceptions.js");
 
 function get(value, err) {
   if (value !== undefined) {
@@ -15,122 +16,194 @@ var Result = {
   get: get
 };
 
-function use(supplier) {
-  var ref = React.useRef(undefined);
-  var value = ref.current;
-  if (value !== undefined) {
-    return Caml_option.valFromOption(value);
-  }
-  var value$1 = Curry._1(supplier, undefined);
-  ref.current = Caml_option.some(value$1);
-  return value$1;
+function defaultCompare(a, b) {
+  return a !== b;
 }
 
-var Constant = {
+function use(shouldUpdate, a, b) {
+  if (shouldUpdate !== undefined) {
+    return shouldUpdate(a, b);
+  } else {
+    return defaultCompare(a, b);
+  }
+}
+
+var Compare = {
+  defaultCompare: defaultCompare,
   use: use
 };
 
-function use$1(cb) {
-  return use(function (param) {
-              return cb;
+function use$1(supplier) {
+  var ref = React.useRef(undefined);
+  if (ref.current === undefined) {
+    ref.current = Caml_option.some(Curry._1(supplier, undefined));
+  }
+  return ref;
+}
+
+var LazyRef = {
+  use: use$1
+};
+
+var FallthroughLazyRef = Caml_exceptions.create("Utils-ReScopedModel.Hooks.Constant.FallthroughLazyRef");
+
+function use$2(supplier) {
+  return get(use$1(supplier).current, {
+              RE_EXN_ID: FallthroughLazyRef
+            });
+}
+
+var Constant = {
+  FallthroughLazyRef: FallthroughLazyRef,
+  use: use$2
+};
+
+function use$3(callback) {
+  return use$2(function (param) {
+              return callback;
             });
 }
 
 var ConstantCallback = {
-  use: use$1
+  use: use$3
 };
 
-function use$2(param) {
+function use$4() {
   var match = React.useState(function () {
-        return false;
+        return /* [] */0;
       });
-  var setState = match[1];
-  var cb = function (param) {
-    return Curry._1(setState, (function (current) {
-                  return !current;
-                }));
-  };
-  return use(function (param) {
-              return cb;
+  var dispatch = match[1];
+  return use$3(function (param) {
+              return Curry._1(dispatch, (function (param) {
+                            return /* [] */0;
+                          }));
             });
 }
 
 var ForceUpdate = {
-  use: use$2
-};
-
-function use$3(supplier, dependency, compare) {
-  var deps = React.useRef(dependency);
-  var result = React.useRef(undefined);
-  if (Curry._2(compare, deps.current, dependency)) {
-    result.current = Caml_option.some(Curry._1(supplier, undefined));
-    deps.current = dependency;
-  }
-  var value = result.current;
-  if (value !== undefined) {
-    return Caml_option.valFromOption(value);
-  }
-  var value$1 = Curry._1(supplier, undefined);
-  result.current = Caml_option.some(value$1);
-  return value$1;
-}
-
-var NativeMemo = {
-  use: use$3
-};
-
-var Action = {};
-
-var Dispatch = {
-  Action: Action
-};
-
-function use$4(initial, dependencies, compare) {
-  var state = use$3((function (param) {
-          return {
-                  current: Curry._1(initial, undefined)
-                };
-        }), dependencies, compare);
-  var alive = React.useRef(false);
-  React.useEffect((function () {
-          alive.current = true;
-          return (function (param) {
-                    alive.current = false;
-                    
-                  });
-        }), []);
-  var forceUpdate = use$2(undefined);
-  var setState = React.useCallback((function (action) {
-          var oldState = state.current;
-          var newState = Curry._1(action, oldState);
-          if (oldState !== newState) {
-            state.current = newState;
-            return Curry._1(forceUpdate, undefined);
-          }
-          
-        }), [state]);
-  return [
-          state.current,
-          setState
-        ];
-}
-
-var FreshState = {
-  Dispatch: Dispatch,
   use: use$4
 };
 
+function use$5(supplier, dependency, shouldUpdate) {
+  var value = use$1(supplier);
+  var prevDeps = React.useRef(dependency);
+  if (use(shouldUpdate, prevDeps.current, dependency)) {
+    value.current = Caml_option.some(Curry._1(supplier, undefined));
+    prevDeps.current = dependency;
+  }
+  return value;
+}
+
+var FreshLazyRef = {
+  use: use$5
+};
+
+var FallthroughConditionalMemo = Caml_exceptions.create("Utils-ReScopedModel.Hooks.ConditionalMemo.FallthroughConditionalMemo");
+
+function use$6(supplier, dependency, shouldUpdate) {
+  return get(use$5(supplier, dependency, shouldUpdate).current, {
+              RE_EXN_ID: FallthroughConditionalMemo
+            });
+}
+
+var ConditionalMemo = {
+  FallthroughConditionalMemo: FallthroughConditionalMemo,
+  use: use$6
+};
+
+var Read = {};
+
+var Handler = {};
+
+var Cleanup = {};
+
+var Subscribe = {
+  Handler: Handler,
+  Cleanup: Cleanup
+};
+
+function use$7(param) {
+  var shouldUpdate = param.shouldUpdate;
+  var subscribe = param.subscribe;
+  var read = param.read;
+  var match = React.useState(function () {
+        return {
+                read: read,
+                subscribe: subscribe,
+                shouldUpdate: shouldUpdate,
+                value: Curry._1(read, undefined)
+              };
+      });
+  var setState = match[1];
+  var state = match[0];
+  var currentValue = state.value;
+  if (read !== state.read || subscribe !== state.subscribe || shouldUpdate !== state.shouldUpdate) {
+    currentValue = Curry._1(read, undefined);
+    Curry._1(setState, (function (param) {
+            return {
+                    read: read,
+                    subscribe: subscribe,
+                    shouldUpdate: shouldUpdate,
+                    value: Curry._1(read, undefined)
+                  };
+          }));
+  }
+  React.useEffect((function () {
+          var mounted = {
+            contents: true
+          };
+          var handleChange = function (param) {
+            if (!mounted.contents) {
+              return ;
+            }
+            var next = Curry._1(read, undefined);
+            return Curry._1(setState, (function (prev) {
+                          if (read === state.read && subscribe === state.subscribe && shouldUpdate === state.shouldUpdate && use(shouldUpdate, prev.value, next)) {
+                            return {
+                                    read: prev.read,
+                                    subscribe: prev.subscribe,
+                                    shouldUpdate: prev.shouldUpdate,
+                                    value: next
+                                  };
+                          } else {
+                            return prev;
+                          }
+                        }));
+          };
+          var unsubscribe = Curry._1(subscribe, handleChange);
+          handleChange(undefined);
+          return (function (param) {
+                    mounted.contents = false;
+                    if (unsubscribe !== undefined) {
+                      return Curry._1(unsubscribe, undefined);
+                    }
+                    
+                  });
+        }), [
+        read,
+        subscribe,
+        shouldUpdate
+      ]);
+  return currentValue;
+}
+
+var Subscription = {
+  Read: Read,
+  Subscribe: Subscribe,
+  use: use$7
+};
+
 var Hooks = {
+  LazyRef: LazyRef,
   Constant: Constant,
   ConstantCallback: ConstantCallback,
   ForceUpdate: ForceUpdate,
-  NativeMemo: NativeMemo,
-  FreshState: FreshState,
-  useConstant: use,
-  useForceUpdate: use$2,
-  useFreshState: use$4
+  FreshLazyRef: FreshLazyRef,
+  ConditionalMemo: ConditionalMemo,
+  Subscription: Subscription
 };
 
 exports.Result = Result;
+exports.Compare = Compare;
 exports.Hooks = Hooks;
 /* react Not a pure module */
