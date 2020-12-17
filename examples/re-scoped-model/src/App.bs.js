@@ -43,15 +43,12 @@ var CounterModel = ScopedModel$ReScopedModel.Make({
       displayName: displayName
     });
 
-function useCount(param) {
-  return ScopedModel$ReScopedModel.createSelector(CounterModel.reference, (function (state) {
-                console.log(state);
-                return state.count;
-              }), undefined, param);
-}
+var useCount = ScopedModel$ReScopedModel.createSelector(CounterModel.reference, (function (state) {
+        return state.count;
+      }), undefined);
 
 function App$Count(Props) {
-  var count = useCount(undefined);
+  var count = Curry._1(useCount, undefined);
   return React.createElement("h1", undefined, "Count: " + String(count));
 }
 
@@ -60,15 +57,12 @@ var Count = {
   make: App$Count
 };
 
-function useIncrement(param) {
-  return ScopedModel$ReScopedModel.createSelector(CounterModel.reference, (function (state) {
-                console.log(state);
-                return state.increment;
-              }), undefined, param);
-}
+var useIncrement = ScopedModel$ReScopedModel.createSelector(CounterModel.reference, (function (state) {
+        return state.increment;
+      }), undefined);
 
 function App$Increment(Props) {
-  var increment = useIncrement(undefined);
+  var increment = Curry._1(useIncrement, undefined);
   return React.createElement("button", {
               onClick: (function (param) {
                   return Curry._1(increment, undefined);
@@ -81,15 +75,12 @@ var Increment = {
   make: App$Increment
 };
 
-function useDecrement(param) {
-  return ScopedModel$ReScopedModel.createSelector(CounterModel.reference, (function (state) {
-                console.log(state);
-                return state.decrement;
-              }), undefined, param);
-}
+var useDecrement = ScopedModel$ReScopedModel.createSelector(CounterModel.reference, (function (state) {
+        return state.decrement;
+      }), undefined);
 
 function App$Decrement(Props) {
-  var decrement = useDecrement(undefined);
+  var decrement = Curry._1(useDecrement, undefined);
   return React.createElement("button", {
               onClick: (function (param) {
                   return Curry._1(decrement, undefined);
