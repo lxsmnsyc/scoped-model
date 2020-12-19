@@ -1,6 +1,6 @@
 {
   "name": "re-scoped-model-vite",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "scripts": {
     "dev": "run-p re:watch vite:serve",
     "build": "run-s re:build vite:build",
