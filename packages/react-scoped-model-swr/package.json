@@ -1,5 +1,5 @@
 {
-  "version": "0.6.1",
+  "version": "0.6.0",
   "description": "SWR + react-scoped-model",
   "author": "Alexis Munsayac",
   "main": "dist/index.js",
