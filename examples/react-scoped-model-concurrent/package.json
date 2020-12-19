@@ -14,8 +14,8 @@
     "react-scoped-model": "1.9.0"
   },
   "devDependencies": {
-    "@types/react": "^16.9.55",
-    "@types/react-dom": "^16.9.8",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
     "eslint": "^7.15.0",
     "eslint-config-lxsmnsyc": "^0.1.20",
     "parcel": "^1.12.4",
