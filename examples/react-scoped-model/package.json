@@ -1,6 +1,6 @@
 {
   "name": "react-scoped-model-vite",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "scripts": {
     "dev": "vite",
     "dev:local": "vite",
@@ -10,7 +10,7 @@
   "dependencies": {
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "react-scoped-model": "1.9.1"
+    "react-scoped-model": "1.9.2"
   },
   "devDependencies": {
     "@types/react": "^17.0.0",
