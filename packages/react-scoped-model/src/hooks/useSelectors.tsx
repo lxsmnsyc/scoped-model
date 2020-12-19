@@ -26,11 +26,13 @@
  * @copyright Alexis Munsayac 2020
  */
 import { useDebugValue } from 'react';
+import {
+  useCallbackCondition,
+} from '@lyonph/react-hooks';
 import { ScopedModel } from '../create-model';
 import {
   defaultCompare, compareList, ListCompare,
 } from '../utils/comparer';
-import useCallbackCondition from './useCallbackCondition';
 import useSelector, { SelectorFn } from './useSelector';
 
 export type SelectorsFn<S, R extends any[]>

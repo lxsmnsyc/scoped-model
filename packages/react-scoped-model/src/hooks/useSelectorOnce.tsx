@@ -26,10 +26,12 @@
  * @copyright Alexis Munsayac 2020
  */
 import { useDebugValue } from 'react';
+import {
+  useMemoCondition,
+} from '@lyonph/react-hooks';
 import { ScopedModel } from '../create-model';
 import useValueOnce from './useValueOnce';
 import { SelectorFn } from './useSelector';
-import useMemoCondition from './useMemoCondition';
 import { compareTuple } from '../utils/compareTuple';
 
 /**

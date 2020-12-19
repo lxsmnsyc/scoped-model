@@ -26,12 +26,15 @@
  * @copyright Alexis Munsayac 2020
  */
 import { useDebugValue } from 'react';
+import {
+  useMemoCondition,
+  useSubscription,
+  Subscription,
+} from '@lyonph/react-hooks';
 import { ScopedModel } from '../create-model';
 import useScopedModelContext from './useScopedModelContext';
 import { defaultCompare, Compare } from '../utils/comparer';
-import useSubscription, { Subscription } from './useSubscription';
 import { compareArray } from '../utils/compareTuple';
-import useMemoCondition from './useMemoCondition';
 
 export type SelectorFn<T, R> =
   (model: Readonly<T>) => R;

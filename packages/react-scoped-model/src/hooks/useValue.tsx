@@ -26,10 +26,13 @@
  * @copyright Alexis Munsayac 2020
  */
 import { useDebugValue } from 'react';
+import {
+  useMemoCondition,
+  useSubscription,
+  Subscription,
+} from '@lyonph/react-hooks';
 import { ScopedModel } from '../create-model';
 import useScopedModelContext from './useScopedModelContext';
-import useMemoCondition from './useMemoCondition';
-import useSubscription, { Subscription } from './useSubscription';
 import { defaultCompare, Compare } from '../utils/comparer';
 import { compareTuple } from '../utils/compareTuple';
 import Notifier from '../notifier';
