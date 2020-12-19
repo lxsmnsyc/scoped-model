@@ -148,15 +148,10 @@ function useSelector(reference, selector, shouldUpdate) {
         shouldUpdate,
         selector
       ], (function (param, param$1) {
-          var nextS = param$1[2];
-          var prevS = param[2];
-          console.log("Cursed");
-          console.log(prevS !== nextS);
-          console.log((!Object.is(prevS, nextS)));
           if (param[0] !== param$1[0] || param[1] !== param$1[1]) {
             return true;
           } else {
-            return prevS !== nextS;
+            return param[2] !== param$1[2];
           }
         }));
   return Utils$ReScopedModel.Hooks.Subscription.use(subscription);
