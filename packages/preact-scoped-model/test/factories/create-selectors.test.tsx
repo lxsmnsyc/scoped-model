@@ -190,7 +190,7 @@ describe('createSelectors', () => {
       </Example.Provider>,
     );
 
-    expect(screen.getByTitle(finder)).toContainHTML('2');
+    expect(screen.getByTitle(finder)).not.toContainHTML('1');
   });
   it('should not re-render if the comparer function returns falsy.', () => {
     const finder = 'example';
