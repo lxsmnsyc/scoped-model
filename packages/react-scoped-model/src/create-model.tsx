@@ -35,8 +35,10 @@ import React, {
   useDebugValue,
   useEffect,
 } from 'react';
+import {
+  useConstant,
+} from '@lyonph/react-hooks';
 import Notifier from './notifier';
-import useConstant from './hooks/useConstant';
 import MissingScopedModelError from './utils/MissingScopedModelError';
 import generateId from './utils/id';
 
