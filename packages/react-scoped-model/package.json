@@ -1,5 +1,5 @@
 {
-  "version": "1.9.2",
+  "version": "1.9.3",
   "description": "Scoped Model pattern in React (but with Hooks)",
   "author": "Alexis Munsayac",
   "main": "dist/index.js",
