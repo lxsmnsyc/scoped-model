@@ -41,27 +41,31 @@ export function createCachedData<T>(
   key: string,
   promise: Promise<T>,
 ): AsyncState<T> {
-  promise.then(
-    (data) => {
-      if (isCacheValid(cache, key, promise)) {
-        cache.set(key, {
-          status: 'success',
-          data,
-        });
-      }
-    },
-    (data) => {
-      if (isCacheValid(cache, key, promise)) {
-        cache.set(key, {
-          status: 'failure',
-          data,
-        });
-      }
-    },
-  );
+  const wrapped = promise
+    .then(
+      (data) => {
+        if (isCacheValid(cache, key, wrapped)) {
+          cache.set(key, {
+            status: 'success',
+            data,
+          });
+        }
+      },
+      (data) => {
+        if (isCacheValid(cache, key, wrapped)) {
+          cache.set(key, {
+            status: 'failure',
+            data,
+          });
+        }
+      },
+    )
+    .then(() => new Promise((resolve) => {
+      setTimeout(resolve);
+    }));
 
   const cachedData: AsyncState<T> = {
-    data: promise,
+    data: wrapped,
     status: 'pending',
   };
 
@@ -81,6 +85,16 @@ export function mutateCacheData<T>(
   });
 }
 
+function wrapSafeSuspense<T>(
+  state: AsyncState<T>,
+): T {
+  if (state.status === 'success') {
+    return state.data;
+  }
+
+  throw state.data;
+}
+
 export function suspendCacheData<T>(
   cache: Map<string, AsyncState<unknown>>,
   key: string,
@@ -95,11 +109,8 @@ export function suspendCacheData<T>(
      */
     const state = cache.get(key) as AsyncState<T>;
 
-    if (state.status === 'success') {
-      return state.data;
-    }
-    throw state.data;
+    return wrapSafeSuspense(state);
   }
 
-  throw supplier().data;
+  return wrapSafeSuspense(supplier());
 }
