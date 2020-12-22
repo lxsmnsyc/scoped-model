@@ -26,13 +26,16 @@
  * @copyright Alexis Munsayac 2020
  */
 import { useDebugValue } from 'preact/hooks';
+import {
+  useMemoCondition,
+  useSubscription,
+  Subscription,
+} from '@lyonph/preact-hooks';
 import { ScopedModel } from '../create-model';
 import Notifier from '../notifier';
 import { defaultCompare, Compare } from '../utils/comparer';
 import { compareTuple } from '../utils/compareTuple';
 import useScopedModelContext from './useScopedModelContext';
-import useSubscription, { Subscription } from './useSubscription';
-import useMemoCondition from './useMemoCondition';
 
 /**
  * Subscribes to the given model's state

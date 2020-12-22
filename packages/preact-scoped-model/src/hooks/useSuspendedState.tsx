@@ -25,14 +25,16 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
+import {
+  useForceUpdate,
+  useCallbackCondition,
+} from '@lyonph/preact-hooks';
 import useScopedModelContext from './useScopedModelContext';
 import { ScopedModel } from '../create-model';
-import useForceUpdate from './useForceUpdate';
 import { suspendCacheData, createCachedData, mutateCacheData } from '../create-cached-data';
 import Notifier from '../notifier';
 import { SelectorFn } from './useSelector';
 import { AsyncState } from '../types';
-import useCallbackCondition from './useCallbackCondition';
 import { compareArray } from '../utils/compareTuple';
 import useSnapshotBase from './useSnapshotBase';
 

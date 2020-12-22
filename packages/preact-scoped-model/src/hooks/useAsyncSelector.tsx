@@ -26,11 +26,13 @@
  * @copyright Alexis Munsayac 2020
  */
 import { useEffect } from 'preact/hooks';
+import {
+  useFreshState,
+} from '@lyonph/preact-hooks';
 import { ScopedModel } from '../create-model';
 import { AsyncState } from '../types';
 import useScopedModelContext from './useScopedModelContext';
 import { SelectorFn } from './useSelector';
-import useFreshState from './useFreshState';
 
 export type AsyncSelectorFn<S, R> = SelectorFn<S, Promise<R>>;
 

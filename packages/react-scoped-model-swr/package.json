@@ -36,7 +36,7 @@
     "@types/react": "^17.0.0",
     "eslint": "^7.15.0",
     "eslint-config-lxsmnsyc": "^0.1.20",
-    "pridepack": "^0.5.0",
+    "pridepack": "^0.6.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-scoped-model": "1.9.3",

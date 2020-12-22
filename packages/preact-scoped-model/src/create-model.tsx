@@ -34,8 +34,10 @@ import {
 } from 'preact';
 import { useContext, useEffect } from 'preact/hooks';
 import { memo } from 'preact/compat';
+import {
+  useConstant,
+} from '@lyonph/preact-hooks';
 import Notifier from './notifier';
-import useConstant from './hooks/useConstant';
 import generateId from './utils/id';
 import MissingScopedModelError from './utils/MissingScopedModelError';
 
