@@ -1,15 +1,13 @@
-import * as reactPlugin from 'vite-plugin-react';
-import type { UserConfig } from 'vite';
+import { defineConfig } from 'vite'
+import reactRefresh from '@vitejs/plugin-react-refresh'
 
-const config: UserConfig = {
-  jsx: 'react',
-  plugins: [reactPlugin],
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [reactRefresh()],
   optimizeDeps: {
     exclude: [
       'react-scoped-model',
       'react-scoped-model-swr',
     ],
-  },
-};
-
-export default config;
+  }
+});
