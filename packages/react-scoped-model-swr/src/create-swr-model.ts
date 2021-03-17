@@ -43,7 +43,7 @@ export type SWRModelBaseKey = string | null | any[];
  * A React-based hook that receives the SWR Model
  * props and produces the SWR key.
  */
-export type SWRModelKeyHook<P > =
+export type SWRModelKeyHook<P> =
   (props: P) => SWRModelBaseKey;
 
 /**
@@ -52,7 +52,7 @@ export type SWRModelKeyHook<P > =
  * A key-returning function
  * will allow dependent or conditional SWR fetching.
  */
-export type SWRModelKey<P > =
+export type SWRModelKey<P> =
   SWRModelBaseKey | SWRModelKeyHook<P>;
 
 /**
@@ -67,7 +67,7 @@ export type SWRModelBaseFetcher<D> =
  * A React-based hook that receives the SWR Model props
  * and returns a fetcher callback.
  */
-export type SWRModelFetcher<D, P > =
+export type SWRModelFetcher<D, P> =
   (props: P) => SWRModelBaseFetcher<D>;
 
 /**
@@ -76,9 +76,9 @@ export type SWRModelFetcher<D, P > =
  *
  * Config is merged to the global config.
  */
-export type SWRModelConfigHook<D, E, P > =
+export type SWRModelConfigHook<D, E, P> =
   (props: P) => ConfigInterface<D, E>;
-export type SWRModelConfig<D, E, P > =
+export type SWRModelConfig<D, E, P> =
   ConfigInterface<D, E> | SWRModelConfigHook<D, E, P>;
 
 /**
@@ -89,10 +89,10 @@ export type SWRModelState<D, E> = responseInterface<D, E>;
 /**
  * Alias to the SWR Model's Scoped Model interface.
  */
-export type SWRModel<D, E, P > =
+export type SWRModel<D, E, P> =
   ScopedModel<SWRModelState<D, E>, P>;
 
-function createKeyHook<P >(
+function createKeyHook<P>(
   key: SWRModelKey<P>,
 ): SWRModelKeyHook<P> {
   if (typeof key === 'function') {
@@ -100,7 +100,7 @@ function createKeyHook<P >(
   }
   return () => key;
 }
-function createConfigHook<D, E, P >(
+function createConfigHook<D, E, P>(
   config: SWRModelConfig<D, E, P>,
 ): SWRModelConfigHook<D, E, P> {
   if (typeof config === 'function') {
@@ -118,7 +118,7 @@ function createConfigHook<D, E, P >(
  * @param options
  */
 export default function createSWRModel
-<D, E, P >(
+<D, E, P>(
   key: SWRModelKey<P>,
   fetcher: SWRModelFetcher<D, P>,
   config: SWRModelConfig<D, E, P> = {},
