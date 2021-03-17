@@ -1,6 +1,5 @@
-/** @jsx h */
 import 'preact/debug';
-import { Fragment, h, VNode } from 'preact';
+import { VNode } from 'preact';
 import { Suspense } from 'preact/compat';
 import { useState, useCallback } from 'preact/hooks';
 
@@ -98,9 +97,12 @@ function AsyncCount() {
   });
 
   switch (result.status) {
-    case 'failure': return <h1>An error occured.</h1>;
-    case 'success': return <h1>{`Count: ${result.data}`}</h1>;
-    case 'pending': return <h1>Loading...</h1>;
+    case 'failure':
+      return <h1>An error occured.</h1>;
+    case 'success':
+      return <h1>{`Count: ${result.data}`}</h1>;
+    case 'pending':
+      return <h1>Loading...</h1>;
     default: return null;
   }
 }
@@ -111,10 +113,10 @@ function IncDec() {
     state.decrement,
   ]);
   return (
-    <Fragment>
+    <>
       <button type="button" onClick={increment}>Increment</button>
       <button type="button" onClick={decrement}>Decrement</button>
-    </Fragment>
+    </>
   );
 }
 
