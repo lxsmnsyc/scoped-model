@@ -69,6 +69,6 @@
     "preact"
   ],
   "dependencies": {
-    "@lyonph/react-hooks": "^0.3.0"
+    "@lyonph/react-hooks": "^0.3.1"
   }
 }
