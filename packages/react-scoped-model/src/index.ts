@@ -52,9 +52,6 @@ export {
 // Hook Factory
 export { default as createSelector } from './hook-factory/create-selector-hook';
 export { default as createSelectors } from './hook-factory/create-selectors-hook';
-export { default as createAsyncSelector } from './hook-factory/create-async-selector-hook';
-export { default as createSuspendedState } from './hook-factory/create-suspended-state-hook';
-export { default as createSuspenseSelector } from './hook-factory/create-suspense-selector-hook';
 export { default as createValue } from './hook-factory/create-value-hook';
 export { default as createValueOnce } from './hook-factory/create-value-once-hook';
 export { default as createSnapshot } from './hook-factory/create-snapshot-hook';
@@ -73,18 +70,6 @@ export {
   SelectorsFn,
 } from './hooks/useSelectors';
 export {
-  default as useAsyncSelector,
-  AsyncSelectorFn,
-} from './hooks/useAsyncSelector';
-export {
-  default as useSuspenseSelector,
-} from './hooks/useSuspenseSelector';
-export {
-  default as useSuspendedState,
-  SuspendSelector,
-  SuspendSelectorFn,
-} from './hooks/useSuspendedState';
-export {
   default as useValueOnce,
 } from './hooks/useValueOnce';
 export {
@@ -94,7 +79,6 @@ export {
   default as useSnapshot,
 } from './hooks/useSnapshot';
 
-export * from './types';
 export * from './create-model';
 
 export { Compare, ListCompare } from './utils/comparer';
