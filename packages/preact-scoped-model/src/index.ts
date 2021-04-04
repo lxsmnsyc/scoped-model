@@ -78,6 +78,9 @@ export {
 export {
   default as useSnapshot,
 } from './hooks/useSnapshot';
+export {
+  default as useScopedModelExists,
+} from './hooks/useScopedModelExists';
 
 export * from './create-model';
 
