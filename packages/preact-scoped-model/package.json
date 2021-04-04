@@ -54,7 +54,7 @@
   "bugs": {
     "url": "https://github.com/LXSMNSYC/scoped-model/issues"
   },
-  "homepage": "https://github.com/lxsmnsyc/scoped-model",
+  "homepage": "https://github.com/LXSMNSYC/scoped-model/tree/master/packages/preact-scoped-model",
   "keywords": [
     "scoped-model",
     "preact-scoped-model",

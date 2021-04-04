@@ -49,7 +49,7 @@
     "react": "^16.8.0 || ^17.0.0",
     "react-scoped-model": "^1.6.4"
   },
-  "homepage": "https://github.com/lxsmnsyc/scoped-model",
+  "homepage": "https://github.com/LXSMNSYC/scoped-model/tree/master/packages/react-scoped-model-swr",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/LXSMNSYC/scoped-model.git"
