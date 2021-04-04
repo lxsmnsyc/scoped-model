@@ -3,9 +3,9 @@
 `useSnapshot` attaches a listener to a model and subscribes for state updates. The listener receives the newest state.
 
 The hook accepts the following parameters:
+
 - `model`: The model which to subscribe to state changes.
 - `listener`: A callback that receives the state updates.
-
 
 ```tsx
 import { useSnapshot } from 'preact-scoped-model';
@@ -30,5 +30,6 @@ useSnapshot(Timer, (count) => {
 ````
 
 ## See Also
+
 - [Hooks](/packages/react-scoped-model/hooks/README.md)
 - [Hook Factory](/packages/react-scoped-model/docs/hook-factory.md)

@@ -3,6 +3,7 @@
 `useSelector` receives the transformed and filtered state of the model. Using this in a component "subscribes" the component to transformed state's changes.
 
 The hook accepts the following parameters:
+
 - `model`: The model which to subscribe to state changes.
 - `selector`: a function that receives the model's state and must return a transform value based from that state. Changes from the transformed value (as compared to the previously transformed value) prompts a re-render.
 - `shouldUpdate`: Optional. A function that receives the previously transformed value and the newly transformed value and returns a boolean. Returning a truthy value replaces the internal state with the transformed value. Defaults to `Object.is` comparison.
@@ -35,5 +36,6 @@ function TimerValue() {
 ```
 
 ## See Also
+
 - [Hooks](/packages/preact-scoped-model/hooks/README.md)
 - [Hook Factory](/packages/preact-scoped-model/docs/hook-factory.md)

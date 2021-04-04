@@ -3,9 +3,9 @@
 `useValue` receives the state of the model (as a whole.). Using this in a component "subscribes" the component to model's state changes.
 
 The hook accepts the following parameters:
+
 - `model`: The model which to subscribe to state changes.
 - `shouldUpdate`: Optional. A function that receives the previously stored state and the newly state and returns a boolean. Returning a truthy value replaces the internal state with the new state. Defaults to `Object.is` comparison.
-
 
 ```tsx
 import { useValue } from 'preact-scoped-model';
@@ -31,5 +31,6 @@ function TimerValue() {
 ```
 
 ## See Also
+
 - [Hooks](/packages/preact-scoped-model/hooks/README.md)
 - [Hook Factory](/packages/preact-scoped-model/docs/hook-factory.md)
