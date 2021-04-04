@@ -26,43 +26,54 @@
  * @copyright Alexis Munsayac 2020
  */
 import { MutableRefObject } from 'react';
-import { AsyncState } from './types';
 
 export type Listener<T> = (value: T) => void;
 
 export default class Notifier<T> {
-  private ref?: MutableRefObject<T>;
+  private alive = true;
 
-  private suspenseCache= new Map<string, AsyncState<any>>();
+  private ref?: MutableRefObject<T>;
 
   public initialized = false;
 
   private listeners = new Set<Listener<T>>();
 
   subscribe(callback: Listener<T>): () => void {
-    this.listeners.add(callback);
+    if (this.alive) {
+      this.listeners.add(callback);
+    }
     return () => {
-      this.listeners.delete(callback);
+      if (this.alive) {
+        this.listeners.delete(callback);
+      }
     };
   }
 
   consume(value: T): void {
-    this.ref = {
-      current: value,
-    };
-    this.listeners.forEach((cb) => {
-      cb(value);
-    });
+    if (this.alive) {
+      this.ref = {
+        current: value,
+      };
+      this.listeners.forEach((cb) => {
+        cb(value);
+      });
+    }
   }
 
   hydrate(value: T): void {
-    if (this.initialized) {
-      return;
-    }
+    if (this.alive) {
+      if (this.initialized) {
+        return;
+      }
 
-    this.ref = {
-      current: value,
-    };
+      this.ref = {
+        current: value,
+      };
+    }
+  }
+
+  hasValue(): boolean {
+    return !!this.ref;
   }
 
   get value(): T {
@@ -72,7 +83,10 @@ export default class Notifier<T> {
     return this.ref.current;
   }
 
-  get cache(): Map<string, AsyncState<unknown>> {
-    return this.suspenseCache;
+  public destroy(): void {
+    if (this.alive) {
+      this.listeners.clear();
+      this.alive = false;
+    }
   }
 }
