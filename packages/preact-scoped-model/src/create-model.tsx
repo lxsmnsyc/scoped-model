@@ -44,17 +44,23 @@ import MissingScopedModelError from './utils/MissingScopedModelError';
 export type ScopedModelHook<Model, Props = unknown> = (props: Props) => Model;
 
 export type ScopedModelMemo<Props = unknown> = (prev: Props, next: Props) => boolean;
+export type ScopedModelBailout<T> = (prev: T, next: T) => boolean;
 
-export interface ScopedModelOptions<Props = unknown> {
+export interface ScopedModelOptions<Model, Props = unknown> {
   displayName?: string;
   defaultProps?: Partial<Props>;
   shouldUpdate?: ScopedModelMemo<Props>;
+  shouldNotify?: ScopedModelBailout<Model>;
 }
 
 export interface ScopedModel<Model, Props = unknown> {
   context: Context<Notifier<Model> | null>;
   Provider: FunctionComponent<Props>;
   displayName: string;
+}
+
+function SHOULD_NOTIFY<T>(a: T, b: T): boolean {
+  return !Object.is(a, b);
 }
 
 /**
@@ -66,7 +72,7 @@ export interface ScopedModel<Model, Props = unknown> {
  */
 export default function createModel<Model, Props>(
   useModelHook: ScopedModelHook<Model, Props>,
-  options: ScopedModelOptions<Props> = {},
+  options: ScopedModelOptions<Model, Props> = {},
 ): ScopedModel<Model, Props> {
   const context = createContext<Notifier<Model> | null>(null);
   const id = generateId();
@@ -74,6 +80,7 @@ export default function createModel<Model, Props>(
    * Display name for the model
    */
   const displayName = options.displayName || `ScopedModel-${id}`;
+  const shouldNotify = options.shouldNotify ?? SHOULD_NOTIFY;
 
   const ProcessorInner: FunctionComponent<Props> = (props) => {
     const emitter = useContext(context);
@@ -87,19 +94,29 @@ export default function createModel<Model, Props>(
 
     useEffect(() => {
       emitter.initialized = true;
-      emitter.consume(model);
-    }, [emitter, model]);
+    }, [emitter]);
+
+    useEffect(() => {
+      if (emitter.hasValue()) {
+        if (shouldNotify(emitter.value, model)) {
+          emitter.consume(model);
+        }
+      } else {
+        emitter.consume(model);
+      }
+    });
 
     return null;
   };
 
   const Processor = memo(ProcessorInner, options.shouldUpdate);
 
-  ProcessorInner.displayName = `ScopedModelProcessor(${displayName}.Processor)`;
-  Processor.displayName = `ScopedModelProcessor(${displayName}.Processor)`;
-
   const Provider: FunctionComponent<Props> = ({ children, ...props }) => {
     const emitter = useConstant(() => new Notifier<Model>());
+
+    useEffect(() => () => {
+      emitter.destroy();
+    }, [emitter]);
 
     return (
       <context.Provider value={emitter}>
@@ -117,8 +134,12 @@ export default function createModel<Model, Props>(
   /**
    * Display name for the Provider
    */
-  Provider.displayName = `ScopedModel(${displayName})`;
-  context.Provider.displayName = `${displayName}.Provider`;
+  if (process.env.NODE_ENV !== 'production') {
+    ProcessorInner.displayName = `ScopedModelProcessor(${displayName}.Processor)`;
+    Processor.displayName = `ScopedModelProcessor(${displayName}.Processor)`;
+    Provider.displayName = `ScopedModel(${displayName})`;
+    context.Provider.displayName = `${displayName}.Provider`;
+  }
 
   return {
     context,
