@@ -1492,20 +1492,20 @@
     npmlog "^4.1.2"
     write-file-atomic "^2.3.0"
 
-"@lyonph/preact-hooks@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@lyonph/preact-hooks/-/preact-hooks-0.2.0.tgz#da3e7c0e229b355fcc12d44c58e17b17841646c5"
-  integrity sha512-pi/9HqpfngA7prrfbFmQKhx9Qz6edUcSOhphkNPWW1GFy4JjC6BUHgG2fxYJFgUj/BI3RYT6wNRi2OJONMIDbA==
+"@lyonph/preact-hooks@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@lyonph/preact-hooks/-/preact-hooks-0.3.0.tgz#6f2711dc238394fb874834c5fe71b29566c06d30"
+  integrity sha512-OAj/0spgKkNNTqIqoJC3M2/ftRpg0F6bHk2AcuTB4T7ppr28rjn184U6iKozsdOY36Ncp4XRx+IOFDCipoWeeA==
 
 "@lyonph/react-hooks@^0.2.3":
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/@lyonph/react-hooks/-/react-hooks-0.2.3.tgz#f8ca46f170e0b65d3b15169c177e19bb68af56c6"
   integrity sha512-RnmYuHeNjGaGBafzxcw0htD8VrzbZh5z/xzQEVicQHE7o1E2bg4h7UbdVNQG0PL/HnMcVxpc1vmtQXnajPmkbA==
 
-"@lyonph/react-hooks@^0.3.1":
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/@lyonph/react-hooks/-/react-hooks-0.3.1.tgz#b5ba91bc5e6031062e132b5839510de4abb56eb8"
-  integrity sha512-fxrvBn/wr8koA8ksg920G+cwsZp+lk4umuaxpSfh35RQkvgnpUbFlE/t1sER6M23ugmVyRExy5oG9KMxzQB+/w==
+"@lyonph/react-hooks@^0.3.5":
+  version "0.3.5"
+  resolved "https://registry.yarnpkg.com/@lyonph/react-hooks/-/react-hooks-0.3.5.tgz#625dded79e6ac6c1a051d0f8eb4a64d427b57610"
+  integrity sha512-/6Scp7fo9zSNlUJ8ASvLbrx1FnlyhD2K5RImkiBLx6BCkNDSziZsY+9iRuHNuIZVZFbiCnxH8StpbO73WCmmmQ==
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
