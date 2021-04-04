@@ -5,6 +5,7 @@
 ## List of Hook Factories
 
 - `createValue`: creates a hook based on [useValue](/packages/preact-scoped-model/docs/hooks/use-value.md).
+
 ```tsx
 import { createValue } from 'preact-scoped-model';
 
@@ -26,14 +27,12 @@ const seconds = useTimerSeconds();
 ```
 
 - `createSelectors`: creates a hook based on [useSelectors](/packages/preact-scoped-model/docs/hooks/use-selectors.md).
-- `createAsyncSelector`: creates a hook based on [useAsyncSelector](/packages/preact-scoped-model/docs/hooks/use-async-selector.md).
-- `createSuspenseSelector`: creates a hook based on [useSuspenseSelector](/packages/preact-scoped-model/docs/hooks/use-suspense-selector.md).
-- `createSuspendedState`: creates a hook based on [useSuspendedState](/packages/preact-scoped-model/docs/hooks/use-suspended-state.md)`.
 - `createValueOnce`: creates a hook based on [useValueOnce](/packages/preact-scoped-model/docs/hooks/use-value-once.md)`.
 - `createSelectorOnce`: creates a hook based on [useValueOnce](/packages/preact-scoped-model/docs/hooks/use-selector-once.md)`.
 - `createSnapshot`: creates a hook based on [useSnapshot](/packages/preact-scoped-model/docs/hooks/use-snapshot.md)`.
 
 ## See Also
+
 - [Create Model](/packages/preact-scoped-model/docs/create-model.md)
 - [Model Factory](/packages/preact-scoped-model/docs/model-factory.md)
 - [Hooks](/packages/preact-scoped-model/docs/hooks/README.md)

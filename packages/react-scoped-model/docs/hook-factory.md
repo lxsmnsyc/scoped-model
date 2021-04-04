@@ -5,6 +5,7 @@
 ## List of Hook Factories
 
 - `createValue`: creates a hook based on [useValue](/packages/react-scoped-model/docs/hooks/use-value.md).
+
 ```tsx
 import { createValue } from 'react-scoped-model';
 
@@ -26,14 +27,12 @@ const seconds = useTimerSeconds();
 ```
 
 - `createSelectors`: creates a hook based on [useSelectors](/packages/react-scoped-model/docs/hooks/use-selectors.md).
-- `createAsyncSelector`: creates a hook based on [useAsyncSelector](/packages/react-scoped-model/docs/hooks/use-async-selector.md).
-- `createSuspenseSelector`: creates a hook based on [useSuspenseSelector](/packages/react-scoped-model/docs/hooks/use-suspense-selector.md).
-- `createSuspendedState`: creates a hook based on [useSuspendedState](/packages/react-scoped-model/docs/hooks/use-suspended-state.md)`.
 - `createValueOnce`: creates a hook based on [useValueOnce](/packages/react-scoped-model/docs/hooks/use-value-once.md)`.
 - `createSelectorOnce`: creates a hook based on [useValueOnce](/packages/react-scoped-model/docs/hooks/use-selector-once.md)`.
 - `createSnapshot`: creates a hook based on [useSnapshot](/packages/react-scoped-model/docs/hooks/use-snapshot.md)`.
 
 ## See Also
+
 - [Create Model](/packages/react-scoped-model/docs/create-model.md)
 - [Model Factory](/packages/react-scoped-model/docs/model-factory.md)
 - [Hooks](/packages/react-scoped-model/docs/hooks/README.md)

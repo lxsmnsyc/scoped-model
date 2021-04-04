@@ -17,9 +17,12 @@ import createModel from 'react-scoped-model';
 ### Creating a model
 
 The `createModel` function accepts two parameters:
+
 - `modelHook`: A hook function based on React hooks that provides the business logic for model. The value returned from the hook serves as the state of the model.
 - `options`: Optional.
   - `displayName`: Serves as the display name for both the model (for error logs) and the `Provider` component.
+  - `shouldUpdate`: Serves as condition for render memoization or "when should the `<Provider>` component re-render given the new props. This is similar to `React.PureComponent`'s `shouldUpdate`.
+  - `shouldNotify`: Serves as condition for state memoization.
   - `propTypes`: Based on the prop-types library, provides runtime prop-types checking for the `Provider`.
   - `defaultProps`
 
@@ -97,6 +100,7 @@ If the model itself is mounted as a children from the same instance, components 
 Components outside of the model's component tree that attempts to access it's state will throw an error.
 
 ## See Also
+
 - [Model Factory](/packages/react-scoped-model/docs/model-factory.md)
 - [Hook Factory](/packages/react-scoped-model/docs/hook-factory.md)
 - [Hooks](/packages/react-scoped-model/docs/hooks/README.md)
