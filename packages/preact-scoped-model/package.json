@@ -66,6 +66,6 @@
     "preact"
   ],
   "dependencies": {
-    "@lyonph/preact-hooks": "^0.2.0"
+    "@lyonph/preact-hooks": "^0.3.0"
   }
 }
