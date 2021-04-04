@@ -104,7 +104,7 @@ export default function createModel<Model, Props>(
       } else {
         emitter.consume(model);
       }
-    });
+    }, [emitter, model]);
 
     return null;
   };

@@ -107,7 +107,7 @@ export default function createModel<Model, Props = unknown>(
       } else {
         emitter.consume(model);
       }
-    });
+    }, [emitter, model]);
 
     useDebugValue(model);
   }
