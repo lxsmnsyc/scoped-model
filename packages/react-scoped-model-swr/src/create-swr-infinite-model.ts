@@ -31,8 +31,8 @@ import createModel, {
 } from 'react-scoped-model';
 import {
   useSWRInfinite,
-  SWRInfiniteConfigInterface,
-  SWRInfiniteResponseInterface,
+  SWRInfiniteConfiguration,
+  SWRInfiniteResponse,
 } from 'swr';
 import { SWRModelBaseKey } from './create-swr-model';
 
@@ -73,14 +73,14 @@ export type SWRInfiniteModelFetcher<D, P > =
  * Config is merged to the global config.
  */
 export type SWRInfiniteModelConfigHook<D, E, P > =
-  (props: P) => SWRInfiniteConfigInterface<D, E>;
+  (props: P) => SWRInfiniteConfiguration<D, E>;
 export type SWRInfiniteModelConfig<D, E, P > =
-  SWRInfiniteConfigInterface<D, E> | SWRInfiniteModelConfigHook<D, E, P>;
+  SWRInfiniteConfiguration<D, E> | SWRInfiniteModelConfigHook<D, E, P>;
 
 /**
  * The SWR Model's state.
  */
-export type SWRInfiniteModelState<D, E> = SWRInfiniteResponseInterface<D, E>;
+export type SWRInfiniteModelState<D, E> = SWRInfiniteResponse<D, E>;
 
 /**
  * Alias to the SWR Model's Scoped Model interface.
@@ -109,7 +109,7 @@ export default function createSWRInfiniteModel
   key: SWRInfiniteModelKey<D, P>,
   fetcher: SWRInfiniteModelFetcher<D, P>,
   config: SWRInfiniteModelConfig<D, E, P> = {},
-  options?: ScopedModelOptions<P>,
+  options?: ScopedModelOptions<SWRInfiniteModelState<D, E>, P>,
 ): SWRInfiniteModel<D, E, P> {
   const useKey = key;
   const useFetcher = fetcher;

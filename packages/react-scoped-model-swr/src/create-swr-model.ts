@@ -29,7 +29,7 @@ import createModel, {
   ScopedModel,
   ScopedModelOptions,
 } from 'react-scoped-model';
-import useSWR, { responseInterface, ConfigInterface } from 'swr';
+import useSWR, { SWRResponse, SWRConfiguration } from 'swr';
 
 /**
  * Possible raw values that serves as a key for
@@ -77,14 +77,14 @@ export type SWRModelFetcher<D, P> =
  * Config is merged to the global config.
  */
 export type SWRModelConfigHook<D, E, P> =
-  (props: P) => ConfigInterface<D, E>;
+  (props: P) => SWRConfiguration<D, E>;
 export type SWRModelConfig<D, E, P> =
-  ConfigInterface<D, E> | SWRModelConfigHook<D, E, P>;
+  SWRConfiguration<D, E> | SWRModelConfigHook<D, E, P>;
 
 /**
  * The SWR Model's state.
  */
-export type SWRModelState<D, E> = responseInterface<D, E>;
+export type SWRModelState<D, E> = SWRResponse<D, E>;
 
 /**
  * Alias to the SWR Model's Scoped Model interface.
@@ -122,7 +122,7 @@ export default function createSWRModel
   key: SWRModelKey<P>,
   fetcher: SWRModelFetcher<D, P>,
   config: SWRModelConfig<D, E, P> = {},
-  options?: ScopedModelOptions<P>,
+  options?: ScopedModelOptions<SWRModelState<D, E>, P>,
 ): SWRModel<D, E, P> {
   const useKey = createKeyHook(key);
   const useFetcher = fetcher;
