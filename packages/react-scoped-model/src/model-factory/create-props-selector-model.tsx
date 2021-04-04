@@ -27,10 +27,11 @@
  */
 import createModel, { ScopedModel, ScopedModelOptions } from '../create-model';
 
-export type PropsSelectorModel<Props = unknown> = ScopedModel<Props, Props>;
+export type PropsSelectorModel<Props> =
+  ScopedModel<Props, Props>;
 
-export default function createPropsSelectorModel<Props = unknown>(
-  options?: ScopedModelOptions<Props>,
+export default function createPropsSelectorModel<Props>(
+  options?: ScopedModelOptions<Props, Props>,
 ): PropsSelectorModel<Props> {
   return createModel((props) => props, options);
 }

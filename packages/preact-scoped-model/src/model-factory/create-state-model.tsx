@@ -34,11 +34,11 @@ import createNullaryModel, {
 export type InitialState<T> = T | (() => T);
 
 export type StateScopedModel<T> = NullaryScopedModel<[T, StateUpdater<T>]>;
-export type StateModelOptions = NullaryScopedModelOptions;
+export type StateModelOptions<T> = NullaryScopedModelOptions<[T, StateUpdater<T>]>;
 
 export default function createStateModel<T>(
   initialState: InitialState<T>,
-  options?: StateModelOptions,
+  options?: StateModelOptions<T>,
 ): StateScopedModel<T> {
   return createNullaryModel(() => useState(initialState), options);
 }

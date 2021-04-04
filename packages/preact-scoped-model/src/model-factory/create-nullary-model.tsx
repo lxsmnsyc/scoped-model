@@ -30,14 +30,14 @@ import createModel, { ScopedModelOptions, ScopedModel } from '../create-model';
 export type NullaryScopedModel<Model> = ScopedModel<Model, any>;
 export type NullaryScopedModelHook<Model> =
   () => Model;
-export type NullaryScopedModelOptions =
-  Omit<ScopedModelOptions<any>, 'shouldUpdate' | 'propTypes' | 'defaultProps'>;
+export type NullaryScopedModelOptions<Model> =
+  Omit<ScopedModelOptions<Model, any>, 'shouldUpdate' | 'propTypes' | 'defaultProps'>;
 
 const NEVER_UPDATE = () => true;
 
 export default function createNullaryModel<Model>(
   useModelHook: NullaryScopedModelHook<Model>,
-  options?: NullaryScopedModelOptions,
+  options?: NullaryScopedModelOptions<Model>,
 ): NullaryScopedModel<Model> {
   return createModel(useModelHook, {
     displayName: options?.displayName,

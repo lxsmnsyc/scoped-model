@@ -31,7 +31,7 @@ export type PropsSelectorModel<Props> =
   ScopedModel<Props, Props>;
 
 export default function createPropsSelectorModel<Props>(
-  options?: ScopedModelOptions<Props>,
+  options?: ScopedModelOptions<Props, Props>,
 ): PropsSelectorModel<Props> {
   return createModel((props) => props, options);
 }

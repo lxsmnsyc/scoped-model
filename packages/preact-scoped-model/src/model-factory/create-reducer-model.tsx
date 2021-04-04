@@ -29,12 +29,12 @@ import { useReducer, Reducer } from 'preact/hooks';
 import createNullaryModel, { NullaryScopedModelOptions, NullaryScopedModel } from './create-nullary-model';
 
 export type ReducerScopedModel<S, A> = NullaryScopedModel<[S, (action: A) => void]>;
-export type ReducerScopedModelOptions = NullaryScopedModelOptions;
+export type ReducerScopedModelOptions<S, A> = NullaryScopedModelOptions<[S, (action: A) => void]>;
 
 export default function createReducerModel<S, A>(
   reducer: Reducer<S, A>,
   initialState: S,
-  options?: ReducerScopedModelOptions,
+  options?: ReducerScopedModelOptions<S, A>,
 ): ReducerScopedModel<S, A> {
   return createNullaryModel(() => useReducer(reducer, initialState), options);
 }
