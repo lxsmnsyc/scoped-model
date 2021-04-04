@@ -1,13 +1,9 @@
 import 'preact/debug';
 import { VNode } from 'preact';
-import { Suspense } from 'preact/compat';
 import { useState, useCallback } from 'preact/hooks';
 
 import createModel, {
   useSelector,
-  useSuspenseSelector,
-  useSuspendedState,
-  useAsyncSelector,
   useSelectors,
 } from 'preact-scoped-model';
 
@@ -56,57 +52,6 @@ function Decrement() {
   );
 }
 
-const sleep = (time: number) => new Promise((res) => setTimeout(res, time));
-
-function SuspendedCount() {
-  const count = useSuspenseSelector(
-    Counter,
-    async (state) => {
-      await sleep(500);
-
-      return state.count;
-    },
-    'count/suspended',
-  );
-
-  return (
-    <h1>{`Count: ${count ?? 'undefined'}`}</h1>
-  );
-}
-
-function SuspendedState() {
-  const count = useSuspendedState(
-    Counter,
-    (state) => ({
-      value: state.count,
-      suspend: state.count < 5,
-    }),
-    'state/suspended',
-  );
-
-  return (
-    <h1>{`Count: ${count ?? 'undefined'}`}</h1>
-  );
-}
-
-function AsyncCount() {
-  const result = useAsyncSelector(Counter, async (state) => {
-    await sleep(500);
-
-    return state.count;
-  });
-
-  switch (result.status) {
-    case 'failure':
-      return <h1>An error occured.</h1>;
-    case 'success':
-      return <h1>{`Count: ${result.data}`}</h1>;
-    case 'pending':
-      return <h1>Loading...</h1>;
-    default: return null;
-  }
-}
-
 function IncDec() {
   const [increment, decrement] = useSelectors(Counter, (state) => [
     state.increment,
@@ -125,28 +70,6 @@ export default function App(): VNode {
     <Counter.Provider initialCount={1}>
       <Counter.Provider>
         <Count />
-        <Increment />
-        <Decrement />
-      </Counter.Provider>
-      <Counter.Provider>
-        <h1>Suspended Data:</h1>
-        <Suspense fallback={<h1>Loading...</h1>}>
-          <SuspendedCount />
-        </Suspense>
-        <Increment />
-        <Decrement />
-      </Counter.Provider>
-      <Counter.Provider>
-        <h1>Suspended State:</h1>
-        <Suspense fallback={<h1>Loading...</h1>}>
-          <SuspendedState />
-        </Suspense>
-        <Increment />
-        <Decrement />
-      </Counter.Provider>
-      <Counter.Provider>
-        <h1>Async Data:</h1>
-        <AsyncCount />
         <Increment />
         <Decrement />
       </Counter.Provider>
