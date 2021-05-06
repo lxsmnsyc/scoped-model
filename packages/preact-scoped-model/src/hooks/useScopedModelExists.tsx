@@ -28,7 +28,7 @@
 import { useContext } from 'preact/hooks';
 import { ScopedModel } from '../create-model';
 
-export default function useScopedModelContext<S, P>(
+export default function useScopedModelExists<S, P>(
   model: ScopedModel<S, P>,
 ): boolean {
   const context = useContext(model.context);
