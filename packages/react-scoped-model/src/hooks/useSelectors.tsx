@@ -27,7 +27,7 @@
  */
 import { useDebugValue } from 'react';
 import {
-  useCallbackCondition,
+  useConditionalCallback,
 } from '@lyonph/react-hooks';
 import { ScopedModel } from '../create-model';
 import {
@@ -57,7 +57,7 @@ export default function useSelectors<S, P, R extends any[]>(
   selector: SelectorsFn<S, R>,
   shouldUpdate: ListCompare<R> = defaultCompare,
 ): R {
-  const compare = useCallbackCondition(
+  const compare = useConditionalCallback(
     (a, b) => (
       compareList(a, b, shouldUpdate)
     ),

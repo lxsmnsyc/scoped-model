@@ -27,7 +27,7 @@
  */
 import { useDebugValue } from 'react';
 import {
-  useMemoCondition,
+  useConditionalMemo,
   useSubscription,
   Subscription,
 } from '@lyonph/react-hooks';
@@ -50,7 +50,7 @@ export default function useValue<S, P>(
 ): S {
   const notifier = useScopedModelContext(model);
 
-  const sub = useMemoCondition<Subscription<S>, [Notifier<S>, Compare<S>]>(
+  const sub = useConditionalMemo<Subscription<S>, [Notifier<S>, Compare<S>]>(
     () => ({
       read: () => notifier.value,
       subscribe: (callback) => notifier.subscribe(callback),

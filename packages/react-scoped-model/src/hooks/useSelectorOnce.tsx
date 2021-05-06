@@ -27,7 +27,7 @@
  */
 import { useDebugValue } from 'react';
 import {
-  useMemoCondition,
+  useConditionalMemo,
 } from '@lyonph/react-hooks';
 import { ScopedModel } from '../create-model';
 import useValueOnce from './useValueOnce';
@@ -46,7 +46,7 @@ export default function useSelectorOnce<S, P, R>(
 ): R {
   const baseValue = useValueOnce(model);
 
-  const value = useMemoCondition<R, [S, SelectorFn<S, R>]>(
+  const value = useConditionalMemo<R, [S, SelectorFn<S, R>]>(
     () => selector(baseValue),
     [baseValue, selector],
     compareTuple,
