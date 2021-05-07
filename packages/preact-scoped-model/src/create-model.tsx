@@ -97,11 +97,8 @@ export default function createModel<Model, Props>(
     }, [emitter]);
 
     useEffect(() => {
-      if (emitter.hasValue()) {
-        if (shouldNotify(emitter.value, model)) {
-          emitter.consume(model);
-        }
-      } else {
+      const hasValue = emitter.hasValue();
+      if ((hasValue && shouldNotify(emitter.value, model)) || !hasValue) {
         emitter.consume(model);
       }
     }, [emitter, model]);
