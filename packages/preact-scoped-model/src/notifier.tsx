@@ -25,14 +25,14 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2020
  */
-import { Ref } from 'preact/hooks';
+import { MutableRefObject } from 'react';
 
 export type Listener<T> = (value: T) => void;
-
+ 
 export default class Notifier<T> {
   private alive = true;
 
-  private ref?: Ref<T>;
+  private ref?: MutableRefObject<T>;
 
   public initialized = false;
 
@@ -54,18 +54,14 @@ export default class Notifier<T> {
       this.ref = {
         current: value,
       };
-      this.listeners.forEach((cb) => {
-        cb(value);
-      });
+      for (const listener of this.listeners.keys()) {
+        listener(value);
+      }
     }
   }
 
   hydrate(value: T): void {
-    if (this.alive) {
-      if (this.initialized) {
-        return;
-      }
-
+    if (this.alive && !this.initialized) {
       this.ref = {
         current: value,
       };
@@ -90,3 +86,4 @@ export default class Notifier<T> {
     }
   }
 }
+ 

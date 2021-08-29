@@ -54,18 +54,14 @@ export default class Notifier<T> {
       this.ref = {
         current: value,
       };
-      this.listeners.forEach((cb) => {
-        cb(value);
-      });
+      for (const listener of this.listeners.keys()) {
+        listener(value);
+      }
     }
   }
 
   hydrate(value: T): void {
-    if (this.alive) {
-      if (this.initialized) {
-        return;
-      }
-
+    if (this.alive && !this.initialized) {
       this.ref = {
         current: value,
       };
