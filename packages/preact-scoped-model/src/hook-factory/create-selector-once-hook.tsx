@@ -2,7 +2,7 @@
  * @license
  * MIT License
  *
- * Copyright (c) 2020 Alexis Munsayac
+ * Copyright (c) 2021 Alexis Munsayac
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -23,7 +23,7 @@
  *
  *
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
- * @copyright Alexis Munsayac 2020
+ * @copyright Alexis Munsayac 2021
  */
 import { ScopedModel } from '../create-model';
 import useSelectorOnce from '../hooks/useSelectorOnce';
