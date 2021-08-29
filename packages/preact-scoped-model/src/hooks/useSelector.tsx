@@ -33,7 +33,6 @@ import {
 } from '@lyonph/preact-hooks';
 import { ScopedModel } from '../create-model';
 import { defaultCompare, Compare } from '../utils/comparer';
-import { compareArray } from '../utils/compareTuple';
 import useScopedModelContext from './useScopedModelContext';
 
 export type SelectorFn<T, R> =
@@ -69,8 +68,10 @@ export default function useSelector<S, P, R>(
       subscribe: (callback) => notifier.subscribe(callback),
       shouldUpdate,
     }),
-    [notifier, shouldUpdate],
-    compareArray,
+    { notifier, shouldUpdate },
+    (prev, next) => (
+      prev.notifier !== next.notifier || prev.shouldUpdate !== next.shouldUpdate
+    ),
   );
 
   /**

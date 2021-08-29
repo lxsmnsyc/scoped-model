@@ -34,7 +34,6 @@ import {
 import { ScopedModel } from '../create-model';
 import useScopedModelContext from './useScopedModelContext';
 import { defaultCompare, Compare } from '../utils/comparer';
-import { compareArray } from '../utils/compareTuple';
 
 export type SelectorFn<T, R> =
   (model: Readonly<T>) => R;
@@ -69,8 +68,10 @@ export default function useSelector<S, P, R>(
       subscribe: (callback) => notifier.subscribe(callback),
       shouldUpdate,
     }),
-    [notifier, shouldUpdate],
-    compareArray,
+    { notifier, shouldUpdate },
+    (prev, next) => (
+      prev.notifier !== next.notifier || prev.shouldUpdate !== next.shouldUpdate
+    ),
   );
 
   /**

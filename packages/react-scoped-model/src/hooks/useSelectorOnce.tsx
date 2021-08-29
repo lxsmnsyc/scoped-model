@@ -32,7 +32,6 @@ import {
 import { ScopedModel } from '../create-model';
 import useValueOnce from './useValueOnce';
 import { SelectorFn } from './useSelector';
-import { compareTuple } from '../utils/compareTuple';
 
 /**
  * Receives and transforms the model's state. Unlike useSelector,
@@ -46,10 +45,12 @@ export default function useSelectorOnce<S, P, R>(
 ): R {
   const baseValue = useValueOnce(model);
 
-  const value = useConditionalMemo<R, [S, SelectorFn<S, R>]>(
+  const value = useConditionalMemo(
     () => selector(baseValue),
-    [baseValue, selector],
-    compareTuple,
+    { baseValue, selector },
+    (prev, next) => (
+      prev.baseValue !== next.baseValue || prev.selector !== next.selector
+    ),
   );
 
   useDebugValue(value);

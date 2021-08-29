@@ -32,9 +32,7 @@ import {
   Subscription,
 } from '@lyonph/preact-hooks';
 import { ScopedModel } from '../create-model';
-import Notifier from '../notifier';
 import { defaultCompare, Compare } from '../utils/comparer';
-import { compareTuple } from '../utils/compareTuple';
 import useScopedModelContext from './useScopedModelContext';
 
 /**
@@ -50,14 +48,16 @@ export default function useValue<S, P>(
 ): S {
   const notifier = useScopedModelContext(model);
 
-  const sub = useConditionalMemo<Subscription<S>, [Notifier<S>, Compare<S>]>(
-    () => ({
+  const sub = useConditionalMemo(
+    (): Subscription<S> => ({
       read: () => notifier.value,
       subscribe: (callback) => notifier.subscribe(callback),
       shouldUpdate,
     }),
-    [notifier, shouldUpdate],
-    compareTuple,
+    { notifier, shouldUpdate },
+    (prev, next) => (
+      prev.notifier !== next.notifier || prev.shouldUpdate !== next.shouldUpdate
+    ),
   );
 
   /**
