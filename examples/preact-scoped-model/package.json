@@ -1,6 +1,6 @@
 {
   "name": "preact-scoped-model-vite",
-  "version": "2.0.7",
+  "version": "3.0.0",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "preact": "^10.7.2",
-    "preact-scoped-model": "2.0.7"
+    "preact-scoped-model": "3.0.0"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.2.0",

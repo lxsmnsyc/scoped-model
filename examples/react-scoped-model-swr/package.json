@@ -1,6 +1,6 @@
 {
   "name": "react-scoped-model-swr-vite",
-  "version": "2.0.7",
+  "version": "3.0.0",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -9,8 +9,8 @@
   "dependencies": {
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
-    "react-scoped-model": "2.0.7",
-    "react-scoped-model-swr": "2.0.7"
+    "react-scoped-model": "3.0.0",
+    "react-scoped-model-swr": "3.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.9",
