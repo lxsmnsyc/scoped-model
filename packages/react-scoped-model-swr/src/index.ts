@@ -26,7 +26,5 @@
  * @copyright Alexis Munsayac 2021
  */
 export { default as createSWRModel } from './create-swr-model';
-export { default as createSWRInfiniteModel } from './create-swr-infinite-model';
 
 export * from './create-swr-model';
-export * from './create-swr-infinite-model';

@@ -30,7 +30,6 @@ import React, {
   Context,
   WeakValidationMap,
   useContext,
-  FC,
   memo,
   useDebugValue,
   useEffect,
@@ -109,14 +108,14 @@ export default function createModel<Model, Props = unknown>(
     useDebugValue(model);
   }
 
-  const ProcessorInner = (props: Props) => {
+  function ProcessorInner(props: Props) {
     useProcessor(props);
     return null;
-  };
+  }
 
   const Processor = memo(ProcessorInner, options.shouldUpdate);
 
-  const Provider: FC<Props> = ({ children, ...props }) => {
+  function Provider({ children, ...props }: Props & { children?: JSX.Element }) {
     const emitter = useConstant(() => new Notifier<Model>());
 
     useEffect(() => () => {
@@ -129,7 +128,7 @@ export default function createModel<Model, Props = unknown>(
         { children }
       </context.Provider>
     );
-  };
+  }
 
   Provider.propTypes = options.propTypes;
 
