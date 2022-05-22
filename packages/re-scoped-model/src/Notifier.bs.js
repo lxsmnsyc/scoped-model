@@ -1,9 +1,9 @@
+'use strict';
 
-
-import * as Curry from "bs-platform/lib/es6/curry.js";
-import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
-import * as Utils$ReScopedModel from "./Utils.bs.js";
-import * as Exceptions$ReScopedModel from "./Exceptions.bs.js";
+var Curry = require("bs-platform/lib/js/curry.js");
+var Caml_option = require("bs-platform/lib/js/caml_option.js");
+var Utils$ReScopedModel = require("./Utils.bs.js");
+var Exceptions$ReScopedModel = require("./Exceptions.bs.js");
 
 var NativeSet = {};
 
@@ -44,14 +44,11 @@ function value(source) {
             });
 }
 
-export {
-  NativeSet ,
-  Listener ,
-  make ,
-  subscribe ,
-  hydrate ,
-  emit ,
-  value ,
-  
-}
+exports.NativeSet = NativeSet;
+exports.Listener = Listener;
+exports.make = make;
+exports.subscribe = subscribe;
+exports.hydrate = hydrate;
+exports.emit = emit;
+exports.value = value;
 /* Utils-ReScopedModel Not a pure module */

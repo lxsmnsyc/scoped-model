@@ -1,9 +1,9 @@
+'use strict';
 
-
-import * as Curry from "bs-platform/lib/es6/curry.js";
-import * as React from "react";
-import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
-import * as Caml_exceptions from "bs-platform/lib/es6/caml_exceptions.js";
+var Curry = require("bs-platform/lib/js/curry.js");
+var React = require("react");
+var Caml_option = require("bs-platform/lib/js/caml_option.js");
+var Caml_exceptions = require("bs-platform/lib/js/caml_exceptions.js");
 
 function get(value, err) {
   if (value !== undefined) {
@@ -203,10 +203,7 @@ var Hooks = {
   Subscription: Subscription
 };
 
-export {
-  Result ,
-  Compare ,
-  Hooks ,
-  
-}
+exports.Result = Result;
+exports.Compare = Compare;
+exports.Hooks = Hooks;
 /* react Not a pure module */
