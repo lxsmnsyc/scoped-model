@@ -33,6 +33,7 @@ import React, {
   memo,
   useDebugValue,
   useEffect,
+  PropsWithChildren,
 } from 'react';
 import {
   useConstant,
@@ -56,7 +57,7 @@ export interface ScopedModelOptions<Model, Props = unknown> {
 
 export interface ScopedModel<Model, Props = unknown> {
   context: Context<Notifier<Model> | null>;
-  Provider: React.FC<Props>;
+  Provider: React.FC<PropsWithChildren<Props>>;
   displayName: string;
 }
 
@@ -115,7 +116,7 @@ export default function createModel<Model, Props = unknown>(
 
   const Processor = memo(ProcessorInner, options.shouldUpdate);
 
-  function Provider({ children, ...props }: Props & { children?: JSX.Element }) {
+  function Provider({ children, ...props }: PropsWithChildren<Props>) {
     const emitter = useConstant(() => new Notifier<Model>());
 
     useEffect(() => () => {
