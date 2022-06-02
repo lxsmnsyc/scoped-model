@@ -1,5 +1,5 @@
 {
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Scoped Model pattern in React (but with Hooks)",
   "author": "Alexis Munsayac",
   "types": "dist/types/index.d.ts",
